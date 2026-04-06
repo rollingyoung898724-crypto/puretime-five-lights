@@ -1,273 +1,543 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Heiti SC Light'}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Heiti SC Light'; min-height: 12.0px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PureTime Five Lights</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #020617;
+      color: #f8fafc;
+    }
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 24px 16px 110px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .brand-small {
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+    .brand-title {
+      margin-top: 6px;
+      font-size: 18px;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+    .mode-pill {
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #94a3b8;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+    .card {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      border-radius: 28px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+    }
+    .section-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #64748b;
+      margin: 0;
+    }
+    .section-title {
+      font-size: 32px;
+      margin: 10px 0 0;
+      font-weight: 700;
+    }
+    .section-subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 10px 0 0;
+      line-height: 1.5;
+    }
+    .stars-list {
+      margin-top: 24px;
+      display: grid;
+      gap: 12px;
+    }
+    .star-btn {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15,23,42,0.75);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      cursor: pointer;
+    }
+    .star-btn:active {
+      transform: scale(0.99);
+    }
+    .star-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .star-hint {
+      font-size: 12px;
+      color: #64748b;
+      margin: 6px 0 0;
+    }
+    .dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      transition: all 0.25s ease;
+    }
+    .dot.active {
+      background: #fef3c7;
+      box-shadow: 0 0 16px rgba(255,235,170,0.75);
+    }
+    .node-card {
+      margin-top: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15,23,42,0.85);
+      border-radius: 28px;
+      padding: 20px;
+    }
+    .node-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    .node-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 0;
+    }
+    .node {
+      border-radius: 999px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .node::before, .node::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      inset: 12px;
+    }
+    .node::after {
+      inset: 28px;
+      border-color: rgba(255,255,255,0.08);
+    }
+    .node-0 { width: 64px; height: 64px; background: rgba(255,255,255,0.08); }
+    .node-1 { width: 84px; height: 84px; background: rgba(252,211,77,0.5); box-shadow: 0 0 18px rgba(255,220,140,0.18); }
+    .node-2 { width: 96px; height: 96px; background: rgba(253,230,138,0.65); box-shadow: 0 0 22px rgba(255,230,160,0.22); }
+    .node-3 { width: 112px; height: 112px; background: rgba(254,243,199,0.82); box-shadow: 0 0 30px rgba(255,230,160,0.32); }
+    .node-4 { width: 128px; height: 128px; background: rgba(254,243,199,0.92); box-shadow: 0 0 38px rgba(255,235,170,0.40); }
+    .node-5 { width: 144px; height: 144px; background: rgba(255,251,235,1); box-shadow: 0 0 54px rgba(255,240,180,0.50); }
+
+    .center-text {
+      text-align: center;
+      color: #cbd5e1;
+      font-size: 14px;
+      margin: 0;
+    }
+    .primary-btn {
+      width: 100%;
+      margin-top: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .chip {
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+    .path-list {
+      position: relative;
+      margin-top: 24px;
+      padding-left: 10px;
+    }
+    .path-list::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .path-item {
+      position: relative;
+      display: flex;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .path-node {
+      width: 12px;
+      height: 12px;
+      margin-top: 8px;
+      border-radius: 999px;
+      position: relative;
+      z-index: 1;
+      background: rgba(255,255,255,0.12);
+    }
+    .path-node.l1, .path-node.l2 { background: rgba(253,224,71,0.7); }
+    .path-node.l3, .path-node.l4 { background: rgba(254,240,138,0.9); box-shadow: 0 0 14px rgba(255,230,160,0.45); }
+    .path-node.l5 { background: #fef3c7; box-shadow: 0 0 18px rgba(255,240,180,0.65); }
+    .path-node.today { box-shadow: 0 0 0 5px rgba(254,243,199,0.15); }
+    .path-card {
+      flex: 1;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15,23,42,0.65);
+      border-radius: 20px;
+      padding: 14px 16px;
+    }
+    .path-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .path-head span:last-child {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+    .bars {
+      display: flex;
+      gap: 6px;
+    }
+    .bar {
+      height: 10px;
+      flex: 1;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+    }
+    .bar.on {
+      background: rgba(254,243,199,0.92);
+    }
+    .reflection-grid {
+      margin-top: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15,23,42,0.75);
+      border-radius: 28px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+    .reflection-dot {
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+    }
+    .reflection-dot.on {
+      background: rgba(254,243,199,0.9);
+      box-shadow: 0 0 12px rgba(255,235,170,0.35);
+    }
+    .stats {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .stat {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15,23,42,0.65);
+      border-radius: 18px;
+      padding: 16px 10px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .stat-label {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(2,6,23,0.92);
+      backdrop-filter: blur(12px);
+      padding: 14px 16px;
+    }
+    .bottom-nav-inner {
+      max-width: 430px;
+      margin: 0 auto;
+      display: flex;
+      gap: 6px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      border-radius: 24px;
+      padding: 6px;
+    }
+    .tab-btn {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: #94a3b8;
+      border-radius: 18px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-<p class="p1">import React, { useMemo, useState } from "react";</p>
-<p class="p2"><br></p>
-<p class="p1">export default function PureTimeFiveLightsMVP() {</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const [tab, setTab] = useState("today");</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const [todayStars, setTodayStars] = useState([</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ name: "Fajr", active: true },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ name: "Dhuhr", active: true },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ name: "Asr", active: false },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ name: "Maghrib", active: true },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ name: "Isha", active: false },</p>
-<p class="p1"><span class="Apple-converted-space">  </span>]);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const pathDays = [</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ day: 1, lights: 5 },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ day: 2, lights: 4 },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ day: 3, lights: 5 },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ day: 4, lights: 2 },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ day: 5, today: true },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ day: 6, lights: 0 },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>{ day: 7, lights: 0 },</p>
-<p class="p1"><span class="Apple-converted-space">  </span>];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const activeCount = useMemo(</p>
-<p class="p1"><span class="Apple-converted-space">    </span>() =&gt; todayStars.filter((star) =&gt; star.active).length,</p>
-<p class="p1"><span class="Apple-converted-space">    </span>[todayStars]</p>
-<p class="p1"><span class="Apple-converted-space">  </span>);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const totalLights = useMemo(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const previous = pathDays.reduce((sum, item) =&gt; sum + (item.today ? 0 : item.lights), 0);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>return previous + activeCount;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}, [activeCount]);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const currentPathDays = useMemo(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>return pathDays.map((item) =&gt; (item.today ? { ...item, lights: activeCount } : item));</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}, [activeCount]);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const glowClass = (n) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (n === 5) return "bg-amber-100 shadow-[0_0_18px_rgba(255,240,180,0.65)]";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (n &gt;= 3) return "bg-amber-200/90 shadow-[0_0_14px_rgba(255,230,160,0.45)]";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (n &gt;= 1) return "bg-amber-300/70 shadow-[0_0_10px_rgba(255,220,140,0.28)]";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>return "bg-white/10";</p>
-<p class="p1"><span class="Apple-converted-space">  </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const toggleStar = (index) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>setTodayStars((prev) =&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>prev.map((star, i) =&gt; (i === index ? { ...star, active: !star.active } : star))</p>
-<p class="p1"><span class="Apple-converted-space">    </span>);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const TabButton = ({ id, label }) =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button</p>
-<p class="p1"><span class="Apple-converted-space">      </span>onClick={() =&gt; setTab(id)}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>className={`flex-1 rounded-2xl px-3 py-3 text-sm font-medium transition ${</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tab === id</p>
-<p class="p1"><span class="Apple-converted-space">          </span>? "bg-white/14 text-white"</p>
-<p class="p1"><span class="Apple-converted-space">          </span>: "bg-transparent text-slate-400 hover:text-slate-200"</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}`}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{label}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const TodayView = () =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;section className="rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="mb-6"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p className="text-xs uppercase tracking-[0.2em] text-slate-500"&gt;Today&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1 className="mt-2 text-3xl font-semibold"&gt;April 5&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p className="mt-2 text-sm text-slate-400"&gt;A little light still counts.&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="space-y-3"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{todayStars.map((star, index) =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;button</p>
-<p class="p1"><span class="Apple-converted-space">            </span>key={star.name}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>onClick={() =&gt; toggleStar(index)}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-4 text-left transition active:scale-[0.99]"</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;p className="text-sm font-medium"&gt;{star.name}&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;p className="mt-1 text-xs text-slate-500"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{star.active ? "Light recorded" : "Tap to light"}</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div</p>
-<p class="p1"><span class="Apple-converted-space">              </span>className={`h-5 w-5 rounded-full transition ${</p>
-<p class="p1"><span class="Apple-converted-space">                </span>star.active</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>? "bg-amber-100 shadow-[0_0_16px_rgba(255,235,170,0.75)]"</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>: "bg-white/15"</p>
-<p class="p1"><span class="Apple-converted-space">              </span>}`}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>))}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="mt-7 rounded-[28px] border border-white/10 bg-slate-900/70 p-5"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="mb-4 flex items-center justify-between"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p className="text-sm text-slate-400"&gt;Today Node&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p className="text-sm text-slate-300"&gt;{activeCount} / 5&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="flex items-center justify-center py-5"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div</p>
-<p class="p1"><span class="Apple-converted-space">            </span>className={`relative rounded-full transition-all duration-300 ${</p>
-<p class="p1"><span class="Apple-converted-space">              </span>activeCount === 0</p>
-<p class="p1"><span class="Apple-converted-space">                </span>? "h-16 w-16 bg-white/10"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>: activeCount === 1</p>
-<p class="p1"><span class="Apple-converted-space">                </span>? "h-20 w-20 bg-amber-300/60 shadow-[0_0_18px_rgba(255,220,140,0.18)]"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>: activeCount === 2</p>
-<p class="p1"><span class="Apple-converted-space">                </span>? "h-24 w-24 bg-amber-200/75 shadow-[0_0_22px_rgba(255,230,160,0.22)]"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>: activeCount === 3</p>
-<p class="p1"><span class="Apple-converted-space">                </span>? "h-28 w-28 bg-amber-100/85 shadow-[0_0_30px_rgba(255,230,160,0.32)]"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>: activeCount === 4</p>
-<p class="p1"><span class="Apple-converted-space">                </span>? "h-32 w-32 bg-amber-100/90 shadow-[0_0_38px_rgba(255,235,170,0.4)]"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>: "h-36 w-36 bg-amber-50 shadow-[0_0_54px_rgba(255,240,180,0.5)]"</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}`}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="absolute inset-3 rounded-full border border-white/15" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="absolute inset-7 rounded-full border border-white/10" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p className="text-center text-sm text-slate-300"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{activeCount === 5 ? "Today is fully lit." : `${activeCount} of 5 lights today`}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button</p>
-<p class="p1"><span class="Apple-converted-space">        </span>onClick={() =&gt; setTab("path")}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>className="mt-6 w-full rounded-2xl border border-white/10 bg-white/10 py-4 text-sm font-medium transition hover:bg-white/15"</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>View My Path</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const PathView = () =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;section className="rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="mb-6"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p className="text-xs uppercase tracking-[0.2em] text-slate-500"&gt;Star Path&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2 className="mt-2 text-3xl font-semibold"&gt;April Path&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;span className="rounded-full bg-white/8 px-3 py-1.5"&gt;5 days lit&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;span className="rounded-full bg-white/8 px-3 py-1.5"&gt;{totalLights} lights&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;span className="rounded-full bg-white/8 px-3 py-1.5"&gt;3-day streak&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="relative ml-2 space-y-5 before:absolute before:left-[7px] before:top-2 before:h-[calc(100%-16px)] before:w-px before:bg-white/10"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{currentPathDays.map((item) =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div key={item.day} className="relative flex items-start gap-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div</p>
-<p class="p1"><span class="Apple-converted-space">              </span>className={`relative z-10 mt-1 h-4 w-4 rounded-full ${glowClass(item.lights)} ${</p>
-<p class="p1"><span class="Apple-converted-space">                </span>item.today ? "ring-2 ring-amber-100/40" : ""</p>
-<p class="p1"><span class="Apple-converted-space">              </span>}`}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="flex-1 rounded-2xl border border-white/10 bg-slate-900/50 px-4 py-3.5"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center justify-between"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;p className="text-sm font-medium"&gt;Day {item.day}&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;p className="text-xs text-slate-400"&gt;{item.lights}/5&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="mt-3 flex gap-2"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{Array.from({ length: 5 }).map((_, i) =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>key={i}</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>className={`h-2.5 flex-1 rounded-full ${</p>
-<p class="p1"><span class="Apple-converted-space">                      </span>i &lt; item.lights ? "bg-amber-100/90" : "bg-white/10"</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}`}</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>))}</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>))}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button</p>
-<p class="p1"><span class="Apple-converted-space">        </span>onClick={() =&gt; setTab("reflection")}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>className="mt-6 w-full rounded-2xl border border-white/10 bg-white/10 py-4 text-sm font-medium transition hover:bg-white/15"</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>Monthly Reflection</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const ReflectionView = () =&gt; (</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;section className="rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="mb-6"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p className="text-xs uppercase tracking-[0.2em] text-slate-500"&gt;Reflection&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2 className="mt-2 text-3xl font-semibold"&gt;April Summary&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p className="mt-2 text-sm text-slate-400"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>Not every day was full, but the path is still yours.</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="rounded-[28px] border border-white/10 bg-slate-900/60 p-5"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="grid grid-cols-7 gap-3"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{Array.from({ length: 28 }).map((_, i) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const filled = i &lt; totalLights;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return (</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;div</p>
-<p class="p1"><span class="Apple-converted-space">                </span>key={i}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>className={`aspect-square rounded-full ${</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>filled</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>? "bg-amber-100/85 shadow-[0_0_12px_rgba(255,235,170,0.35)]"</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>: "bg-white/8"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}`}</p>
-<p class="p1"><span class="Apple-converted-space">              </span>/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>})}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="mt-6 grid grid-cols-3 gap-3 text-center"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="rounded-2xl border border-white/10 bg-slate-900/50 p-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p className="text-xl font-semibold"&gt;5&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p className="mt-1 text-xs text-slate-400"&gt;Days Lit&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="rounded-2xl border border-white/10 bg-slate-900/50 p-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p className="text-xl font-semibold"&gt;{totalLights}&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p className="mt-1 text-xs text-slate-400"&gt;Total Lights&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="rounded-2xl border border-white/10 bg-slate-900/50 p-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p className="text-xl font-semibold"&gt;3&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;p className="mt-1 text-xs text-slate-400"&gt;Best Streak&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>return (</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div className="min-h-screen bg-slate-950 text-slate-100"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4 pb-28 pt-6"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="mb-6 flex items-center justify-between"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p className="text-xs uppercase tracking-[0.25em] text-slate-500"&gt;PureTime&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p className="mt-1 text-lg font-medium text-slate-200"&gt;Five Lights&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-400"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>Gentle Mode</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="flex-1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{tab === "today" &amp;&amp; &lt;TodayView /&gt;}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{tab === "path" &amp;&amp; &lt;PathView /&gt;}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>{tab === "reflection" &amp;&amp; &lt;ReflectionView /&gt;}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;nav className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-slate-950/90 px-4 py-4 backdrop-blur"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="mx-auto flex max-w-md rounded-3xl border border-white/10 bg-white/5 p-1.5"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;TabButton id="today" label="Today" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;TabButton id="path" label="Path" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;TabButton id="reflection" label="Reflection" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/nav&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>);</p>
-<p class="p1">}</p>
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <div class="brand-small">PureTime</div>
+        <div class="brand-title">Five Lights</div>
+      </div>
+      <div class="mode-pill">Gentle Mode</div>
+    </div>
+
+    <section id="todayView" class="card">
+      <p class="section-label">Today</p>
+      <h1 class="section-title">April 5</h1>
+      <p class="section-subtitle">A little light still counts.</p>
+
+      <div class="stars-list" id="starsList"></div>
+
+      <div class="node-card">
+        <div class="node-head">
+          <span>Today Node</span>
+          <span id="todayCount">0 / 5</span>
+        </div>
+        <div class="node-wrap">
+          <div id="todayNode" class="node node-0"></div>
+        </div>
+        <p class="center-text" id="todayText">0 of 5 lights today</p>
+      </div>
+
+      <button class="primary-btn" onclick="showTab('path')">View My Path</button>
+    </section>
+
+    <section id="pathView" class="card hidden">
+      <p class="section-label">Star Path</p>
+      <h2 class="section-title">April Path</h2>
+
+      <div class="chips">
+        <div class="chip">5 days lit</div>
+        <div class="chip"><span id="totalLightsChip">19</span> lights</div>
+        <div class="chip">3-day streak</div>
+      </div>
+
+      <div class="path-list" id="pathList"></div>
+
+      <button class="primary-btn" onclick="showTab('reflection')">Monthly Reflection</button>
+    </section>
+
+    <section id="reflectionView" class="card hidden">
+      <p class="section-label">Reflection</p>
+      <h2 class="section-title">April Summary</h2>
+      <p class="section-subtitle">Not every day was full, but the path is still yours.</p>
+
+      <div class="reflection-grid" id="reflectionGrid"></div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">5</div>
+          <div class="stat-label">Days Lit</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="totalLightsStat">19</div>
+          <div class="stat-label">Total Lights</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Best Streak</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button id="tabToday" class="tab-btn active" onclick="showTab('today')">Today</button>
+      <button id="tabPath" class="tab-btn" onclick="showTab('path')">Path</button>
+      <button id="tabReflection" class="tab-btn" onclick="showTab('reflection')">Reflection</button>
+    </div>
+  </div>
+
+  <script>
+    const prayers = [
+      { name: "Fajr", active: true },
+      { name: "Dhuhr", active: true },
+      { name: "Asr", active: false },
+      { name: "Maghrib", active: true },
+      { name: "Isha", active: false }
+    ];
+
+    const pathDays = [
+      { day: 1, lights: 5 },
+      { day: 2, lights: 4 },
+      { day: 3, lights: 5 },
+      { day: 4, lights: 2 },
+      { day: 5, lights: 3, today: true },
+      { day: 6, lights: 0 },
+      { day: 7, lights: 0 }
+    ];
+
+    function activeCount() {
+      return prayers.filter(p => p.active).length;
+    }
+
+    function totalLights() {
+      let previous = pathDays.reduce((sum, item) => sum + (item.today ? 0 : item.lights), 0);
+      return previous + activeCount();
+    }
+
+    function renderStars() {
+      const el = document.getElementById("starsList");
+      el.innerHTML = "";
+      prayers.forEach((star, index) => {
+        const btn = document.createElement("button");
+        btn.className = "star-btn";
+        btn.innerHTML = `
+          <div>
+            <p class="star-name">${star.name}</p>
+            <p class="star-hint">${star.active ? "Light recorded" : "Tap to light"}</p>
+          </div>
+          <div class="dot ${star.active ? "active" : ""}"></div>
+        `;
+        btn.onclick = () => {
+          prayers[index].active = !prayers[index].active;
+          renderAll();
+        };
+        el.appendChild(btn);
+      });
+    }
+
+    function renderToday() {
+      const count = activeCount();
+      document.getElementById("todayCount").textContent = `${count} / 5`;
+      document.getElementById("todayText").textContent =
+        count === 5 ? "Today is fully lit." : `${count} of 5 lights today`;
+
+      const node = document.getElementById("todayNode");
+      node.className = `node node-${count}`;
+    }
+
+    function renderPath() {
+      const el = document.getElementById("pathList");
+      el.innerHTML = "";
+      const count = activeCount();
+
+      pathDays.forEach(item => {
+        const lights = item.today ? count : item.lights;
+        const row = document.createElement("div");
+        row.className = "path-item";
+
+        let bars = "";
+        for (let i = 0; i < 5; i++) {
+          bars += `<div class="bar ${i < lights ? "on" : ""}"></div>`;
+        }
+
+        row.innerHTML = `
+          <div class="path-node l${lights} ${item.today ? "today" : ""}"></div>
+          <div class="path-card">
+            <div class="path-head">
+              <span>Day ${item.day}</span>
+              <span>${lights}/5</span>
+            </div>
+            <div class="bars">${bars}</div>
+          </div>
+        `;
+        el.appendChild(row);
+      });
+
+      document.getElementById("totalLightsChip").textContent = totalLights();
+    }
+
+    function renderReflection() {
+      const grid = document.getElementById("reflectionGrid");
+      grid.innerHTML = "";
+      const total = totalLights();
+
+      for (let i = 0; i < 28; i++) {
+        const dot = document.createElement("div");
+        dot.className = "reflection-dot" + (i < total ? " on" : "");
+        grid.appendChild(dot);
+      }
+
+      document.getElementById("totalLightsStat").textContent = total;
+    }
+
+    function showTab(tab) {
+      document.getElementById("todayView").classList.add("hidden");
+      document.getElementById("pathView").classList.add("hidden");
+      document.getElementById("reflectionView").classList.add("hidden");
+      document.getElementById("tabToday").classList.remove("active");
+      document.getElementById("tabPath").classList.remove("active");
+      document.getElementById("tabReflection").classList.remove("active");
+
+      if (tab === "today") {
+        document.getElementById("todayView").classList.remove("hidden");
+        document.getElementById("tabToday").classList.add("active");
+      } else if (tab === "path") {
+        document.getElementById("pathView").classList.remove("hidden");
+        document.getElementById("tabPath").classList.add("active");
+      } else {
+        document.getElementById("reflectionView").classList.remove("hidden");
+        document.getElementById("tabReflection").classList.add("active");
+      }
+    }
+
+    function renderAll() {
+      renderStars();
+      renderToday();
+      renderPath();
+      renderReflection();
+    }
+
+    renderAll();
+  </script>
 </body>
 </html>
