@@ -19,7 +19,7 @@
       --radius-lg: 18px;
       --radius-md: 14px;
       --transition: 180ms ease;
-      --max: 1080px;
+      --max: 1120px;
     }
 
     * {
@@ -138,7 +138,6 @@
       margin: 0;
     }
 
-    .stack,
     .summary-grid,
     .lights-preview,
     .light-list,
@@ -176,10 +175,15 @@
       font-size: 0.95rem;
     }
 
-    .btn:hover {
+    .btn:hover:not(:disabled) {
       transform: translateY(-1px);
       background: rgba(255,255,255,0.07);
       border-color: rgba(255,255,255,0.14);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     .btn-primary {
@@ -348,6 +352,18 @@
       background: rgba(231,201,138,0.1);
     }
 
+    .meta-chip.later {
+      color: #ffe4b0;
+      border-color: rgba(231,201,138,0.28);
+      background: rgba(231,201,138,0.08);
+    }
+
+    .meta-chip.future {
+      color: #cfc8bc;
+      border-color: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+
     .section-block {
       margin-top: 18px;
     }
@@ -420,6 +436,20 @@
       font-weight: 700;
     }
 
+    .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .month-nav-center {
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
+
     .month-grid {
       grid-template-columns: repeat(7, minmax(0, 1fr));
       margin-top: 16px;
@@ -428,16 +458,16 @@
     .month-day {
       border-radius: 18px;
       padding: 12px 10px;
-      min-height: 110px;
+      min-height: 116px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 8px;
       cursor: pointer;
-      transition: transform var(--transition), border-color var(--transition), background var(--transition);
+      transition: transform var(--transition), border-color var(--transition), background var(--transition), opacity var(--transition);
     }
 
-    .month-day:hover {
+    .month-day:hover:not(.future-disabled) {
       transform: translateY(-1px);
       border-color: rgba(231,201,138,0.2);
       background: rgba(255,255,255,0.08);
@@ -452,6 +482,11 @@
       box-shadow: 0 0 0 1px rgba(231,201,138,0.12), var(--shadow);
     }
 
+    .month-day.future-disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
     .month-day .top {
       display: flex;
       align-items: center;
@@ -459,9 +494,22 @@
       gap: 8px;
     }
 
+    .month-day .num-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      min-width: 0;
+    }
+
     .month-day .num {
       font-weight: 700;
       font-size: 0.96rem;
+    }
+
+    .month-day .weekday-inline {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
     }
 
     .mini-lights {
@@ -615,6 +663,15 @@
       .footer-row {
         grid-template-columns: 1fr;
       }
+
+      .month-nav {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .month-nav-center {
+        order: -1;
+      }
     }
   </style>
 </head>
@@ -628,7 +685,6 @@
       <button class="btn" id="topSettingsBtn">Settings</button>
     </div>
 
-    <!-- TODAY -->
     <section class="page active" id="page-today">
       <div class="hero">
         <div class="date-line" id="todayDateLine"></div>
@@ -679,7 +735,6 @@
       </div>
     </section>
 
-    <!-- DETAIL -->
     <section class="page" id="page-detail">
       <div class="hero">
         <div class="cta-row">
@@ -721,7 +776,6 @@
       </div>
     </section>
 
-    <!-- MONTH -->
     <section class="page" id="page-month">
       <div class="hero">
         <div class="cta-row">
@@ -735,7 +789,14 @@
       <div class="summary-grid" id="monthSummaryGrid"></div>
 
       <div class="card">
-        <h2 class="section-title" id="monthGridTitle"></h2>
+        <div class="month-nav">
+          <button class="btn" id="prevMonthBtn">Previous month</button>
+          <div class="month-nav-center">
+            <div class="section-title" id="monthGridTitle"></div>
+          </div>
+          <button class="btn" id="nextMonthBtn">Next month</button>
+        </div>
+
         <div class="month-grid" id="monthGrid"></div>
       </div>
 
@@ -744,7 +805,6 @@
       </div>
     </section>
 
-    <!-- SETTINGS -->
     <section class="page" id="page-settings">
       <div class="hero">
         <div class="cta-row">
@@ -869,7 +929,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "puretime-five-lights-prayer-v2";
+    const STORAGE_KEY = "puretime-five-lights-prayer-v3";
 
     const copy = {
       today: {
@@ -877,7 +937,7 @@
         progressLabel: "Today’s prayer progress",
         openButton: "Open today",
         reassurance: "No pressure. You can return at your own pace.",
-        streakLabel: "Gentle streak",
+        streakLabel: "Current gentle streak",
         bottomQuotes: [
           "A small light can still change the tone of a day.",
           "You are allowed to begin again today.",
@@ -911,20 +971,25 @@
           "You can return to any day with softness."
         ],
         notOpened: "Not marked yet",
-        litToday: "Marked",
-        litAt: "Marked at"
+        marked: "Marked",
+        markedAt: "Marked at",
+        addedLater: "Added later",
+        futureLocked: "Future date locked"
       },
       month: {
         title: "This month",
         subtitle: "Not a scorecard — just a gentle record of prayer and return.",
-        gridTitle: "Daily prayer lights",
+        gridTitlePrefix: "Viewing",
         summaryDaysReturned: "Days with prayer",
         summaryStreak: "Current gentle streak",
         summaryLights: "Prayers marked",
         low: "A quiet month still counts. You are still returning.",
         mid: "You have made space for prayer in small ways throughout the month.",
         high: "Your month carries a steady rhythm of return.",
-        back: "Back to today"
+        back: "Back to detail",
+        quietDay: "Quiet day",
+        prayerMarked: "Prayer marked",
+        futureLocked: "Future locked"
       },
       settings: {
         title: "Settings",
@@ -969,6 +1034,14 @@
       ]
     };
 
+    function todayKey() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
     function createDefaultState() {
       return {
         profile: {
@@ -987,7 +1060,8 @@
           showMonthSummary: true
         },
         ui: {
-          selectedDate: todayKey()
+          selectedDate: todayKey(),
+          monthCursor: todayKey().slice(0, 7)
         },
         days: {},
         stats: {
@@ -1075,6 +1149,8 @@
       monthGridTitle: document.getElementById("monthGridTitle"),
       monthGrid: document.getElementById("monthGrid"),
       monthSummaryLine: document.getElementById("monthSummaryLine"),
+      prevMonthBtn: document.getElementById("prevMonthBtn"),
+      nextMonthBtn: document.getElementById("nextMonthBtn"),
 
       settingsBackBtn: document.getElementById("settingsBackBtn"),
       settingsTitle: document.getElementById("settingsTitle"),
@@ -1121,22 +1197,30 @@
       settingsBottomLine: document.getElementById("settingsBottomLine")
     };
 
-    function todayKey() {
-      const now = new Date();
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, "0");
-      const d = String(now.getDate()).padStart(2, "0");
-      return `${y}-${m}-${d}`;
-    }
-
     function selectedDateKey() {
       return state.ui.selectedDate || todayKey();
     }
 
-    function ensureSelectedDate() {
-      if (!state.ui.selectedDate) {
-        state.ui.selectedDate = todayKey();
-      }
+    function monthCursorKey() {
+      return state.ui.monthCursor || todayKey().slice(0, 7);
+    }
+
+    function ensureUiState() {
+      if (!state.ui.selectedDate) state.ui.selectedDate = todayKey();
+      if (!state.ui.monthCursor) state.ui.monthCursor = selectedDateKey().slice(0, 7);
+    }
+
+    function parseDateKey(key) {
+      const [y, m, d] = key.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function isFutureDate(key) {
+      return key > todayKey();
+    }
+
+    function isPastDate(key) {
+      return key < todayKey();
     }
 
     function getDayData(key = selectedDateKey()) {
@@ -1144,11 +1228,13 @@
         state.days[key] = {
           completed: [false, false, false, false, false],
           completedAt: {},
+          addedLater: {},
           reflection: "",
           feeling: "",
           lastUpdated: new Date().toISOString()
         };
       }
+      if (!state.days[key].addedLater) state.days[key].addedLater = {};
       return state.days[key];
     }
 
@@ -1208,6 +1294,12 @@
       }).format(date);
     }
 
+    function formatWeekdayShort(date) {
+      return new Intl.DateTimeFormat("en-GB", {
+        weekday: "short"
+      }).format(date);
+    }
+
     function randomFrom(arr, seedKey = todayKey()) {
       let hash = 0;
       for (let i = 0; i < seedKey.length; i++) {
@@ -1231,26 +1323,35 @@
 
     function selectDate(key, goToDetail = false) {
       state.ui.selectedDate = key;
+      state.ui.monthCursor = key.slice(0, 7);
       saveState();
       render();
       if (goToDetail) showPage("detail");
     }
 
-    function daysReturnedInMonth(baseDate = new Date()) {
-      const y = baseDate.getFullYear();
-      const m = baseDate.getMonth();
+    function setMonthCursor(yyyyMm) {
+      state.ui.monthCursor = yyyyMm;
+      saveState();
+      renderMonth();
+    }
+
+    function shiftMonth(yyyyMm, diff) {
+      const [y, m] = yyyyMm.split("-").map(Number);
+      const date = new Date(y, m - 1 + diff, 1);
+      const ny = date.getFullYear();
+      const nm = String(date.getMonth() + 1).padStart(2, "0");
+      return `${ny}-${nm}`;
+    }
+
+    function daysReturnedInMonth(yyyyMm) {
       return Object.entries(state.days).filter(([key, day]) => {
-        const d = new Date(key + "T00:00:00");
-        return d.getFullYear() === y && d.getMonth() === m && completedCount(day) > 0;
+        return key.startsWith(yyyyMm) && completedCount(day) > 0;
       }).length;
     }
 
-    function lightsLitInMonth(baseDate = new Date()) {
-      const y = baseDate.getFullYear();
-      const m = baseDate.getMonth();
+    function lightsLitInMonth(yyyyMm) {
       return Object.entries(state.days).reduce((sum, [key, day]) => {
-        const d = new Date(key + "T00:00:00");
-        if (d.getFullYear() === y && d.getMonth() === m) {
+        if (key.startsWith(yyyyMm)) {
           return sum + completedCount(day);
         }
         return sum;
@@ -1263,7 +1364,10 @@
       cursor.setHours(0, 0, 0, 0);
 
       while (true) {
-        const key = cursor.toISOString().slice(0, 10);
+        const y = cursor.getFullYear();
+        const m = String(cursor.getMonth() + 1).padStart(2, "0");
+        const d = String(cursor.getDate()).padStart(2, "0");
+        const key = `${y}-${m}-${d}`;
         const day = state.days[key];
         if (day && completedCount(day) > 0) {
           streak += 1;
@@ -1316,7 +1420,7 @@
       const day = getDayData(today);
       const count = completedCount(day);
 
-      els.todayDateLine.textContent = formatLongDate(new Date(today + "T00:00:00"));
+      els.todayDateLine.textContent = formatLongDate(parseDateKey(today));
       els.todayTitle.textContent = copy.today.title;
       els.todaySubtitle.textContent = randomFrom(copy.today.subtitles);
       els.todayProgressLabel.textContent = copy.today.progressLabel;
@@ -1332,7 +1436,7 @@
       els.streakLabel.parentElement.parentElement.parentElement.classList.toggle("hidden", !state.settings.showStreak);
 
       const selected = selectedDateKey();
-      els.selectedDateSummary.textContent = formatLongDateWithYear(new Date(selected + "T00:00:00"));
+      els.selectedDateSummary.textContent = formatLongDateWithYear(parseDateKey(selected));
 
       els.todayLightsPreview.innerHTML = "";
       copy.lights.forEach((light, index) => {
@@ -1353,20 +1457,26 @@
       const day = getDayData(key);
       const count = completedCount(day);
       const isToday = key === todayKey();
+      const isFuture = isFutureDate(key);
 
       els.backToTodayBtn.textContent = copy.detail.back;
-      els.detailDateLine.textContent = formatLongDateWithYear(new Date(key + "T00:00:00"));
+      els.detailDateLine.textContent = formatLongDateWithYear(parseDateKey(key));
       els.detailTitle.textContent = isToday ? copy.today.title : "Selected day";
       els.detailSubtitle.textContent = copy.detail.title;
       els.detailProgressLabel.textContent = copy.detail.progressLabel;
       els.detailProgressText.textContent = `${count} of 5 marked`;
-      els.detailSupport.textContent = copy.detail.support;
-      els.detailOpenMonthBtn.textContent = "Month";
+      els.detailSupport.textContent = isFuture
+        ? "Future dates can be viewed, but not marked yet."
+        : copy.detail.support;
 
+      els.detailOpenMonthBtn.textContent = "Month";
       els.detailLightList.innerHTML = "";
+
       copy.lights.forEach((light, index) => {
         const lit = !!day.completed[index];
         const timestamp = day.completedAt[index];
+        const addedLater = !!day.addedLater[index];
+
         const card = document.createElement("div");
         card.className = "light-card";
         card.innerHTML = `
@@ -1378,15 +1488,16 @@
                 <p class="light-desc">${light.desc}</p>
               </div>
             </div>
-            <button class="btn ${lit ? "" : "btn-primary"}" data-light-index="${index}">
-              ${lit ? "Marked" : "Mark prayer"}
+            <button class="btn ${lit ? "" : "btn-primary"}" data-light-index="${index}" ${isFuture ? "disabled" : ""}>
+              ${isFuture ? "Locked" : (lit ? "Marked" : "Mark prayer")}
             </button>
           </div>
           <div class="light-meta">
-            <div class="meta-chip ${lit ? "success" : ""}">
-              ${lit ? copy.detail.litToday : copy.detail.notOpened}
+            <div class="meta-chip ${lit ? "success" : (isFuture ? "future" : "")}">
+              ${isFuture ? copy.detail.futureLocked : (lit ? copy.detail.marked : copy.detail.notOpened)}
             </div>
-            ${lit && timestamp ? `<div class="meta-chip">${copy.detail.litAt} ${timestamp}</div>` : ""}
+            ${lit && timestamp ? `<div class="meta-chip">${copy.detail.markedAt} ${timestamp}</div>` : ""}
+            ${lit && addedLater ? `<div class="meta-chip later">${copy.detail.addedLater}</div>` : ""}
           </div>
         `;
         els.detailLightList.appendChild(card);
@@ -1397,6 +1508,7 @@
       els.reflectionInput.placeholder = copy.detail.reflectionPlaceholder;
       els.reflectionInput.value = day.reflection || "";
       els.reflectionCard.classList.toggle("hidden", !state.settings.showReflection);
+      els.reflectionInput.disabled = isFuture;
 
       els.feelingTitle.textContent = copy.detail.feelingTitle;
       els.feelingButtons.innerHTML = "";
@@ -1405,7 +1517,9 @@
         btn.className = `feeling-btn ${day.feeling === feeling ? "active" : ""}`;
         btn.type = "button";
         btn.textContent = feeling;
+        if (isFuture) btn.disabled = true;
         btn.addEventListener("click", () => {
+          if (isFuture) return;
           const current = getDayData(key);
           current.feeling = current.feeling === feeling ? "" : feeling;
           current.lastUpdated = new Date().toISOString();
@@ -1416,11 +1530,12 @@
         els.feelingButtons.appendChild(btn);
       });
 
-      els.saveStatusText.textContent = copy.detail.saveSaved;
+      els.saveStatusText.textContent = isFuture ? "Future dates cannot be edited." : copy.detail.saveSaved;
       els.detailClosingLine.textContent = randomFrom(copy.detail.closingLines, key + "-closing");
 
       Array.from(els.detailLightList.querySelectorAll("[data-light-index]")).forEach(btn => {
         btn.addEventListener("click", () => {
+          if (isFuture) return;
           const index = Number(btn.dataset.lightIndex);
           toggleLightForDate(key, index);
         });
@@ -1428,21 +1543,20 @@
     }
 
     function renderMonth() {
+      const cursor = monthCursorKey();
+      const [year, month] = cursor.split("-").map(Number);
+      const date = new Date(year, month - 1, 1);
       const selected = selectedDateKey();
-      const selectedDate = new Date(selected + "T00:00:00");
-      const monthDate = selectedDate;
-      const year = monthDate.getFullYear();
-      const month = monthDate.getMonth();
 
-      els.monthBackBtn.textContent = currentPage === "month" ? "Back to detail" : copy.month.back;
-      els.monthDateLine.textContent = formatMonthYear(monthDate);
+      els.monthBackBtn.textContent = copy.month.back;
+      els.monthDateLine.textContent = formatMonthYear(date);
       els.monthTitle.textContent = copy.month.title;
       els.monthSubtitle.textContent = copy.month.subtitle;
-      els.monthGridTitle.textContent = copy.month.gridTitle;
+      els.monthGridTitle.textContent = `${copy.month.gridTitlePrefix} ${formatMonthYear(date)}`;
 
-      const returned = daysReturnedInMonth(monthDate);
+      const returned = daysReturnedInMonth(cursor);
       const streak = getCurrentStreak();
-      const lit = lightsLitInMonth(monthDate);
+      const lit = lightsLitInMonth(cursor);
 
       els.monthSummaryGrid.innerHTML = `
         <div class="summary-card">
@@ -1460,19 +1574,24 @@
       `;
       els.monthSummaryGrid.classList.toggle("hidden", !state.settings.showMonthSummary);
 
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
       els.monthGrid.innerHTML = "";
 
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const currentMonthKey = todayKey().slice(0, 7);
+      els.nextMonthBtn.disabled = cursor >= currentMonthKey;
+
       for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
-        const date = new Date(year, month, dayNum);
-        const key = date.toISOString().slice(0, 10);
+        const key = `${cursor}-${String(dayNum).padStart(2, "0")}`;
         const dayData = state.days[key];
         const count = dayData ? completedCount(dayData) : 0;
         const isToday = key === todayKey();
         const isSelected = key === selected;
+        const future = isFutureDate(key);
+        const weekdayShort = formatWeekdayShort(new Date(year, month - 1, dayNum));
 
         const cell = document.createElement("div");
-        cell.className = `month-day ${isToday ? "today" : ""} ${isSelected ? "selected" : ""}`;
+        cell.className = `month-day ${isToday ? "today" : ""} ${isSelected ? "selected" : ""} ${future ? "future-disabled" : ""}`;
+
         const miniLights = Array.from({ length: 5 }).map((_, i) => {
           const litClass = dayData && dayData.completed[i] ? "lit" : "";
           return `<span class="${litClass}"></span>`;
@@ -1480,14 +1599,18 @@
 
         cell.innerHTML = `
           <div class="top">
-            <div class="num">${dayNum}</div>
+            <div class="num-wrap">
+              <span class="num">${dayNum}</span>
+              <span class="weekday-inline">· ${weekdayShort}</span>
+            </div>
             <div class="small">${count}/5</div>
           </div>
           <div class="mini-lights">${miniLights}</div>
-          <div class="small">${count > 0 ? "Prayer marked" : "Quiet day"}</div>
+          <div class="small">${future ? copy.month.futureLocked : (count > 0 ? copy.month.prayerMarked : copy.month.quietDay)}</div>
         `;
 
         cell.addEventListener("click", () => {
+          if (future) return;
           selectDate(key, true);
         });
 
@@ -1581,13 +1704,19 @@
     }
 
     function toggleLightForDate(key, index) {
+      if (isFutureDate(key)) return;
+
       const day = getDayData(key);
       day.completed[index] = !day.completed[index];
+
       if (day.completed[index]) {
         day.completedAt[index] = formatTime(new Date());
+        day.addedLater[index] = isPastDate(key);
       } else {
         delete day.completedAt[index];
+        delete day.addedLater[index];
       }
+
       day.lastUpdated = new Date().toISOString();
       state.stats.lastVisitDate = todayKey();
       updateBestStreak();
@@ -1602,13 +1731,25 @@
       });
 
       els.quickMonthBtn.addEventListener("click", () => {
-        selectDate(todayKey(), false);
+        state.ui.monthCursor = todayKey().slice(0, 7);
+        saveState();
         showPage("month");
       });
 
       els.backToTodayBtn.addEventListener("click", () => showPage("today"));
       els.detailOpenMonthBtn.addEventListener("click", () => showPage("month"));
       els.monthBackBtn.addEventListener("click", () => showPage("detail"));
+
+      els.prevMonthBtn.addEventListener("click", () => {
+        setMonthCursor(shiftMonth(monthCursorKey(), -1));
+      });
+
+      els.nextMonthBtn.addEventListener("click", () => {
+        const next = shiftMonth(monthCursorKey(), 1);
+        if (next <= todayKey().slice(0, 7)) {
+          setMonthCursor(next);
+        }
+      });
 
       els.topSettingsBtn.addEventListener("click", () => {
         previousPageBeforeSettings = currentPage;
@@ -1621,10 +1762,13 @@
 
       els.reflectionInput.addEventListener("input", (event) => {
         const key = selectedDateKey();
+        if (isFutureDate(key)) return;
+
         const day = getDayData(key);
         day.reflection = event.target.value;
         day.lastUpdated = new Date().toISOString();
         els.saveStatusText.textContent = copy.detail.saveSaving;
+
         if (reflectionSaveTimer) clearTimeout(reflectionSaveTimer);
         reflectionSaveTimer = setTimeout(() => {
           saveState(true);
@@ -1702,7 +1846,7 @@
     }
 
     function render() {
-      ensureSelectedDate();
+      ensureUiState();
       applyTheme();
       renderToday();
       renderDetail();
