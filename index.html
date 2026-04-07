@@ -7,23 +7,19 @@
   <style>
     :root {
       --bg: #0f1220;
-      --bg-soft: #171b2d;
       --card: rgba(255,255,255,0.06);
-      --card-strong: rgba(255,255,255,0.1);
+      --line: rgba(255,255,255,0.08);
       --text: #f6f2ea;
       --muted: #b8b4ad;
-      --line: rgba(255,255,255,0.08);
       --gold: #e7c98a;
-      --gold-soft: rgba(231,201,138,0.18);
-      --accent: #d6b06d;
-      --success: #c9d9a3;
+      --gold-soft: rgba(231,201,138,0.14);
       --danger: #d88c8c;
       --shadow: 0 20px 50px rgba(0,0,0,0.25);
       --radius-xl: 24px;
       --radius-lg: 18px;
       --radius-md: 14px;
-      --max: 980px;
       --transition: 180ms ease;
+      --max: 1080px;
     }
 
     * {
@@ -33,12 +29,12 @@
     html, body {
       margin: 0;
       padding: 0;
+      min-height: 100%;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
       background:
         radial-gradient(circle at top, rgba(231,201,138,0.08), transparent 28%),
         linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%);
-      color: var(--text);
-      min-height: 100%;
     }
 
     body {
@@ -75,6 +71,99 @@
       color: var(--muted);
     }
 
+    .page {
+      display: none;
+      animation: fadeIn 220ms ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero,
+    .card,
+    .light-card,
+    .summary-card,
+    .setting-group,
+    .month-day {
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .card,
+    .setting-group,
+    .summary-card,
+    .light-card {
+      border-radius: var(--radius-xl);
+      padding: 22px;
+    }
+
+    .date-line {
+      color: var(--gold);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .hero h1,
+    .section-title {
+      margin: 0;
+      line-height: 1.15;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      margin-bottom: 10px;
+    }
+
+    .hero p,
+    .small-note,
+    .section-sub,
+    .setting-group p {
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .stack,
+    .summary-grid,
+    .lights-preview,
+    .light-list,
+    .month-grid,
+    .feelings,
+    .settings-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .label,
+    .eyebrow {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
     .btn {
       appearance: none;
       border: 1px solid var(--line);
@@ -93,18 +182,10 @@
       border-color: rgba(255,255,255,0.14);
     }
 
-    .btn:active {
-      transform: translateY(0);
-    }
-
     .btn-primary {
       background: linear-gradient(180deg, rgba(231,201,138,0.22), rgba(214,176,109,0.12));
       border-color: rgba(231,201,138,0.34);
       color: #fff5de;
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(180deg, rgba(231,201,138,0.28), rgba(214,176,109,0.18));
     }
 
     .btn-danger {
@@ -112,104 +193,11 @@
       color: #ffd7d7;
     }
 
-    .page {
-      display: none;
-      animation: fadeIn 220ms ease;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero,
-    .card,
-    .summary-card,
-    .light-card,
-    .setting-group,
-    .month-day {
-      background: var(--card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-    }
-
-    .hero {
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      margin-bottom: 18px;
-    }
-
-    .date-line {
-      color: var(--gold);
-      font-size: 0.95rem;
-      margin-bottom: 10px;
-    }
-
-    .hero h1,
-    .section-title {
-      margin: 0;
-      line-height: 1.15;
-    }
-
-    .hero h1 {
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      margin-bottom: 10px;
-    }
-
-    .hero p {
-      margin: 0;
-      color: var(--muted);
-      max-width: 62ch;
-      line-height: 1.65;
-    }
-
-    .stack {
-      display: grid;
-      gap: 18px;
-    }
-
-    .card {
-      border-radius: var(--radius-xl);
-      padding: 22px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .card-header .label {
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-bottom: 6px;
-    }
-
-    .card-header h2,
-    .card-header h3 {
-      margin: 0;
-    }
-
-    .progress-row {
+    .cta-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 12px;
-      margin-bottom: 18px;
       flex-wrap: wrap;
-    }
-
-    .progress-text {
-      font-size: 1rem;
-      color: var(--text);
     }
 
     .progress-bar {
@@ -219,6 +207,7 @@
       border-radius: 999px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.05);
+      margin-top: 14px;
     }
 
     .progress-fill {
@@ -229,19 +218,8 @@
       transition: width 220ms ease;
     }
 
-    .lights-preview,
-    .light-list,
-    .summary-grid,
-    .settings-grid,
-    .month-grid,
-    .feelings {
-      display: grid;
-      gap: 14px;
-    }
-
     .lights-preview {
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      margin-bottom: 18px;
     }
 
     .preview-light {
@@ -299,20 +277,6 @@
       line-height: 1.45;
     }
 
-    .cta-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-
-    .small-note {
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.6;
-    }
-
     .footer-row {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -320,24 +284,8 @@
       align-items: center;
     }
 
-    .footer-block .eyebrow {
-      color: var(--muted);
-      font-size: 0.86rem;
-      margin-bottom: 4px;
-    }
-
-    .footer-block .value {
-      font-size: 1rem;
-      color: var(--text);
-    }
-
     .light-list {
       grid-template-columns: 1fr;
-    }
-
-    .light-card {
-      border-radius: var(--radius-xl);
-      padding: 20px;
     }
 
     .light-head {
@@ -409,13 +357,6 @@
       margin-bottom: 8px;
     }
 
-    .section-sub {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.94rem;
-      margin: 0 0 14px;
-    }
-
     textarea,
     input,
     select {
@@ -474,17 +415,6 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .summary-card {
-      border-radius: var(--radius-xl);
-      padding: 18px;
-    }
-
-    .summary-card .eyebrow {
-      color: var(--muted);
-      font-size: 0.84rem;
-      margin-bottom: 8px;
-    }
-
     .summary-card .big {
       font-size: 1.35rem;
       font-weight: 700;
@@ -498,19 +428,28 @@
     .month-day {
       border-radius: 18px;
       padding: 12px 10px;
-      min-height: 100px;
+      min-height: 110px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 8px;
+      cursor: pointer;
+      transition: transform var(--transition), border-color var(--transition), background var(--transition);
     }
 
-    .month-day.muted {
-      opacity: 0.45;
+    .month-day:hover {
+      transform: translateY(-1px);
+      border-color: rgba(231,201,138,0.2);
+      background: rgba(255,255,255,0.08);
     }
 
     .month-day.today {
       border-color: rgba(231,201,138,0.36);
+    }
+
+    .month-day.selected {
+      border-color: rgba(231,201,138,0.54);
+      box-shadow: 0 0 0 1px rgba(231,201,138,0.12), var(--shadow);
     }
 
     .month-day .top {
@@ -550,9 +489,8 @@
       font-size: 0.78rem;
     }
 
-    .setting-group {
-      border-radius: var(--radius-xl);
-      padding: 20px;
+    .settings-grid {
+      grid-template-columns: 1fr;
     }
 
     .setting-group h3 {
@@ -560,15 +498,18 @@
       font-size: 1.05rem;
     }
 
-    .setting-group p {
-      margin: 0 0 14px;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.92rem;
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
     }
 
-    .settings-grid {
-      grid-template-columns: 1fr;
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
     }
 
     .inline-row {
@@ -613,20 +554,6 @@
       background: #fff7e5;
     }
 
-    .field-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 14px;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
     .pill-row {
       display: flex;
       flex-wrap: wrap;
@@ -649,19 +576,11 @@
       color: #fff2d0;
     }
 
-    .muted {
-      color: var(--muted);
-    }
-
-    .bottom-space {
-      height: 16px;
-    }
-
     .hidden {
       display: none !important;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 960px) {
       .lights-preview {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -696,10 +615,6 @@
       .footer-row {
         grid-template-columns: 1fr;
       }
-
-      .topbar {
-        align-items: flex-start;
-      }
     }
   </style>
 </head>
@@ -713,7 +628,7 @@
       <button class="btn" id="topSettingsBtn">Settings</button>
     </div>
 
-    <!-- TODAY PAGE -->
+    <!-- TODAY -->
     <section class="page active" id="page-today">
       <div class="hero">
         <div class="date-line" id="todayDateLine"></div>
@@ -729,28 +644,33 @@
           </div>
         </div>
 
-        <div class="progress-row">
-          <div class="progress-bar">
-            <div class="progress-fill" id="todayProgressFill"></div>
-          </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="todayProgressFill"></div>
         </div>
 
+        <div style="height:18px;"></div>
         <div class="lights-preview" id="todayLightsPreview"></div>
 
+        <div style="height:18px;"></div>
         <div class="cta-row">
           <button class="btn btn-primary" id="openTodayBtn"></button>
+          <button class="btn" id="quickMonthBtn">View this month</button>
         </div>
 
+        <div style="height:10px;"></div>
         <div class="small-note" id="todayReassurance"></div>
       </div>
 
       <div class="card">
         <div class="footer-row">
-          <div class="footer-block">
+          <div>
             <div class="eyebrow" id="streakLabel"></div>
-            <div class="value" id="streakValue"></div>
+            <div id="streakValue"></div>
           </div>
-          <button class="btn" id="viewMonthBtn"></button>
+          <div>
+            <div class="eyebrow">Selected date</div>
+            <div id="selectedDateSummary"></div>
+          </div>
         </div>
       </div>
 
@@ -759,11 +679,12 @@
       </div>
     </section>
 
-    <!-- DETAIL PAGE -->
+    <!-- DETAIL -->
     <section class="page" id="page-detail">
       <div class="hero">
         <div class="cta-row">
           <button class="btn" id="backToTodayBtn"></button>
+          <button class="btn" id="detailOpenMonthBtn">Month</button>
         </div>
         <div class="date-line" id="detailDateLine"></div>
         <h1 id="detailTitle"></h1>
@@ -782,7 +703,7 @@
 
       <div class="light-list" id="detailLightList"></div>
 
-      <div class="card section-block">
+      <div class="card section-block" id="reflectionCard">
         <h2 class="section-title" id="reflectionTitle"></h2>
         <p class="section-sub" id="reflectionHelper"></p>
         <textarea id="reflectionInput"></textarea>
@@ -800,7 +721,7 @@
       </div>
     </section>
 
-    <!-- MONTH PAGE -->
+    <!-- MONTH -->
     <section class="page" id="page-month">
       <div class="hero">
         <div class="cta-row">
@@ -823,7 +744,7 @@
       </div>
     </section>
 
-    <!-- SETTINGS PAGE -->
+    <!-- SETTINGS -->
     <section class="page" id="page-settings">
       <div class="hero">
         <div class="cta-row">
@@ -873,10 +794,8 @@
           <p id="remindersSub"></p>
 
           <div class="inline-row">
-            <div>
-              <strong id="enableRemindersLabel"></strong>
-            </div>
-            <div class="toggle" id="remindersToggle" role="button" aria-label="Toggle reminders"></div>
+            <div><strong id="enableRemindersLabel"></strong></div>
+            <div class="toggle" id="remindersToggle" role="button"></div>
           </div>
 
           <div class="field-grid">
@@ -943,25 +862,22 @@
         </div>
 
         <div class="setting-group">
-          <p id="settingsBottomLine" class="small-note" style="margin:0;"></p>
+          <p id="settingsBottomLine" class="small-note"></p>
         </div>
       </div>
     </section>
-
-    <div class="bottom-space"></div>
   </div>
 
   <script>
-    const STORAGE_KEY = "puretime-five-lights-v1";
+    const STORAGE_KEY = "puretime-five-lights-prayer-v2";
 
     const copy = {
       today: {
         title: "Today’s Five Lights",
-        progressLabel: "Today’s progress",
+        progressLabel: "Today’s prayer progress",
         openButton: "Open today",
         reassurance: "No pressure. You can return at your own pace.",
         streakLabel: "Gentle streak",
-        monthLink: "View this month",
         bottomQuotes: [
           "A small light can still change the tone of a day.",
           "You are allowed to begin again today.",
@@ -970,43 +886,43 @@
           "A soft beginning is still a beginning."
         ],
         subtitles: [
-          "Begin softly. One light is enough.",
-          "You do not need to do everything today. Just begin where you are.",
-          "A quiet space to return, reflect, and close the day gently.",
-          "No pressure. Just begin where you are.",
-          "You can return in small ways today."
+          "A gentle way to hold the five prayers of today.",
+          "Return softly, one prayer at a time.",
+          "A quiet space for prayer, reflection, and return.",
+          "You do not need to rush through the day.",
+          "Five lights, one day, at your own pace."
         ]
       },
       detail: {
         back: "Back to today",
-        title: "Move through today one light at a time.",
-        progressLabel: "Today’s lights",
-        support: "You can continue whenever it feels right.",
+        title: "A gentle page for this day",
+        progressLabel: "Prayer status",
+        support: "You can mark this day prayer by prayer.",
         reflectionTitle: "Reflection",
         reflectionHelper: "A few words are enough. This space is private.",
-        reflectionPlaceholder: "Write a few quiet words for today...",
-        feelingTitle: "How does today feel?",
+        reflectionPlaceholder: "Write a few quiet words for this day...",
+        feelingTitle: "How did this day feel?",
         saveSaving: "Saving...",
         saveSaved: "All changes saved",
         closingLines: [
-          "Nothing needs to be perfect for today to matter.",
-          "You can close the day gently from here.",
-          "Even a quiet ending is still an ending.",
-          "A pause is not the end of your day."
+          "Nothing needs to be perfect for this day to matter.",
+          "A quiet record is still a meaningful one.",
+          "Even after a missed prayer, this space stays gentle.",
+          "You can return to any day with softness."
         ],
-        notOpened: "Not yet opened",
-        litToday: "Lit today",
-        litAt: "Lit at"
+        notOpened: "Not marked yet",
+        litToday: "Marked",
+        litAt: "Marked at"
       },
       month: {
         title: "This month",
-        subtitle: "Not a scorecard — just a gentle record of return.",
-        gridTitle: "Daily lights",
-        summaryDaysReturned: "Days returned",
+        subtitle: "Not a scorecard — just a gentle record of prayer and return.",
+        gridTitle: "Daily prayer lights",
+        summaryDaysReturned: "Days with prayer",
         summaryStreak: "Current gentle streak",
-        summaryLights: "Lights lit",
+        summaryLights: "Prayers marked",
         low: "A quiet month still counts. You are still returning.",
-        mid: "You have made space for small returns throughout the month.",
+        mid: "You have made space for prayer in small ways throughout the month.",
         high: "Your month carries a steady rhythm of return.",
         back: "Back to today"
       },
@@ -1023,9 +939,9 @@
         remindersTitle: "Reminders",
         remindersSub: "A few quiet prompts during the day, if you want them.",
         enableRemindersLabel: "Enable gentle reminders",
-        morningLabel: "Morning check-in",
-        afternoonLabel: "Midday pause",
-        eveningLabel: "Evening close",
+        morningLabel: "Morning reminder",
+        afternoonLabel: "Midday reminder",
+        eveningLabel: "Evening reminder",
         toneLabel: "Reminder tone",
         browserNotificationsLabel: "Browser notifications",
         browserNotificationsSub: "Allow notifications if you’d like reminders to appear on this device.",
@@ -1038,18 +954,18 @@
         privacyTitle: "Privacy",
         privacySub: "Your entries are stored on this device. This space stays personal here.",
         dataTitle: "Your data",
-        dataSub: "This will remove your saved lights, reflections, and settings from this device.",
+        dataSub: "This will remove your saved prayer records, reflections, and settings from this device.",
         clearDataBtn: "Clear all records",
         bottomLine: "Small adjustments can make this space feel more like yours."
       },
       tones: ["Gentle", "Neutral", "Minimal"],
       feelings: ["Calm", "Tired", "Full", "Heavy", "Hopeful", "Grateful"],
       lights: [
-        { id: 0, name: "Begin", desc: "Start the day with intention." },
-        { id: 1, name: "Pause", desc: "Take a brief moment to return." },
-        { id: 2, name: "Prayer", desc: "Make space for devotion in your day." },
-        { id: 3, name: "Reflect", desc: "Notice what is present in your heart." },
-        { id: 4, name: "Close", desc: "End the day with gentleness." }
+        { id: 0, name: "Fajr", desc: "The first prayer light of the day." },
+        { id: 1, name: "Dhuhr", desc: "A midday return in the middle of the day." },
+        { id: 2, name: "Asr", desc: "A late-day pause before the evening comes in." },
+        { id: 3, name: "Maghrib", desc: "A prayer light at sunset." },
+        { id: 4, name: "Isha", desc: "A quiet prayer to close the day." }
       ]
     };
 
@@ -1070,6 +986,9 @@
           showStreak: true,
           showMonthSummary: true
         },
+        ui: {
+          selectedDate: todayKey()
+        },
         days: {},
         stats: {
           bestStreak: 0,
@@ -1083,12 +1002,14 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return createDefaultState();
         const parsed = JSON.parse(raw);
+        const defaults = createDefaultState();
         return {
-          ...createDefaultState(),
+          ...defaults,
           ...parsed,
-          profile: { ...createDefaultState().profile, ...(parsed.profile || {}) },
-          settings: { ...createDefaultState().settings, ...(parsed.settings || {}) },
-          stats: { ...createDefaultState().stats, ...(parsed.stats || {}) },
+          profile: { ...defaults.profile, ...(parsed.profile || {}) },
+          settings: { ...defaults.settings, ...(parsed.settings || {}) },
+          ui: { ...defaults.ui, ...(parsed.ui || {}) },
+          stats: { ...defaults.stats, ...(parsed.stats || {}) },
           days: parsed.days || {}
         };
       } catch (error) {
@@ -1099,6 +1020,7 @@
 
     let state = loadState();
     let currentPage = "today";
+    let previousPageBeforeSettings = "today";
     let reflectionSaveTimer = null;
     let saveStatusTimer = null;
 
@@ -1120,13 +1042,15 @@
       todayProgressFill: document.getElementById("todayProgressFill"),
       todayLightsPreview: document.getElementById("todayLightsPreview"),
       openTodayBtn: document.getElementById("openTodayBtn"),
+      quickMonthBtn: document.getElementById("quickMonthBtn"),
       todayReassurance: document.getElementById("todayReassurance"),
       streakLabel: document.getElementById("streakLabel"),
       streakValue: document.getElementById("streakValue"),
-      viewMonthBtn: document.getElementById("viewMonthBtn"),
+      selectedDateSummary: document.getElementById("selectedDateSummary"),
       todayBottomQuote: document.getElementById("todayBottomQuote"),
 
       backToTodayBtn: document.getElementById("backToTodayBtn"),
+      detailOpenMonthBtn: document.getElementById("detailOpenMonthBtn"),
       detailDateLine: document.getElementById("detailDateLine"),
       detailTitle: document.getElementById("detailTitle"),
       detailSubtitle: document.getElementById("detailSubtitle"),
@@ -1134,6 +1058,7 @@
       detailProgressText: document.getElementById("detailProgressText"),
       detailSupport: document.getElementById("detailSupport"),
       detailLightList: document.getElementById("detailLightList"),
+      reflectionCard: document.getElementById("reflectionCard"),
       reflectionTitle: document.getElementById("reflectionTitle"),
       reflectionHelper: document.getElementById("reflectionHelper"),
       reflectionInput: document.getElementById("reflectionInput"),
@@ -1204,7 +1129,17 @@
       return `${y}-${m}-${d}`;
     }
 
-    function getDayData(key = todayKey()) {
+    function selectedDateKey() {
+      return state.ui.selectedDate || todayKey();
+    }
+
+    function ensureSelectedDate() {
+      if (!state.ui.selectedDate) {
+        state.ui.selectedDate = todayKey();
+      }
+    }
+
+    function getDayData(key = selectedDateKey()) {
       if (!state.days[key]) {
         state.days[key] = {
           completed: [false, false, false, false, false],
@@ -1217,12 +1152,18 @@
       return state.days[key];
     }
 
+    function completedCount(dayData) {
+      return dayData.completed.filter(Boolean).length;
+    }
+
+    function progressPercent(dayData) {
+      return (completedCount(dayData) / copy.lights.length) * 100;
+    }
+
     function saveState(showStatus = false) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        if (showStatus) {
-          setSaveStatus(copy.detail.saveSaved);
-        }
+        if (showStatus) setSaveStatus(copy.detail.saveSaved);
       } catch (error) {
         console.error("Failed to save:", error);
       }
@@ -1244,6 +1185,15 @@
       }).format(date);
     }
 
+    function formatLongDateWithYear(date = new Date()) {
+      return new Intl.DateTimeFormat("en-GB", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }).format(date);
+    }
+
     function formatMonthYear(date = new Date()) {
       return new Intl.DateTimeFormat("en-GB", {
         month: "long",
@@ -1258,12 +1208,32 @@
       }).format(date);
     }
 
-    function completedCount(dayData) {
-      return dayData.completed.filter(Boolean).length;
+    function randomFrom(arr, seedKey = todayKey()) {
+      let hash = 0;
+      for (let i = 0; i < seedKey.length; i++) {
+        hash = (hash << 5) - hash + seedKey.charCodeAt(i);
+        hash |= 0;
+      }
+      return arr[Math.abs(hash) % arr.length];
     }
 
-    function progressPercent(dayData) {
-      return (completedCount(dayData) / copy.lights.length) * 100;
+    function showPage(name) {
+      if (name !== "settings") {
+        previousPageBeforeSettings = name;
+      }
+      currentPage = name;
+      Object.entries(els.pages).forEach(([key, page]) => {
+        page.classList.toggle("active", key === name);
+      });
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function selectDate(key, goToDetail = false) {
+      state.ui.selectedDate = key;
+      saveState();
+      render();
+      if (goToDetail) showPage("detail");
     }
 
     function daysReturnedInMonth(baseDate = new Date()) {
@@ -1312,76 +1282,57 @@
       }
     }
 
-    function randomFrom(arr, seedKey = todayKey()) {
-      let hash = 0;
-      for (let i = 0; i < seedKey.length; i++) {
-        hash = (hash << 5) - hash + seedKey.charCodeAt(i);
-        hash |= 0;
-      }
-      return arr[Math.abs(hash) % arr.length];
-    }
-
-    function showPage(name) {
-      currentPage = name;
-      Object.entries(els.pages).forEach(([key, page]) => {
-        page.classList.toggle("active", key === name);
-      });
-      render();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    function setToggle(el, active) {
+      el.classList.toggle("active", !!active);
     }
 
     function toggleBooleanSetting(path) {
       state.settings[path] = !state.settings[path];
       saveState();
-      renderSettings();
-      renderToday();
+      render();
     }
 
     function applyTheme() {
       const theme = state.profile.theme || "dark";
       if (theme === "light") {
-        document.documentElement.style.setProperty("--bg", "#f4efe7");
-        document.documentElement.style.setProperty("--bg-soft", "#fbf7f0");
-        document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.76)");
-        document.documentElement.style.setProperty("--card-strong", "rgba(255,255,255,0.95)");
+        document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.78)");
+        document.documentElement.style.setProperty("--line", "rgba(27,23,19,0.08)");
         document.documentElement.style.setProperty("--text", "#1d1b19");
         document.documentElement.style.setProperty("--muted", "#6f685f");
-        document.documentElement.style.setProperty("--line", "rgba(27,23,19,0.08)");
         document.body.style.background =
           "radial-gradient(circle at top, rgba(214,176,109,0.12), transparent 28%), linear-gradient(180deg, #faf6ef 0%, #f4efe7 100%)";
       } else {
-        document.documentElement.style.setProperty("--bg", "#0f1220");
-        document.documentElement.style.setProperty("--bg-soft", "#171b2d");
         document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.06)");
-        document.documentElement.style.setProperty("--card-strong", "rgba(255,255,255,0.1)");
+        document.documentElement.style.setProperty("--line", "rgba(255,255,255,0.08)");
         document.documentElement.style.setProperty("--text", "#f6f2ea");
         document.documentElement.style.setProperty("--muted", "#b8b4ad");
-        document.documentElement.style.setProperty("--line", "rgba(255,255,255,0.08)");
         document.body.style.background =
           "radial-gradient(circle at top, rgba(231,201,138,0.08), transparent 28%), linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%)";
       }
     }
 
     function renderToday() {
-      const key = todayKey();
-      const day = getDayData(key);
+      const today = todayKey();
+      const day = getDayData(today);
       const count = completedCount(day);
 
-      els.todayDateLine.textContent = formatLongDate(new Date(key + "T00:00:00"));
+      els.todayDateLine.textContent = formatLongDate(new Date(today + "T00:00:00"));
       els.todayTitle.textContent = copy.today.title;
       els.todaySubtitle.textContent = randomFrom(copy.today.subtitles);
       els.todayProgressLabel.textContent = copy.today.progressLabel;
-      els.todayProgressText.textContent = `${count} of 5 lights lit`;
+      els.todayProgressText.textContent = `${count} of 5 prayers marked`;
       els.todayProgressFill.style.width = `${progressPercent(day)}%`;
       els.openTodayBtn.textContent = copy.today.openButton;
       els.todayReassurance.textContent = copy.today.reassurance;
       els.streakLabel.textContent = copy.today.streakLabel;
-      els.viewMonthBtn.textContent = copy.today.monthLink;
-      els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, key + "-quote");
+      els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, today + "-quote");
 
       const streak = getCurrentStreak();
       els.streakValue.textContent = `${streak} day${streak === 1 ? "" : "s"} of return`;
       els.streakLabel.parentElement.parentElement.parentElement.classList.toggle("hidden", !state.settings.showStreak);
+
+      const selected = selectedDateKey();
+      els.selectedDateSummary.textContent = formatLongDateWithYear(new Date(selected + "T00:00:00"));
 
       els.todayLightsPreview.innerHTML = "";
       copy.lights.forEach((light, index) => {
@@ -1398,17 +1349,19 @@
     }
 
     function renderDetail() {
-      const key = todayKey();
+      const key = selectedDateKey();
       const day = getDayData(key);
       const count = completedCount(day);
+      const isToday = key === todayKey();
 
       els.backToTodayBtn.textContent = copy.detail.back;
-      els.detailDateLine.textContent = formatLongDate(new Date(key + "T00:00:00"));
-      els.detailTitle.textContent = copy.today.title;
+      els.detailDateLine.textContent = formatLongDateWithYear(new Date(key + "T00:00:00"));
+      els.detailTitle.textContent = isToday ? copy.today.title : "Selected day";
       els.detailSubtitle.textContent = copy.detail.title;
       els.detailProgressLabel.textContent = copy.detail.progressLabel;
-      els.detailProgressText.textContent = `${count} of 5 lit`;
+      els.detailProgressText.textContent = `${count} of 5 marked`;
       els.detailSupport.textContent = copy.detail.support;
+      els.detailOpenMonthBtn.textContent = "Month";
 
       els.detailLightList.innerHTML = "";
       copy.lights.forEach((light, index) => {
@@ -1426,7 +1379,7 @@
               </div>
             </div>
             <button class="btn ${lit ? "" : "btn-primary"}" data-light-index="${index}">
-              ${lit ? "Lit" : "Light this"}
+              ${lit ? "Marked" : "Mark prayer"}
             </button>
           </div>
           <div class="light-meta">
@@ -1443,17 +1396,17 @@
       els.reflectionHelper.textContent = copy.detail.reflectionHelper;
       els.reflectionInput.placeholder = copy.detail.reflectionPlaceholder;
       els.reflectionInput.value = day.reflection || "";
-      els.reflectionInput.parentElement.classList.toggle("hidden", !state.settings.showReflection);
+      els.reflectionCard.classList.toggle("hidden", !state.settings.showReflection);
 
       els.feelingTitle.textContent = copy.detail.feelingTitle;
       els.feelingButtons.innerHTML = "";
       copy.feelings.forEach(feeling => {
         const btn = document.createElement("button");
         btn.className = `feeling-btn ${day.feeling === feeling ? "active" : ""}`;
-        btn.textContent = feeling;
         btn.type = "button";
+        btn.textContent = feeling;
         btn.addEventListener("click", () => {
-          const current = getDayData();
+          const current = getDayData(key);
           current.feeling = current.feeling === feeling ? "" : feeling;
           current.lastUpdated = new Date().toISOString();
           saveState(true);
@@ -1469,22 +1422,27 @@
       Array.from(els.detailLightList.querySelectorAll("[data-light-index]")).forEach(btn => {
         btn.addEventListener("click", () => {
           const index = Number(btn.dataset.lightIndex);
-          toggleLight(index);
+          toggleLightForDate(key, index);
         });
       });
     }
 
     function renderMonth() {
-      const now = new Date();
-      els.monthBackBtn.textContent = copy.month.back;
-      els.monthDateLine.textContent = formatMonthYear(now);
+      const selected = selectedDateKey();
+      const selectedDate = new Date(selected + "T00:00:00");
+      const monthDate = selectedDate;
+      const year = monthDate.getFullYear();
+      const month = monthDate.getMonth();
+
+      els.monthBackBtn.textContent = currentPage === "month" ? "Back to detail" : copy.month.back;
+      els.monthDateLine.textContent = formatMonthYear(monthDate);
       els.monthTitle.textContent = copy.month.title;
       els.monthSubtitle.textContent = copy.month.subtitle;
       els.monthGridTitle.textContent = copy.month.gridTitle;
 
-      const returned = daysReturnedInMonth(now);
+      const returned = daysReturnedInMonth(monthDate);
       const streak = getCurrentStreak();
-      const lit = lightsLitInMonth(now);
+      const lit = lightsLitInMonth(monthDate);
 
       els.monthSummaryGrid.innerHTML = `
         <div class="summary-card">
@@ -1500,14 +1458,9 @@
           <div class="big">${lit} this month</div>
         </div>
       `;
-
       els.monthSummaryGrid.classList.toggle("hidden", !state.settings.showMonthSummary);
 
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const firstDay = new Date(year, month, 1);
       const daysInMonth = new Date(year, month + 1, 0).getDate();
-
       els.monthGrid.innerHTML = "";
 
       for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
@@ -1516,9 +1469,10 @@
         const dayData = state.days[key];
         const count = dayData ? completedCount(dayData) : 0;
         const isToday = key === todayKey();
+        const isSelected = key === selected;
 
         const cell = document.createElement("div");
-        cell.className = `month-day ${isToday ? "today" : ""}`;
+        cell.className = `month-day ${isToday ? "today" : ""} ${isSelected ? "selected" : ""}`;
         const miniLights = Array.from({ length: 5 }).map((_, i) => {
           const litClass = dayData && dayData.completed[i] ? "lit" : "";
           return `<span class="${litClass}"></span>`;
@@ -1530,8 +1484,13 @@
             <div class="small">${count}/5</div>
           </div>
           <div class="mini-lights">${miniLights}</div>
-          <div class="small">${count > 0 ? "Returned" : "Quiet day"}</div>
+          <div class="small">${count > 0 ? "Prayer marked" : "Quiet day"}</div>
         `;
+
+        cell.addEventListener("click", () => {
+          selectDate(key, true);
+        });
+
         els.monthGrid.appendChild(cell);
       }
 
@@ -1541,6 +1500,22 @@
         els.monthSummaryLine.textContent = copy.month.mid;
       } else {
         els.monthSummaryLine.textContent = copy.month.high;
+      }
+    }
+
+    function updateNotificationStatus() {
+      if (!("Notification" in window)) {
+        els.notificationStatusText.textContent = "Notifications are not supported in this browser.";
+        els.enableNotificationsBtn.disabled = true;
+        return;
+      }
+      els.enableNotificationsBtn.disabled = false;
+      if (Notification.permission === "granted") {
+        els.notificationStatusText.textContent = "Notifications enabled";
+      } else if (Notification.permission === "denied") {
+        els.notificationStatusText.textContent = "Notifications blocked in browser settings";
+      } else {
+        els.notificationStatusText.textContent = "Notifications not enabled yet";
       }
     }
 
@@ -1592,8 +1567,8 @@
       copy.tones.forEach(tone => {
         const pill = document.createElement("button");
         pill.className = `pill ${state.settings.tone === tone ? "active" : ""}`;
-        pill.textContent = tone;
         pill.type = "button";
+        pill.textContent = tone;
         pill.addEventListener("click", () => {
           state.settings.tone = tone;
           saveState();
@@ -1605,29 +1580,8 @@
       updateNotificationStatus();
     }
 
-    function setToggle(el, active) {
-      el.classList.toggle("active", !!active);
-    }
-
-    function updateNotificationStatus() {
-      if (!("Notification" in window)) {
-        els.notificationStatusText.textContent = "Notifications are not supported in this browser.";
-        els.enableNotificationsBtn.disabled = true;
-        return;
-      }
-
-      els.enableNotificationsBtn.disabled = false;
-      if (Notification.permission === "granted") {
-        els.notificationStatusText.textContent = "Notifications enabled";
-      } else if (Notification.permission === "denied") {
-        els.notificationStatusText.textContent = "Notifications blocked in browser settings";
-      } else {
-        els.notificationStatusText.textContent = "Notifications not enabled yet";
-      }
-    }
-
-    function toggleLight(index) {
-      const day = getDayData();
+    function toggleLightForDate(key, index) {
+      const day = getDayData(key);
       day.completed[index] = !day.completed[index];
       if (day.completed[index]) {
         day.completedAt[index] = formatTime(new Date());
@@ -1638,29 +1592,36 @@
       state.stats.lastVisitDate = todayKey();
       updateBestStreak();
       saveState(true);
-      renderToday();
-      renderDetail();
-      renderMonth();
-    }
-
-    function render() {
-      applyTheme();
-      renderToday();
-      renderDetail();
-      renderMonth();
-      renderSettings();
+      render();
     }
 
     function bindEvents() {
-      els.openTodayBtn.addEventListener("click", () => showPage("detail"));
-      els.viewMonthBtn.addEventListener("click", () => showPage("month"));
+      els.openTodayBtn.addEventListener("click", () => {
+        selectDate(todayKey(), false);
+        showPage("detail");
+      });
+
+      els.quickMonthBtn.addEventListener("click", () => {
+        selectDate(todayKey(), false);
+        showPage("month");
+      });
+
       els.backToTodayBtn.addEventListener("click", () => showPage("today"));
-      els.monthBackBtn.addEventListener("click", () => showPage("today"));
-      els.topSettingsBtn.addEventListener("click", () => showPage("settings"));
-      els.settingsBackBtn.addEventListener("click", () => showPage("today"));
+      els.detailOpenMonthBtn.addEventListener("click", () => showPage("month"));
+      els.monthBackBtn.addEventListener("click", () => showPage("detail"));
+
+      els.topSettingsBtn.addEventListener("click", () => {
+        previousPageBeforeSettings = currentPage;
+        showPage("settings");
+      });
+
+      els.settingsBackBtn.addEventListener("click", () => {
+        showPage(previousPageBeforeSettings || "today");
+      });
 
       els.reflectionInput.addEventListener("input", (event) => {
-        const day = getDayData();
+        const key = selectedDateKey();
+        const day = getDayData(key);
         day.reflection = event.target.value;
         day.lastUpdated = new Date().toISOString();
         els.saveStatusText.textContent = copy.detail.saveSaving;
@@ -1702,23 +1663,10 @@
         saveState();
       });
 
-      els.remindersToggle.addEventListener("click", () => {
-        toggleBooleanSetting("remindersEnabled");
-      });
-
-      els.showReflectionToggle.addEventListener("click", () => {
-        toggleBooleanSetting("showReflection");
-        renderDetail();
-      });
-
-      els.showStreakToggle.addEventListener("click", () => {
-        toggleBooleanSetting("showStreak");
-      });
-
-      els.showMonthSummaryToggle.addEventListener("click", () => {
-        toggleBooleanSetting("showMonthSummary");
-        renderMonth();
-      });
+      els.remindersToggle.addEventListener("click", () => toggleBooleanSetting("remindersEnabled"));
+      els.showReflectionToggle.addEventListener("click", () => toggleBooleanSetting("showReflection"));
+      els.showStreakToggle.addEventListener("click", () => toggleBooleanSetting("showStreak"));
+      els.showMonthSummaryToggle.addEventListener("click", () => toggleBooleanSetting("showMonthSummary"));
 
       els.enableNotificationsBtn.addEventListener("click", async () => {
         if (!("Notification" in window)) return;
@@ -1740,7 +1688,7 @@
       });
 
       els.clearDataBtn.addEventListener("click", () => {
-        const ok = confirm("This will remove your saved lights, reflections, and settings from this device.");
+        const ok = confirm("This will remove your saved prayer records, reflections, and settings from this device.");
         if (!ok) return;
         state = createDefaultState();
         saveState();
@@ -1751,6 +1699,15 @@
       window.addEventListener("beforeunload", () => {
         saveState();
       });
+    }
+
+    function render() {
+      ensureSelectedDate();
+      applyTheme();
+      renderToday();
+      renderDetail();
+      renderMonth();
+      renderSettings();
     }
 
     bindEvents();
