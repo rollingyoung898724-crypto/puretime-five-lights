@@ -5,945 +5,1756 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PureTime Five Lights</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
+    :root {
+      --bg: #0f1220;
+      --bg-soft: #171b2d;
+      --card: rgba(255,255,255,0.06);
+      --card-strong: rgba(255,255,255,0.1);
+      --text: #f6f2ea;
+      --muted: #b8b4ad;
+      --line: rgba(255,255,255,0.08);
+      --gold: #e7c98a;
+      --gold-soft: rgba(231,201,138,0.18);
+      --accent: #d6b06d;
+      --success: #c9d9a3;
+      --danger: #d88c8c;
+      --shadow: 0 20px 50px rgba(0,0,0,0.25);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --max: 980px;
+      --transition: 180ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0a1022;
-      color: #f8fafc;
-      overflow-x: hidden;
-    }
-    .bg-layer-1 {
-      position: fixed; inset: 0;
+      padding: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top, rgba(248,231,181,0.14), transparent 30%),
-        radial-gradient(circle at bottom left, rgba(94,71,123,0.18), transparent 35%),
-        linear-gradient(180deg, #0b1024 0%, #15142b 55%, #0a1022 100%);
-      z-index: 0;
+        radial-gradient(circle at top, rgba(231,201,138,0.08), transparent 28%),
+        linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%);
+      color: var(--text);
+      min-height: 100%;
     }
-    .bg-layer-2 {
-      position: fixed; inset: 0; opacity: 0.28;
-      background-image:
-        radial-gradient(circle at 20% 25%, rgba(255,255,255,0.7) 1px, transparent 1px),
-        radial-gradient(circle at 75% 15%, rgba(255,255,255,0.6) 1px, transparent 1px),
-        radial-gradient(circle at 60% 75%, rgba(255,255,255,0.6) 1px, transparent 1px),
-        radial-gradient(circle at 30% 65%, rgba(255,255,255,0.55) 1px, transparent 1px);
-      background-size: 240px 240px; z-index: 0;
+
+    body {
+      padding: 24px 16px 60px;
     }
+
     .app {
-      position: relative; z-index: 1; max-width: 430px; margin: 0 auto;
-      min-height: 100vh; padding: 24px 16px 110px;
+      max-width: var(--max);
+      margin: 0 auto;
     }
+
     .topbar {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
     }
-    .brand-small {
-      font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: #bfae87;
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
-    .brand-title { margin-top: 6px; font-size: 18px; color: #fff8ee; font-weight: 600; }
-    .top-actions { display: flex; gap: 8px; align-items: center; }
-    .mode-pill, .icon-pill {
-      border: 1px solid rgba(248,231,181,0.1);
-      background: rgba(248,231,181,0.08);
-      color: #ebdcb8;
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-sub {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 12px 16px;
       border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 12px;
-    }
-    .icon-pill {
       cursor: pointer;
-      min-width: 40px;
-      text-align: center;
-      padding: 8px 10px;
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), opacity var(--transition);
+      font-size: 0.95rem;
     }
-    .card {
-      position: relative; overflow: hidden;
-      border: 1px solid rgba(233,217,175,0.12);
-      background: rgba(15,18,34,0.74);
-      border-radius: 30px;
-      padding: 20px;
-      box-shadow: 0 24px 70px rgba(0,0,0,0.42);
-      backdrop-filter: blur(20px);
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.14);
     }
-    .card::before {
-      content: ""; position: absolute; inset: 0;
-      background:
-        radial-gradient(circle at top right, rgba(248,231,181,0.12), transparent 28%),
-        radial-gradient(circle at bottom left, rgba(196,168,112,0.10), transparent 24%);
-      pointer-events: none;
+
+    .btn:active {
+      transform: translateY(0);
     }
-    .card::after {
-      content: ""; position: absolute; inset: 0; opacity: 0.08;
-      background-image:
-        linear-gradient(45deg, rgba(248,231,181,0.9) 1px, transparent 1px),
-        linear-gradient(-45deg, rgba(248,231,181,0.9) 1px, transparent 1px);
-      background-size: 28px 28px; pointer-events: none;
+
+    .btn-primary {
+      background: linear-gradient(180deg, rgba(231,201,138,0.22), rgba(214,176,109,0.12));
+      border-color: rgba(231,201,138,0.34);
+      color: #fff5de;
     }
-    .card-content { position: relative; z-index: 1; }
-    .section-label {
-      font-size: 11px; text-transform: uppercase; letter-spacing: 0.28em; color: #bfae87; margin: 0;
+
+    .btn-primary:hover {
+      background: linear-gradient(180deg, rgba(231,201,138,0.28), rgba(214,176,109,0.18));
     }
+
+    .btn-danger {
+      border-color: rgba(216,140,140,0.35);
+      color: #ffd7d7;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 220ms ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero,
+    .card,
+    .summary-card,
+    .light-card,
+    .setting-group,
+    .month-day {
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .date-line {
+      color: var(--gold);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .hero h1,
     .section-title {
-      font-size: 32px; margin: 10px 0 0; font-weight: 700; color: #fff8ee;
+      margin: 0;
+      line-height: 1.15;
     }
-    .section-subtitle {
-      font-size: 14px; color: #d9cfd7; margin: 10px 0 0; line-height: 1.55;
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      margin-bottom: 10px;
     }
-    .header-row {
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px;
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 62ch;
+      line-height: 1.65;
     }
-    .moon-badge {
-      position: relative; width: 40px; height: 40px; border-radius: 999px;
-      background: rgba(248,231,181,0.15); border: 1px solid rgba(248,231,181,0.15); flex-shrink: 0;
+
+    .stack {
+      display: grid;
+      gap: 18px;
     }
-    .moon-badge .moon-main {
-      position: absolute; left: 8px; top: 6px; width: 28px; height: 28px; border-radius: 999px; background: #f8e7b5; opacity: 0.92;
+
+    .card {
+      border-radius: var(--radius-xl);
+      padding: 22px;
     }
-    .moon-badge .moon-cut {
-      position: absolute; left: 16px; top: 6px; width: 28px; height: 28px; border-radius: 999px; background: #161a30;
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
     }
-    .stars-list, .sheet-stars, .settings-options { display: grid; gap: 12px; }
-    .star-btn, .setting-option {
+
+    .card-header .label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+    }
+
+    .card-header h2,
+    .card-header h3 {
+      margin: 0;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .progress-text {
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .progress-bar {
       width: 100%;
-      border: 1px solid rgba(248,231,181,0.10);
-      background: rgba(29,34,61,0.66);
-      border-radius: 22px;
-      padding: 16px;
-      display: flex; justify-content: space-between; align-items: center;
-      color: white; cursor: pointer; text-align: left;
-    }
-    .star-btn:active, .setting-option:active { transform: scale(0.99); }
-    .star-name, .setting-title { font-size: 14px; font-weight: 600; margin: 0; color: #fff8ee; }
-    .star-hint, .setting-hint { font-size: 12px; color: #b9adba; margin: 6px 0 0; }
-    .star-icon-wrap {
-      width: 24px; height: 24px; transition: all 0.25s ease; opacity: 0.8;
-    }
-    .star-icon-wrap.active, .today-star.active {
-      opacity: 1; filter: drop-shadow(0 0 10px rgba(248,231,181,0.78));
-    }
-    .radio-pill {
-      border: 1px solid rgba(248,231,181,0.16);
-      color: #e8d9b7;
-      background: rgba(248,231,181,0.06);
+      height: 10px;
+      background: rgba(255,255,255,0.06);
       border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 12px;
-      white-space: nowrap;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
     }
-    .radio-pill.active {
-      background: rgba(248,231,181,0.18);
-      color: #fff7e6;
-      box-shadow: inset 0 0 0 1px rgba(248,231,181,0.12);
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(231,201,138,0.5), rgba(231,201,138,0.95));
+      border-radius: 999px;
+      transition: width 220ms ease;
     }
-    .node-card {
-      margin-top: 28px;
-      border: 1px solid rgba(248,231,181,0.10);
-      background: rgba(24,28,51,0.78);
-      border-radius: 28px;
+
+    .lights-preview,
+    .light-list,
+    .summary-grid,
+    .settings-grid,
+    .month-grid,
+    .feelings {
+      display: grid;
+      gap: 14px;
+    }
+
+    .lights-preview {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .preview-light {
+      border-radius: var(--radius-lg);
+      padding: 14px 10px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .preview-orb {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      place-items: center;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-orb::after {
+      content: "";
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      transition: all var(--transition);
+    }
+
+    .preview-light.lit .preview-orb,
+    .light-status-dot.lit {
+      background: radial-gradient(circle at 30% 30%, rgba(255,245,222,0.85), rgba(231,201,138,0.42));
+      border-color: rgba(231,201,138,0.45);
+      box-shadow: 0 0 24px rgba(231,201,138,0.2);
+    }
+
+    .preview-light.lit .preview-orb::after {
+      background: rgba(255,248,234,0.92);
+      box-shadow: 0 0 18px rgba(255,248,234,0.5);
+    }
+
+    .preview-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .preview-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .cta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .footer-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .footer-block .eyebrow {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-bottom: 4px;
+    }
+
+    .footer-block .value {
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .light-list {
+      grid-template-columns: 1fr;
+    }
+
+    .light-card {
+      border-radius: var(--radius-xl);
       padding: 20px;
     }
-    .node-head {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 16px; font-size: 14px; color: #d9cfd7;
-    }
-    .node-head span:last-child { color: #f0e7d4; }
-    .today-node-wrap {
-      display: flex; justify-content: center; align-items: center; padding: 24px 0;
-    }
-    .today-node {
-      position: relative; width: 176px; height: 176px;
-      display: flex; justify-content: center; align-items: center;
-    }
-    .today-node-glow {
-      position: absolute; inset: 0; border-radius: 999px;
-      background: radial-gradient(circle, rgba(248,231,181,0.16), transparent 62%);
-      filter: blur(24px);
-    }
-    .today-star {
-      position: absolute; width: 20px; height: 20px; opacity: 0.8; transition: all 0.25s ease;
-    }
-    .star-pos-1 { top: 10px; left: 50%; transform: translateX(-50%); }
-    .star-pos-2 { top: 42px; right: 18px; }
-    .star-pos-3 { bottom: 20px; right: 34px; }
-    .star-pos-4 { bottom: 20px; left: 34px; }
-    .star-pos-5 { top: 42px; left: 18px; }
 
-    .today-moon-shell {
-      position: relative; width: 112px; height: 112px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.10);
-      display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
+    .light-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
     }
-    .today-moon-shell.level-0 { background: rgba(255,255,255,0.08); }
-    .today-moon-shell.level-1, .today-moon-shell.level-2, .today-moon-shell.level-3, .today-moon-shell.level-4 {
-      background: rgba(248,231,181,0.14); box-shadow: 0 0 24px rgba(248,231,181,0.18);
+
+    .light-head-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
     }
-    .today-moon-shell.level-5 {
-      background: rgba(248,231,181,0.22); box-shadow: 0 0 38px rgba(248,231,181,0.30);
+
+    .light-status-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.06);
+      flex-shrink: 0;
     }
-    .today-moon-core { border-radius: 999px; transition: all 0.3s ease; }
-    .today-moon-core.level-0 { width: 56px; height: 56px; background: rgba(255,255,255,0.08); }
-    .today-moon-core.level-1 { width: 64px; height: 64px; background: rgba(227,197,125,0.74); }
-    .today-moon-core.level-2 { width: 64px; height: 64px; background: rgba(239,210,143,0.80); }
-    .today-moon-core.level-3 { width: 68px; height: 68px; background: rgba(244,223,168,0.86); }
-    .today-moon-core.level-4 { width: 70px; height: 70px; background: rgba(248,231,181,0.90); }
-    .today-moon-core.level-5 {
-      width: 74px; height: 74px; background: #fff3d1; box-shadow: 0 0 18px rgba(248,231,181,0.38);
+
+    .light-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 4px;
     }
-    .center-text { text-align: center; color: #e7dcc4; font-size: 14px; margin: 0; }
-    .primary-btn {
-      width: 100%; margin-top: 24px;
-      border: 1px solid rgba(248,231,181,0.14);
-      background: rgba(248,231,181,0.08);
-      color: #fff7e6;
-      border-radius: 999px;
-      padding: 16px;
-      font-size: 14px; font-weight: 600; cursor: pointer;
+
+    .light-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      margin: 0;
     }
-    .chips {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;
+
+    .light-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
     }
-    .chip {
-      border: 1px solid rgba(248,231,181,0.10);
-      background: rgba(248,231,181,0.08);
+
+    .meta-chip {
       border-radius: 999px;
       padding: 8px 12px;
-      font-size: 12px;
-      color: #f1e8d5;
+      font-size: 0.84rem;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid var(--line);
+      color: var(--muted);
     }
-    .path-list {
-      position: relative; margin-top: 24px; padding-left: 10px; max-height: 48vh; overflow: auto; padding-right: 4px;
-    }
-    .path-list::before {
-      content: "";
-      position: absolute; left: 16px; top: 12px; bottom: 12px; width: 1px;
-      background: linear-gradient(to bottom, rgba(248,231,181,0.10), rgba(248,231,181,0.35), transparent);
-    }
-    .path-item { position: relative; display: flex; gap: 16px; margin-bottom: 18px; }
-    .path-click { all: unset; display: flex; gap: 16px; width: 100%; cursor: pointer; }
-    .path-node {
-      width: 14px; height: 14px; margin-top: 8px; border-radius: 999px;
-      position: relative; z-index: 1; background: rgba(255,255,255,0.10); flex-shrink: 0;
-    }
-    .path-node.l1, .path-node.l2 { background: #d8b46d; box-shadow: 0 0 14px rgba(216,180,109,0.28); }
-    .path-node.l3, .path-node.l4 { background: #efd28f; box-shadow: 0 0 18px rgba(239,210,143,0.48); }
-    .path-node.l5 { background: #f8e7b5; box-shadow: 0 0 22px rgba(248,231,181,0.68); }
-    .path-node.today { box-shadow: 0 0 0 5px rgba(248,231,181,0.12); }
-    .path-card {
-      flex: 1; border: 1px solid rgba(248,231,181,0.10); background: rgba(24,28,51,0.72);
-      border-radius: 22px; padding: 14px 16px; transition: background 0.2s ease, transform 0.2s ease;
-    }
-    .path-click:active .path-card {
-      transform: scale(0.995); background: rgba(30,35,62,0.82);
-    }
-    .path-head {
-      display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 12px;
-    }
-    .path-head span:first-child { color: #fff8ee; font-weight: 600; }
-    .path-head span:last-child { color: #b9adba; font-size: 12px; }
-    .bars { display: flex; gap: 6px; }
-    .bar {
-      height: 10px; flex: 1; border-radius: 999px; background: rgba(255,255,255,0.08);
-    }
-    .bar.on { background: rgba(248,231,181,0.90); }
-    .reflection-grid-shell {
-      margin-top: 24px; border: 1px solid rgba(248,231,181,0.10); background: rgba(24,28,51,0.78);
-      border-radius: 28px; padding: 20px;
-    }
-    .reflection-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-    .reflection-dot {
-      aspect-ratio: 1 / 1; border-radius: 999px; background: rgba(255,255,255,0.08);
-    }
-    .reflection-dot.on { background: rgba(248,231,181,0.90); box-shadow: 0 0 12px rgba(248,231,181,0.38); }
-    .stats {
-      margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-    }
-    .stat {
-      border: 1px solid rgba(248,231,181,0.10); background: rgba(24,28,51,0.72);
-      border-radius: 20px; padding: 16px 10px; text-align: center;
-    }
-    .stat-value { font-size: 20px; font-weight: 700; color: #fff8ee; }
-    .stat-label { margin-top: 6px; font-size: 12px; color: #b9adba; }
-    .bottom-nav {
-      position: fixed; left: 0; right: 0; bottom: 0;
-      border-top: 1px solid rgba(248,231,181,0.10);
-      background: rgba(10,16,34,0.88);
-      backdrop-filter: blur(18px);
-      padding: 14px 16px;
-      z-index: 10;
-    }
-    .bottom-nav-inner {
-      max-width: 430px; margin: 0 auto; display: flex; gap: 6px;
-      border: 1px solid rgba(248,231,181,0.10); background: rgba(255,255,255,0.04);
-      border-radius: 999px; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.22);
-    }
-    .tab-btn {
-      flex: 1; border: 0; background: transparent; color: #d7d0d9;
-      border-radius: 999px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
-    }
-    .tab-btn.active {
-      background: rgba(248,231,181,0.14); color: #f8e7b5;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.03);
-    }
-    .hidden { display: none; }
 
-    .sheet-backdrop {
-      position: fixed; inset: 0; background: rgba(3, 5, 14, 0.58);
-      backdrop-filter: blur(4px); z-index: 30; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    .meta-chip.success {
+      color: #fcedcc;
+      border-color: rgba(231,201,138,0.25);
+      background: rgba(231,201,138,0.1);
     }
-    .sheet-backdrop.show { opacity: 1; pointer-events: auto; }
-    .sheet {
-      position: fixed; left: 0; right: 0; bottom: 0;
-      z-index: 40; transform: translateY(100%); transition: transform 0.25s ease;
-      padding: 0 12px 12px; pointer-events: none;
+
+    .section-block {
+      margin-top: 18px;
     }
-    .sheet.show { transform: translateY(0); pointer-events: auto; }
-    .sheet-inner {
-      max-width: 430px; margin: 0 auto; border: 1px solid rgba(248,231,181,0.12);
-      background: rgba(17,20,37,0.96); backdrop-filter: blur(22px);
-      border-radius: 28px 28px 22px 22px; padding: 14px 16px 18px;
-      box-shadow: 0 -20px 60px rgba(0,0,0,0.45); max-height: 72vh; overflow: auto;
+
+    .section-title {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
     }
-    .sheet-handle {
-      width: 48px; height: 5px; border-radius: 999px; background: rgba(248,231,181,0.20); margin: 0 auto 14px;
+
+    .section-sub {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.94rem;
+      margin: 0 0 14px;
     }
-    .sheet-head {
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px;
-    }
-    .sheet-title { font-size: 22px; font-weight: 700; color: #fff8ee; margin: 4px 0 0; }
-    .sheet-subtitle { margin: 8px 0 0; font-size: 13px; color: #cbbfb2; line-height: 1.5; }
-    .ghost-btn {
-      border: 1px solid rgba(248,231,181,0.12); background: rgba(248,231,181,0.08);
-      color: #fff7e6; border-radius: 999px; padding: 10px 14px; font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0;
-    }
-    .reminder-preview {
-      margin-top: 16px;
+
+    textarea,
+    input,
+    select {
+      width: 100%;
+      background: rgba(255,255,255,0.045);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 16px;
       padding: 14px 16px;
-      border-radius: 20px;
-      border: 1px solid rgba(248,231,181,0.10);
-      background: rgba(24,28,51,0.72);
-      color: #e9dfca;
-      font-size: 13px;
-      line-height: 1.55;
+      font: inherit;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    textarea:focus,
+    input:focus,
+    select:focus {
+      border-color: rgba(231,201,138,0.38);
+      background: rgba(255,255,255,0.06);
+    }
+
+    textarea {
+      min-height: 136px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .feelings {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .feeling-btn {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+    }
+
+    .feeling-btn.active {
+      background: rgba(231,201,138,0.14);
+      border-color: rgba(231,201,138,0.32);
+      color: #fff3d7;
+    }
+
+    .save-status {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .summary-card {
+      border-radius: var(--radius-xl);
+      padding: 18px;
+    }
+
+    .summary-card .eyebrow {
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-bottom: 8px;
+    }
+
+    .summary-card .big {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .month-grid {
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      margin-top: 16px;
+    }
+
+    .month-day {
+      border-radius: 18px;
+      padding: 12px 10px;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .month-day.muted {
+      opacity: 0.45;
+    }
+
+    .month-day.today {
+      border-color: rgba(231,201,138,0.36);
+    }
+
+    .month-day .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .month-day .num {
+      font-weight: 700;
+      font-size: 0.96rem;
+    }
+
+    .mini-lights {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .mini-lights span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .mini-lights span.lit {
+      background: rgba(231,201,138,0.95);
+      box-shadow: 0 0 10px rgba(231,201,138,0.24);
+      border-color: rgba(231,201,138,0.34);
+    }
+
+    .month-day .small {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .setting-group {
+      border-radius: var(--radius-xl);
+      padding: 20px;
+    }
+
+    .setting-group h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+    }
+
+    .setting-group p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .inline-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 54px;
+      height: 32px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+
+    .toggle::after {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      top: 3px;
+      left: 3px;
+      border-radius: 50%;
+      background: #f7f2e9;
+      transition: all var(--transition);
+    }
+
+    .toggle.active {
+      background: rgba(231,201,138,0.32);
+      border-color: rgba(231,201,138,0.32);
+    }
+
+    .toggle.active::after {
+      left: 25px;
+      background: #fff7e5;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .pill.active {
+      background: rgba(231,201,138,0.14);
+      border-color: rgba(231,201,138,0.3);
+      color: #fff2d0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .bottom-space {
+      height: 16px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 900px) {
+      .lights-preview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .summary-grid,
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .month-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 16px 12px 40px;
+      }
+
+      .hero,
+      .card,
+      .light-card,
+      .setting-group,
+      .summary-card {
+        padding: 18px;
+      }
+
+      .month-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .footer-row {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="bg-layer-1"></div>
-  <div class="bg-layer-2"></div>
-
   <div class="app">
     <div class="topbar">
-      <div>
-        <div class="brand-small">PureTime</div>
-        <div class="brand-title">Five Lights</div>
+      <div class="brand">
+        <div class="brand-title">PureTime</div>
+        <div class="brand-sub">Five Lights</div>
       </div>
-      <div class="top-actions">
-        <button class="icon-pill" onclick="openSettings()">⚙︎</button>
-        <div class="mode-pill">Gentle Mode</div>
-      </div>
+      <button class="btn" id="topSettingsBtn">Settings</button>
     </div>
 
-    <section id="todayView" class="card">
-      <div class="card-content">
-        <div class="header-row">
+    <!-- TODAY PAGE -->
+    <section class="page active" id="page-today">
+      <div class="hero">
+        <div class="date-line" id="todayDateLine"></div>
+        <h1 id="todayTitle"></h1>
+        <p id="todaySubtitle"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
           <div>
-            <p class="section-label">Today</p>
-            <h1 class="section-title" id="todayDateText">April 5</h1>
-            <p class="section-subtitle">A little light still counts.</p>
-          </div>
-          <div class="moon-badge">
-            <div class="moon-main"></div>
-            <div class="moon-cut"></div>
+            <div class="label" id="todayProgressLabel"></div>
+            <h2 id="todayProgressText"></h2>
           </div>
         </div>
 
-        <div class="stars-list" id="starsList"></div>
+        <div class="progress-row">
+          <div class="progress-bar">
+            <div class="progress-fill" id="todayProgressFill"></div>
+          </div>
+        </div>
 
-        <div class="node-card">
-          <div class="node-head">
-            <span>Today Node</span>
-            <span id="todayCount">0 / 5</span>
+        <div class="lights-preview" id="todayLightsPreview"></div>
+
+        <div class="cta-row">
+          <button class="btn btn-primary" id="openTodayBtn"></button>
+        </div>
+
+        <div class="small-note" id="todayReassurance"></div>
+      </div>
+
+      <div class="card">
+        <div class="footer-row">
+          <div class="footer-block">
+            <div class="eyebrow" id="streakLabel"></div>
+            <div class="value" id="streakValue"></div>
+          </div>
+          <button class="btn" id="viewMonthBtn"></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="small-note" id="todayBottomQuote"></div>
+      </div>
+    </section>
+
+    <!-- DETAIL PAGE -->
+    <section class="page" id="page-detail">
+      <div class="hero">
+        <div class="cta-row">
+          <button class="btn" id="backToTodayBtn"></button>
+        </div>
+        <div class="date-line" id="detailDateLine"></div>
+        <h1 id="detailTitle"></h1>
+        <p id="detailSubtitle"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="label" id="detailProgressLabel"></div>
+            <h2 id="detailProgressText"></h2>
+          </div>
+        </div>
+        <div class="small-note" id="detailSupport"></div>
+      </div>
+
+      <div class="light-list" id="detailLightList"></div>
+
+      <div class="card section-block">
+        <h2 class="section-title" id="reflectionTitle"></h2>
+        <p class="section-sub" id="reflectionHelper"></p>
+        <textarea id="reflectionInput"></textarea>
+
+        <div class="section-block">
+          <h2 class="section-title" id="feelingTitle"></h2>
+          <div class="feelings" id="feelingButtons"></div>
+        </div>
+
+        <div class="save-status" id="saveStatusText"></div>
+      </div>
+
+      <div class="card">
+        <div class="small-note" id="detailClosingLine"></div>
+      </div>
+    </section>
+
+    <!-- MONTH PAGE -->
+    <section class="page" id="page-month">
+      <div class="hero">
+        <div class="cta-row">
+          <button class="btn" id="monthBackBtn"></button>
+        </div>
+        <div class="date-line" id="monthDateLine"></div>
+        <h1 id="monthTitle"></h1>
+        <p id="monthSubtitle"></p>
+      </div>
+
+      <div class="summary-grid" id="monthSummaryGrid"></div>
+
+      <div class="card">
+        <h2 class="section-title" id="monthGridTitle"></h2>
+        <div class="month-grid" id="monthGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="small-note" id="monthSummaryLine"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS PAGE -->
+    <section class="page" id="page-settings">
+      <div class="hero">
+        <div class="cta-row">
+          <button class="btn" id="settingsBackBtn">Back</button>
+        </div>
+        <div class="date-line">PureTime</div>
+        <h1 id="settingsTitle"></h1>
+        <p id="settingsSubtitle"></p>
+      </div>
+
+      <div class="settings-grid">
+        <div class="setting-group">
+          <h3 id="profileTitle"></h3>
+          <p id="profileSub"></p>
+          <div class="field">
+            <label for="nameInput" id="nameLabel"></label>
+            <input id="nameInput" type="text" />
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3 id="languageTitle"></h3>
+          <p id="languageSub"></p>
+          <div class="field">
+            <select id="languageSelect">
+              <option value="en">English</option>
+              <option value="ar">Arabic</option>
+              <option value="both">English + Arabic</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3 id="appearanceTitle"></h3>
+          <p id="appearanceSub"></p>
+          <div class="field">
+            <select id="themeSelect">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="auto">Auto</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3 id="remindersTitle"></h3>
+          <p id="remindersSub"></p>
+
+          <div class="inline-row">
+            <div>
+              <strong id="enableRemindersLabel"></strong>
+            </div>
+            <div class="toggle" id="remindersToggle" role="button" aria-label="Toggle reminders"></div>
           </div>
 
-          <div class="today-node-wrap">
-            <div class="today-node">
-              <div class="today-node-glow"></div>
-              <div class="today-star star-pos-1" id="nodeStar1"></div>
-              <div class="today-star star-pos-2" id="nodeStar2"></div>
-              <div class="today-star star-pos-3" id="nodeStar3"></div>
-              <div class="today-star star-pos-4" id="nodeStar4"></div>
-              <div class="today-star star-pos-5" id="nodeStar5"></div>
-
-              <div class="today-moon-shell level-0" id="todayMoonShell">
-                <div class="today-moon-core level-0" id="todayMoonCore"></div>
-              </div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="morningTime" id="morningLabel"></label>
+              <input id="morningTime" type="time" />
+            </div>
+            <div class="field">
+              <label for="afternoonTime" id="afternoonLabel"></label>
+              <input id="afternoonTime" type="time" />
+            </div>
+            <div class="field">
+              <label for="eveningTime" id="eveningLabel"></label>
+              <input id="eveningTime" type="time" />
             </div>
           </div>
 
-          <p class="center-text" id="todayText">0 of 5 lights completed</p>
+          <div class="field" style="margin-top:14px;">
+            <label id="toneLabel"></label>
+            <div class="pill-row" id="tonePills"></div>
+          </div>
+
+          <div class="field" style="margin-top:16px;">
+            <label id="browserNotificationsLabel"></label>
+            <div class="small-note" id="browserNotificationsSub"></div>
+            <div class="cta-row" style="margin-top:12px;">
+              <button class="btn" id="enableNotificationsBtn"></button>
+              <div class="small-note" id="notificationStatusText"></div>
+            </div>
+          </div>
         </div>
 
-        <button class="primary-btn" onclick="showTab('path')">View My Path</button>
+        <div class="setting-group">
+          <h3 id="dailyViewTitle"></h3>
+          <p id="dailyViewSub"></p>
+
+          <div class="inline-row">
+            <div id="showReflectionLabel"></div>
+            <div class="toggle" id="showReflectionToggle" role="button"></div>
+          </div>
+
+          <div class="inline-row">
+            <div id="showStreakLabel"></div>
+            <div class="toggle" id="showStreakToggle" role="button"></div>
+          </div>
+
+          <div class="inline-row">
+            <div id="showMonthSummaryLabel"></div>
+            <div class="toggle" id="showMonthSummaryToggle" role="button"></div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3 id="privacyTitle"></h3>
+          <p id="privacySub"></p>
+        </div>
+
+        <div class="setting-group">
+          <h3 id="dataTitle"></h3>
+          <p id="dataSub"></p>
+          <div class="cta-row">
+            <button class="btn btn-danger" id="clearDataBtn"></button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <p id="settingsBottomLine" class="small-note" style="margin:0;"></p>
+        </div>
       </div>
     </section>
 
-    <section id="pathView" class="card hidden">
-      <div class="card-content">
-        <div class="header-row">
-          <div>
-            <p class="section-label">Star Path</p>
-            <h2 class="section-title" id="pathMonthTitle">April Path</h2>
-          </div>
-          <div style="margin-top:4px;text-align:right;font-size:12px;color:#b9adba;">
-            <div>Moonlit</div>
-            <div>quiet route</div>
-          </div>
-        </div>
-
-        <div class="chips">
-          <div class="chip"><span id="daysLitChip">0</span> days lit</div>
-          <div class="chip"><span id="totalLightsChip">0</span> lights</div>
-          <div class="chip"><span id="streakChip">0</span>-day streak</div>
-        </div>
-
-        <div class="path-list" id="pathList"></div>
-
-        <button class="primary-btn" onclick="showTab('reflection')">Monthly Reflection</button>
-      </div>
-    </section>
-
-    <section id="reflectionView" class="card hidden">
-      <div class="card-content">
-        <div class="header-row">
-          <div>
-            <p class="section-label">Reflection</p>
-            <h2 class="section-title" id="reflectionMonthTitle">April Summary</h2>
-            <p class="section-subtitle">Not every day was full, but the path is still yours.</p>
-          </div>
-          <div style="height:48px;width:48px;border-radius:999px;border:1px solid rgba(248,231,181,0.10);background:rgba(248,231,181,0.08);display:flex;align-items:center;justify-content:center;color:#f8e7b5;font-size:20px;">✦</div>
-        </div>
-
-        <div class="reflection-grid-shell">
-          <div class="reflection-grid" id="reflectionGrid"></div>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-value" id="daysLitStat">0</div>
-            <div class="stat-label">Days Lit</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value" id="totalLightsStat">0</div>
-            <div class="stat-label">Total Lights</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value" id="bestStreakStat">0</div>
-            <div class="stat-label">Best Streak</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <div class="bottom-nav">
-    <div class="bottom-nav-inner">
-      <button id="tabToday" class="tab-btn active" onclick="showTab('today')">Today</button>
-      <button id="tabPath" class="tab-btn" onclick="showTab('path')">Path</button>
-      <button id="tabReflection" class="tab-btn" onclick="showTab('reflection')">Reflection</button>
-    </div>
-  </div>
-
-  <div id="sheetBackdrop" class="sheet-backdrop" onclick="closeAllSheets()"></div>
-
-  <div id="daySheet" class="sheet">
-    <div class="sheet-inner">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head">
-        <div>
-          <p class="section-label">Day Detail</p>
-          <div class="sheet-title" id="sheetDayTitle">Day 1</div>
-          <p class="sheet-subtitle" id="sheetDaySubtitle">Tap to record or adjust this day.</p>
-        </div>
-        <button class="ghost-btn" onclick="closeDayDetail()">Close</button>
-      </div>
-      <div class="sheet-stars" id="sheetStarsList"></div>
-    </div>
-  </div>
-
-  <div id="settingsSheet" class="sheet">
-    <div class="sheet-inner">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head">
-        <div>
-          <p class="section-label">Settings</p>
-          <div class="sheet-title">Gentle Reminders</div>
-          <p class="sheet-subtitle">Choose a light reminder rhythm. This only saves your preference for now.</p>
-        </div>
-        <button class="ghost-btn" onclick="closeSettings()">Close</button>
-      </div>
-
-      <div class="settings-options" id="reminderOptions"></div>
-
-      <div class="reminder-preview">
-        <strong style="display:block;margin-bottom:8px;color:#fff8ee;">Preview</strong>
-        <span id="reminderPreviewText">A quiet moment for tonight’s lights.</span>
-      </div>
-    </div>
+    <div class="bottom-space"></div>
   </div>
 
   <script>
-    const STORAGE_KEY = "puretime-five-lights-state-v3-reminders";
-    const REMINDER_KEY = "puretime-five-lights-reminder-pref";
-    const PRAYER_NAMES = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+    const STORAGE_KEY = "puretime-five-lights-v1";
 
-    const REMINDER_OPTIONS = [
-      {
-        id: "off",
-        title: "Off",
-        hint: "No reminders. Open whenever you want.",
-        preview: "Reminders are turned off."
+    const copy = {
+      today: {
+        title: "Today’s Five Lights",
+        progressLabel: "Today’s progress",
+        openButton: "Open today",
+        reassurance: "No pressure. You can return at your own pace.",
+        streakLabel: "Gentle streak",
+        monthLink: "View this month",
+        bottomQuotes: [
+          "A small light can still change the tone of a day.",
+          "You are allowed to begin again today.",
+          "This space is yours: quiet, private, and gentle.",
+          "Even one small return still counts.",
+          "A soft beginning is still a beginning."
+        ],
+        subtitles: [
+          "Begin softly. One light is enough.",
+          "You do not need to do everything today. Just begin where you are.",
+          "A quiet space to return, reflect, and close the day gently.",
+          "No pressure. Just begin where you are.",
+          "You can return in small ways today."
+        ]
       },
-      {
-        id: "evening_once",
-        title: "Evening once",
-        hint: "One soft reminder later in the day.",
-        preview: "A quiet moment for tonight’s lights."
+      detail: {
+        back: "Back to today",
+        title: "Move through today one light at a time.",
+        progressLabel: "Today’s lights",
+        support: "You can continue whenever it feels right.",
+        reflectionTitle: "Reflection",
+        reflectionHelper: "A few words are enough. This space is private.",
+        reflectionPlaceholder: "Write a few quiet words for today...",
+        feelingTitle: "How does today feel?",
+        saveSaving: "Saving...",
+        saveSaved: "All changes saved",
+        closingLines: [
+          "Nothing needs to be perfect for today to matter.",
+          "You can close the day gently from here.",
+          "Even a quiet ending is still an ending.",
+          "A pause is not the end of your day."
+        ],
+        notOpened: "Not yet opened",
+        litToday: "Lit today",
+        litAt: "Lit at"
       },
-      {
-        id: "twice_daily",
-        title: "Twice daily",
-        hint: "A light daytime nudge and one evening reminder.",
-        preview: "Your path is here when you return."
-      }
-    ];
+      month: {
+        title: "This month",
+        subtitle: "Not a scorecard — just a gentle record of return.",
+        gridTitle: "Daily lights",
+        summaryDaysReturned: "Days returned",
+        summaryStreak: "Current gentle streak",
+        summaryLights: "Lights lit",
+        low: "A quiet month still counts. You are still returning.",
+        mid: "You have made space for small returns throughout the month.",
+        high: "Your month carries a steady rhythm of return.",
+        back: "Back to today"
+      },
+      settings: {
+        title: "Settings",
+        subtitle: "Shape this space in a way that feels gentle for you.",
+        profileTitle: "Profile",
+        profileSub: "Optional",
+        nameLabel: "Name or nickname",
+        languageTitle: "Language",
+        languageSub: "Choose how this space should read for you.",
+        appearanceTitle: "Appearance",
+        appearanceSub: "Keep it simple, warm, and easy on the eyes.",
+        remindersTitle: "Reminders",
+        remindersSub: "A few quiet prompts during the day, if you want them.",
+        enableRemindersLabel: "Enable gentle reminders",
+        morningLabel: "Morning check-in",
+        afternoonLabel: "Midday pause",
+        eveningLabel: "Evening close",
+        toneLabel: "Reminder tone",
+        browserNotificationsLabel: "Browser notifications",
+        browserNotificationsSub: "Allow notifications if you’d like reminders to appear on this device.",
+        enableNotificationsBtn: "Enable notifications",
+        dailyViewTitle: "Daily view",
+        dailyViewSub: "Choose what feels visible and useful for you.",
+        showReflectionLabel: "Show reflection",
+        showStreakLabel: "Show gentle streak",
+        showMonthSummaryLabel: "Show monthly summary",
+        privacyTitle: "Privacy",
+        privacySub: "Your entries are stored on this device. This space stays personal here.",
+        dataTitle: "Your data",
+        dataSub: "This will remove your saved lights, reflections, and settings from this device.",
+        clearDataBtn: "Clear all records",
+        bottomLine: "Small adjustments can make this space feel more like yours."
+      },
+      tones: ["Gentle", "Neutral", "Minimal"],
+      feelings: ["Calm", "Tired", "Full", "Heavy", "Hopeful", "Grateful"],
+      lights: [
+        { id: 0, name: "Begin", desc: "Start the day with intention." },
+        { id: 1, name: "Pause", desc: "Take a brief moment to return." },
+        { id: 2, name: "Prayer", desc: "Make space for devotion in your day." },
+        { id: 3, name: "Reflect", desc: "Notice what is present in your heart." },
+        { id: 4, name: "Close", desc: "End the day with gentleness." }
+      ]
+    };
 
-    function getToday() { return new Date(); }
-    function getTodayKey() {
-      const now = getToday();
-      return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+    function createDefaultState() {
+      return {
+        profile: {
+          name: "",
+          language: "en",
+          theme: "dark"
+        },
+        settings: {
+          remindersEnabled: false,
+          morningTime: "08:00",
+          afternoonTime: "14:00",
+          eveningTime: "21:00",
+          tone: "Gentle",
+          showReflection: true,
+          showStreak: true,
+          showMonthSummary: true
+        },
+        days: {},
+        stats: {
+          bestStreak: 0,
+          lastVisitDate: ""
+        }
+      };
     }
-    function getMonthKey() {
-      const now = getToday();
-      return `${now.getFullYear()}-${now.getMonth() + 1}`;
-    }
-    function getDisplayDate() {
-      const now = getToday();
-      return now.toLocaleDateString("en-US", { month: "long", day: "numeric" });
-    }
-    function getMonthName() {
-      const now = getToday();
-      return now.toLocaleDateString("en-US", { month: "long" });
-    }
-    function getCurrentDayNumber() { return getToday().getDate(); }
-    function getDaysInCurrentMonth() {
-      const now = getToday();
-      return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    }
-
-    function starSVG(active) {
-      return `
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path
-            d="M12 2.8l2.25 4.56 5.03.73-3.64 3.55.86 5.01L12 14.38l-4.5 2.27.86-5.01-3.64-3.55 5.03-.73L12 2.8z"
-            fill="${active ? '#F8E7B5' : 'transparent'}"
-            stroke="${active ? '#F8E7B5' : 'rgba(255,255,255,0.38)'}"
-            stroke-width="1.45"
-            stroke-linejoin="round"
-          />
-        </svg>
-      `;
-    }
-
-    function createPrayerArray(activeIndexes = []) {
-      return PRAYER_NAMES.map((name, index) => ({
-        name,
-        active: activeIndexes.includes(index)
-      }));
-    }
-
-    function getSeedPrayerIndexes(dayNumber, todayNumber) {
-      if (dayNumber < todayNumber - 4) return [0,1,2,3,4];
-      if (dayNumber === todayNumber - 3) return [0,1,2,3];
-      if (dayNumber === todayNumber - 2) return [0,1,2,3,4];
-      if (dayNumber === todayNumber - 1) return [0,1];
-      if (dayNumber === todayNumber) return [0,1,3];
-      return [];
-    }
-
-    function buildDefaultDays() {
-      const totalDays = getDaysInCurrentMonth();
-      const todayNumber = getCurrentDayNumber();
-      const days = [];
-      for (let day = 1; day <= totalDays; day++) {
-        days.push({
-          day,
-          today: day === todayNumber,
-          prayers: createPrayerArray(getSeedPrayerIndexes(day, todayNumber))
-        });
-      }
-      return days;
-    }
-
-    function clonePrayers(prayers) {
-      return prayers.map(item => ({ name: item.name, active: !!item.active }));
-    }
-
-    function normalizeDays(days) {
-      return days.map(day => ({
-        day: day.day,
-        today: !!day.today,
-        prayers: Array.isArray(day.prayers) ? clonePrayers(day.prayers) : createPrayerArray([])
-      }));
-    }
-
-    function loadReminderPreference() {
-      const saved = localStorage.getItem(REMINDER_KEY);
-      return REMINDER_OPTIONS.some(opt => opt.id === saved) ? saved : "evening_once";
-    }
-
-    function saveReminderPreference(value) {
-      localStorage.setItem(REMINDER_KEY, value);
-    }
-
-    let reminderPreference = loadReminderPreference();
 
     function loadState() {
-      const defaultDays = buildDefaultDays();
-      const raw = localStorage.getItem(STORAGE_KEY);
-
-      if (!raw) return {
-        monthKey: getMonthKey(),
-        date: getTodayKey(),
-        days: defaultDays
-      };
-
       try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return createDefaultState();
         const parsed = JSON.parse(raw);
-        if (parsed.monthKey === getMonthKey() && Array.isArray(parsed.days)) {
-          const currentDaysInMonth = getDaysInCurrentMonth();
-          let days = normalizeDays(parsed.days).filter(d => d.day >= 1 && d.day <= currentDaysInMonth);
-          const existingMap = new Map(days.map(d => [d.day, d]));
-          const rebuilt = [];
-
-          for (let day = 1; day <= currentDaysInMonth; day++) {
-            const existing = existingMap.get(day);
-            rebuilt.push(
-              existing
-                ? { day, today: day === getCurrentDayNumber(), prayers: clonePrayers(existing.prayers) }
-                : { day, today: day === getCurrentDayNumber(), prayers: createPrayerArray([]) }
-            );
-          }
-
-          return {
-            monthKey: getMonthKey(),
-            date: getTodayKey(),
-            days: rebuilt
-          };
-        }
-      } catch (e) {}
-
-      return {
-        monthKey: getMonthKey(),
-        date: getTodayKey(),
-        days: defaultDays
-      };
+        return {
+          ...createDefaultState(),
+          ...parsed,
+          profile: { ...createDefaultState().profile, ...(parsed.profile || {}) },
+          settings: { ...createDefaultState().settings, ...(parsed.settings || {}) },
+          stats: { ...createDefaultState().stats, ...(parsed.stats || {}) },
+          days: parsed.days || {}
+        };
+      } catch (error) {
+        console.error("Failed to load state:", error);
+        return createDefaultState();
+      }
     }
 
     let state = loadState();
-    let selectedDay = null;
+    let currentPage = "today";
+    let reflectionSaveTimer = null;
+    let saveStatusTimer = null;
 
-    function saveState() {
-      state.monthKey = getMonthKey();
-      state.date = getTodayKey();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const els = {
+      pages: {
+        today: document.getElementById("page-today"),
+        detail: document.getElementById("page-detail"),
+        month: document.getElementById("page-month"),
+        settings: document.getElementById("page-settings")
+      },
+
+      topSettingsBtn: document.getElementById("topSettingsBtn"),
+
+      todayDateLine: document.getElementById("todayDateLine"),
+      todayTitle: document.getElementById("todayTitle"),
+      todaySubtitle: document.getElementById("todaySubtitle"),
+      todayProgressLabel: document.getElementById("todayProgressLabel"),
+      todayProgressText: document.getElementById("todayProgressText"),
+      todayProgressFill: document.getElementById("todayProgressFill"),
+      todayLightsPreview: document.getElementById("todayLightsPreview"),
+      openTodayBtn: document.getElementById("openTodayBtn"),
+      todayReassurance: document.getElementById("todayReassurance"),
+      streakLabel: document.getElementById("streakLabel"),
+      streakValue: document.getElementById("streakValue"),
+      viewMonthBtn: document.getElementById("viewMonthBtn"),
+      todayBottomQuote: document.getElementById("todayBottomQuote"),
+
+      backToTodayBtn: document.getElementById("backToTodayBtn"),
+      detailDateLine: document.getElementById("detailDateLine"),
+      detailTitle: document.getElementById("detailTitle"),
+      detailSubtitle: document.getElementById("detailSubtitle"),
+      detailProgressLabel: document.getElementById("detailProgressLabel"),
+      detailProgressText: document.getElementById("detailProgressText"),
+      detailSupport: document.getElementById("detailSupport"),
+      detailLightList: document.getElementById("detailLightList"),
+      reflectionTitle: document.getElementById("reflectionTitle"),
+      reflectionHelper: document.getElementById("reflectionHelper"),
+      reflectionInput: document.getElementById("reflectionInput"),
+      feelingTitle: document.getElementById("feelingTitle"),
+      feelingButtons: document.getElementById("feelingButtons"),
+      saveStatusText: document.getElementById("saveStatusText"),
+      detailClosingLine: document.getElementById("detailClosingLine"),
+
+      monthBackBtn: document.getElementById("monthBackBtn"),
+      monthDateLine: document.getElementById("monthDateLine"),
+      monthTitle: document.getElementById("monthTitle"),
+      monthSubtitle: document.getElementById("monthSubtitle"),
+      monthSummaryGrid: document.getElementById("monthSummaryGrid"),
+      monthGridTitle: document.getElementById("monthGridTitle"),
+      monthGrid: document.getElementById("monthGrid"),
+      monthSummaryLine: document.getElementById("monthSummaryLine"),
+
+      settingsBackBtn: document.getElementById("settingsBackBtn"),
+      settingsTitle: document.getElementById("settingsTitle"),
+      settingsSubtitle: document.getElementById("settingsSubtitle"),
+      profileTitle: document.getElementById("profileTitle"),
+      profileSub: document.getElementById("profileSub"),
+      nameLabel: document.getElementById("nameLabel"),
+      nameInput: document.getElementById("nameInput"),
+      languageTitle: document.getElementById("languageTitle"),
+      languageSub: document.getElementById("languageSub"),
+      languageSelect: document.getElementById("languageSelect"),
+      appearanceTitle: document.getElementById("appearanceTitle"),
+      appearanceSub: document.getElementById("appearanceSub"),
+      themeSelect: document.getElementById("themeSelect"),
+      remindersTitle: document.getElementById("remindersTitle"),
+      remindersSub: document.getElementById("remindersSub"),
+      enableRemindersLabel: document.getElementById("enableRemindersLabel"),
+      remindersToggle: document.getElementById("remindersToggle"),
+      morningLabel: document.getElementById("morningLabel"),
+      afternoonLabel: document.getElementById("afternoonLabel"),
+      eveningLabel: document.getElementById("eveningLabel"),
+      morningTime: document.getElementById("morningTime"),
+      afternoonTime: document.getElementById("afternoonTime"),
+      eveningTime: document.getElementById("eveningTime"),
+      toneLabel: document.getElementById("toneLabel"),
+      tonePills: document.getElementById("tonePills"),
+      browserNotificationsLabel: document.getElementById("browserNotificationsLabel"),
+      browserNotificationsSub: document.getElementById("browserNotificationsSub"),
+      enableNotificationsBtn: document.getElementById("enableNotificationsBtn"),
+      notificationStatusText: document.getElementById("notificationStatusText"),
+      dailyViewTitle: document.getElementById("dailyViewTitle"),
+      dailyViewSub: document.getElementById("dailyViewSub"),
+      showReflectionLabel: document.getElementById("showReflectionLabel"),
+      showReflectionToggle: document.getElementById("showReflectionToggle"),
+      showStreakLabel: document.getElementById("showStreakLabel"),
+      showStreakToggle: document.getElementById("showStreakToggle"),
+      showMonthSummaryLabel: document.getElementById("showMonthSummaryLabel"),
+      showMonthSummaryToggle: document.getElementById("showMonthSummaryToggle"),
+      privacyTitle: document.getElementById("privacyTitle"),
+      privacySub: document.getElementById("privacySub"),
+      dataTitle: document.getElementById("dataTitle"),
+      dataSub: document.getElementById("dataSub"),
+      clearDataBtn: document.getElementById("clearDataBtn"),
+      settingsBottomLine: document.getElementById("settingsBottomLine")
+    };
+
+    function todayKey() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
     }
 
-    function syncTodayFlags() {
-      const todayNumber = getCurrentDayNumber();
-      state.days.forEach(day => { day.today = day.day === todayNumber; });
-    }
-
-    function getTodayDayObject() {
-      return state.days.find(d => d.today) || state.days[state.days.length - 1];
-    }
-
-    function getTodayStars() { return getTodayDayObject().prayers; }
-
-    function setTodayStars(prayers) {
-      getTodayDayObject().prayers = clonePrayers(prayers);
-      saveState();
-    }
-
-    function getDayLights(dayObj) {
-      return dayObj.prayers.filter(p => p.active).length;
-    }
-
-    function activeCount() {
-      return getTodayStars().filter(p => p.active).length;
-    }
-
-    function totalLights() {
-      return state.days.reduce((sum, day) => sum + getDayLights(day), 0);
-    }
-
-    function daysLitCount() {
-      return state.days.filter(day => getDayLights(day) > 0).length;
-    }
-
-    function calculateBestStreak() {
-      let best = 0, current = 0;
-      state.days.forEach(day => {
-        if (getDayLights(day) > 0) {
-          current += 1;
-          best = Math.max(best, current);
-        } else {
-          current = 0;
-        }
-      });
-      return best;
-    }
-
-    function renderStars() {
-      const el = document.getElementById("starsList");
-      el.innerHTML = "";
-
-      getTodayStars().forEach((star, index) => {
-        const btn = document.createElement("button");
-        btn.className = "star-btn";
-        btn.innerHTML = `
-          <div>
-            <p class="star-name">${star.name}</p>
-            <p class="star-hint">${star.active ? "Light recorded" : "Tap to light"}</p>
-          </div>
-          <div class="star-icon-wrap ${star.active ? "active" : ""}">
-            ${starSVG(star.active)}
-          </div>
-        `;
-        btn.onclick = () => {
-          const updated = clonePrayers(getTodayStars());
-          updated[index].active = !updated[index].active;
-          setTodayStars(updated);
-          renderAll();
+    function getDayData(key = todayKey()) {
+      if (!state.days[key]) {
+        state.days[key] = {
+          completed: [false, false, false, false, false],
+          completedAt: {},
+          reflection: "",
+          feeling: "",
+          lastUpdated: new Date().toISOString()
         };
-        el.appendChild(btn);
-      });
+      }
+      return state.days[key];
     }
 
-    function renderTodayNodeStars(count) {
-      for (let i = 1; i <= 5; i++) {
-        const el = document.getElementById(`nodeStar${i}`);
-        el.className = `today-star star-pos-${i}` + (i <= count ? " active" : "");
-        el.innerHTML = starSVG(i <= count);
+    function saveState(showStatus = false) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (showStatus) {
+          setSaveStatus(copy.detail.saveSaved);
+        }
+      } catch (error) {
+        console.error("Failed to save:", error);
+      }
+    }
+
+    function setSaveStatus(text) {
+      els.saveStatusText.textContent = text;
+      if (saveStatusTimer) clearTimeout(saveStatusTimer);
+      saveStatusTimer = setTimeout(() => {
+        els.saveStatusText.textContent = copy.detail.saveSaved;
+      }, 1800);
+    }
+
+    function formatLongDate(date = new Date()) {
+      return new Intl.DateTimeFormat("en-GB", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      }).format(date);
+    }
+
+    function formatMonthYear(date = new Date()) {
+      return new Intl.DateTimeFormat("en-GB", {
+        month: "long",
+        year: "numeric"
+      }).format(date);
+    }
+
+    function formatTime(date = new Date()) {
+      return new Intl.DateTimeFormat("en-GB", {
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function completedCount(dayData) {
+      return dayData.completed.filter(Boolean).length;
+    }
+
+    function progressPercent(dayData) {
+      return (completedCount(dayData) / copy.lights.length) * 100;
+    }
+
+    function daysReturnedInMonth(baseDate = new Date()) {
+      const y = baseDate.getFullYear();
+      const m = baseDate.getMonth();
+      return Object.entries(state.days).filter(([key, day]) => {
+        const d = new Date(key + "T00:00:00");
+        return d.getFullYear() === y && d.getMonth() === m && completedCount(day) > 0;
+      }).length;
+    }
+
+    function lightsLitInMonth(baseDate = new Date()) {
+      const y = baseDate.getFullYear();
+      const m = baseDate.getMonth();
+      return Object.entries(state.days).reduce((sum, [key, day]) => {
+        const d = new Date(key + "T00:00:00");
+        if (d.getFullYear() === y && d.getMonth() === m) {
+          return sum + completedCount(day);
+        }
+        return sum;
+      }, 0);
+    }
+
+    function getCurrentStreak() {
+      let streak = 0;
+      const cursor = new Date();
+      cursor.setHours(0, 0, 0, 0);
+
+      while (true) {
+        const key = cursor.toISOString().slice(0, 10);
+        const day = state.days[key];
+        if (day && completedCount(day) > 0) {
+          streak += 1;
+          cursor.setDate(cursor.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function updateBestStreak() {
+      const current = getCurrentStreak();
+      if (current > state.stats.bestStreak) {
+        state.stats.bestStreak = current;
+      }
+    }
+
+    function randomFrom(arr, seedKey = todayKey()) {
+      let hash = 0;
+      for (let i = 0; i < seedKey.length; i++) {
+        hash = (hash << 5) - hash + seedKey.charCodeAt(i);
+        hash |= 0;
+      }
+      return arr[Math.abs(hash) % arr.length];
+    }
+
+    function showPage(name) {
+      currentPage = name;
+      Object.entries(els.pages).forEach(([key, page]) => {
+        page.classList.toggle("active", key === name);
+      });
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toggleBooleanSetting(path) {
+      state.settings[path] = !state.settings[path];
+      saveState();
+      renderSettings();
+      renderToday();
+    }
+
+    function applyTheme() {
+      const theme = state.profile.theme || "dark";
+      if (theme === "light") {
+        document.documentElement.style.setProperty("--bg", "#f4efe7");
+        document.documentElement.style.setProperty("--bg-soft", "#fbf7f0");
+        document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.76)");
+        document.documentElement.style.setProperty("--card-strong", "rgba(255,255,255,0.95)");
+        document.documentElement.style.setProperty("--text", "#1d1b19");
+        document.documentElement.style.setProperty("--muted", "#6f685f");
+        document.documentElement.style.setProperty("--line", "rgba(27,23,19,0.08)");
+        document.body.style.background =
+          "radial-gradient(circle at top, rgba(214,176,109,0.12), transparent 28%), linear-gradient(180deg, #faf6ef 0%, #f4efe7 100%)";
+      } else {
+        document.documentElement.style.setProperty("--bg", "#0f1220");
+        document.documentElement.style.setProperty("--bg-soft", "#171b2d");
+        document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.06)");
+        document.documentElement.style.setProperty("--card-strong", "rgba(255,255,255,0.1)");
+        document.documentElement.style.setProperty("--text", "#f6f2ea");
+        document.documentElement.style.setProperty("--muted", "#b8b4ad");
+        document.documentElement.style.setProperty("--line", "rgba(255,255,255,0.08)");
+        document.body.style.background =
+          "radial-gradient(circle at top, rgba(231,201,138,0.08), transparent 28%), linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%)";
       }
     }
 
     function renderToday() {
-      document.getElementById("todayDateText").textContent = getDisplayDate();
-      const count = activeCount();
-      document.getElementById("todayCount").textContent = `${count} / 5`;
-      document.getElementById("todayText").textContent =
-        count === 5 ? "Today is complete and softly lit." : `${count} of 5 lights completed`;
-      document.getElementById("todayMoonShell").className = `today-moon-shell level-${count}`;
-      document.getElementById("todayMoonCore").className = `today-moon-core level-${count}`;
-      renderTodayNodeStars(count);
+      const key = todayKey();
+      const day = getDayData(key);
+      const count = completedCount(day);
+
+      els.todayDateLine.textContent = formatLongDate(new Date(key + "T00:00:00"));
+      els.todayTitle.textContent = copy.today.title;
+      els.todaySubtitle.textContent = randomFrom(copy.today.subtitles);
+      els.todayProgressLabel.textContent = copy.today.progressLabel;
+      els.todayProgressText.textContent = `${count} of 5 lights lit`;
+      els.todayProgressFill.style.width = `${progressPercent(day)}%`;
+      els.openTodayBtn.textContent = copy.today.openButton;
+      els.todayReassurance.textContent = copy.today.reassurance;
+      els.streakLabel.textContent = copy.today.streakLabel;
+      els.viewMonthBtn.textContent = copy.today.monthLink;
+      els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, key + "-quote");
+
+      const streak = getCurrentStreak();
+      els.streakValue.textContent = `${streak} day${streak === 1 ? "" : "s"} of return`;
+      els.streakLabel.parentElement.parentElement.parentElement.classList.toggle("hidden", !state.settings.showStreak);
+
+      els.todayLightsPreview.innerHTML = "";
+      copy.lights.forEach((light, index) => {
+        const lit = !!day.completed[index];
+        const item = document.createElement("div");
+        item.className = `preview-light ${lit ? "lit" : ""}`;
+        item.innerHTML = `
+          <div class="preview-orb"></div>
+          <div class="preview-name">${light.name}</div>
+          <div class="preview-desc">${light.desc}</div>
+        `;
+        els.todayLightsPreview.appendChild(item);
+      });
     }
 
-    function renderPath() {
-      const el = document.getElementById("pathList");
-      el.innerHTML = "";
+    function renderDetail() {
+      const key = todayKey();
+      const day = getDayData(key);
+      const count = completedCount(day);
 
-      state.days.forEach(day => {
-        const lights = getDayLights(day);
-        const row = document.createElement("div");
-        row.className = "path-item";
+      els.backToTodayBtn.textContent = copy.detail.back;
+      els.detailDateLine.textContent = formatLongDate(new Date(key + "T00:00:00"));
+      els.detailTitle.textContent = copy.today.title;
+      els.detailSubtitle.textContent = copy.detail.title;
+      els.detailProgressLabel.textContent = copy.detail.progressLabel;
+      els.detailProgressText.textContent = `${count} of 5 lit`;
+      els.detailSupport.textContent = copy.detail.support;
 
-        let bars = "";
-        for (let i = 0; i < 5; i++) {
-          bars += `<div class="bar ${i < lights ? "on" : ""}"></div>`;
-        }
-
-        row.innerHTML = `
-          <button class="path-click" type="button" data-day="${day.day}">
-            <div class="path-node l${lights} ${day.today ? "today" : ""}"></div>
-            <div class="path-card">
-              <div class="path-head">
-                <span>Day ${day.day}</span>
-                <span>${lights}/5</span>
+      els.detailLightList.innerHTML = "";
+      copy.lights.forEach((light, index) => {
+        const lit = !!day.completed[index];
+        const timestamp = day.completedAt[index];
+        const card = document.createElement("div");
+        card.className = "light-card";
+        card.innerHTML = `
+          <div class="light-head">
+            <div class="light-head-left">
+              <div class="light-status-dot ${lit ? "lit" : ""}"></div>
+              <div>
+                <div class="light-title">${light.name}</div>
+                <p class="light-desc">${light.desc}</p>
               </div>
-              <div class="bars">${bars}</div>
             </div>
-          </button>
+            <button class="btn ${lit ? "" : "btn-primary"}" data-light-index="${index}">
+              ${lit ? "Lit" : "Light this"}
+            </button>
+          </div>
+          <div class="light-meta">
+            <div class="meta-chip ${lit ? "success" : ""}">
+              ${lit ? copy.detail.litToday : copy.detail.notOpened}
+            </div>
+            ${lit && timestamp ? `<div class="meta-chip">${copy.detail.litAt} ${timestamp}</div>` : ""}
+          </div>
         `;
-
-        row.querySelector(".path-click").onclick = () => openDayDetail(day.day);
-        el.appendChild(row);
+        els.detailLightList.appendChild(card);
       });
 
-      document.getElementById("pathMonthTitle").textContent = `${getMonthName()} Path`;
-      document.getElementById("daysLitChip").textContent = daysLitCount();
-      document.getElementById("totalLightsChip").textContent = totalLights();
-      document.getElementById("streakChip").textContent = calculateBestStreak();
-    }
+      els.reflectionTitle.textContent = copy.detail.reflectionTitle;
+      els.reflectionHelper.textContent = copy.detail.reflectionHelper;
+      els.reflectionInput.placeholder = copy.detail.reflectionPlaceholder;
+      els.reflectionInput.value = day.reflection || "";
+      els.reflectionInput.parentElement.classList.toggle("hidden", !state.settings.showReflection);
 
-    function renderReflection() {
-      const grid = document.getElementById("reflectionGrid");
-      grid.innerHTML = "";
-
-      const totalDays = getDaysInCurrentMonth();
-      const litDays = daysLitCount();
-
-      for (let i = 0; i < totalDays; i++) {
-        const dot = document.createElement("div");
-        dot.className = "reflection-dot" + (i < litDays ? " on" : "");
-        grid.appendChild(dot);
-      }
-
-      document.getElementById("reflectionMonthTitle").textContent = `${getMonthName()} Summary`;
-      document.getElementById("daysLitStat").textContent = litDays;
-      document.getElementById("totalLightsStat").textContent = totalLights();
-      document.getElementById("bestStreakStat").textContent = calculateBestStreak();
-    }
-
-    function renderSheet() {
-      const list = document.getElementById("sheetStarsList");
-      list.innerHTML = "";
-      if (!selectedDay) return;
-
-      document.getElementById("sheetDayTitle").textContent = `Day ${selectedDay.day}`;
-      document.getElementById("sheetDaySubtitle").textContent = selectedDay.today
-        ? "This is today. Changes here also update the Today tab."
-        : "Tap to record or adjust this day.";
-
-      selectedDay.prayers.forEach((prayer) => {
+      els.feelingTitle.textContent = copy.detail.feelingTitle;
+      els.feelingButtons.innerHTML = "";
+      copy.feelings.forEach(feeling => {
         const btn = document.createElement("button");
-        btn.className = "star-btn";
-        btn.innerHTML = `
-          <div>
-            <p class="star-name">${prayer.name}</p>
-            <p class="star-hint">${prayer.active ? "Light recorded" : "Tap to light"}</p>
-          </div>
-          <div class="star-icon-wrap ${prayer.active ? "active" : ""}">
-            ${starSVG(prayer.active)}
-          </div>
-        `;
-        btn.onclick = () => {
-          prayer.active = !prayer.active;
-          saveState();
-          renderAll();
-          renderSheet();
-        };
-        list.appendChild(btn);
+        btn.className = `feeling-btn ${day.feeling === feeling ? "active" : ""}`;
+        btn.textContent = feeling;
+        btn.type = "button";
+        btn.addEventListener("click", () => {
+          const current = getDayData();
+          current.feeling = current.feeling === feeling ? "" : feeling;
+          current.lastUpdated = new Date().toISOString();
+          saveState(true);
+          renderDetail();
+          renderMonth();
+        });
+        els.feelingButtons.appendChild(btn);
+      });
+
+      els.saveStatusText.textContent = copy.detail.saveSaved;
+      els.detailClosingLine.textContent = randomFrom(copy.detail.closingLines, key + "-closing");
+
+      Array.from(els.detailLightList.querySelectorAll("[data-light-index]")).forEach(btn => {
+        btn.addEventListener("click", () => {
+          const index = Number(btn.dataset.lightIndex);
+          toggleLight(index);
+        });
       });
     }
 
-    function renderReminderSettings() {
-      const list = document.getElementById("reminderOptions");
-      list.innerHTML = "";
+    function renderMonth() {
+      const now = new Date();
+      els.monthBackBtn.textContent = copy.month.back;
+      els.monthDateLine.textContent = formatMonthYear(now);
+      els.monthTitle.textContent = copy.month.title;
+      els.monthSubtitle.textContent = copy.month.subtitle;
+      els.monthGridTitle.textContent = copy.month.gridTitle;
 
-      REMINDER_OPTIONS.forEach((option) => {
-        const btn = document.createElement("button");
-        btn.className = "setting-option";
-        btn.innerHTML = `
-          <div>
-            <p class="setting-title">${option.title}</p>
-            <p class="setting-hint">${option.hint}</p>
+      const returned = daysReturnedInMonth(now);
+      const streak = getCurrentStreak();
+      const lit = lightsLitInMonth(now);
+
+      els.monthSummaryGrid.innerHTML = `
+        <div class="summary-card">
+          <div class="eyebrow">${copy.month.summaryDaysReturned}</div>
+          <div class="big">${returned} day${returned === 1 ? "" : "s"}</div>
+        </div>
+        <div class="summary-card">
+          <div class="eyebrow">${copy.month.summaryStreak}</div>
+          <div class="big">${streak} day${streak === 1 ? "" : "s"}</div>
+        </div>
+        <div class="summary-card">
+          <div class="eyebrow">${copy.month.summaryLights}</div>
+          <div class="big">${lit} this month</div>
+        </div>
+      `;
+
+      els.monthSummaryGrid.classList.toggle("hidden", !state.settings.showMonthSummary);
+
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      els.monthGrid.innerHTML = "";
+
+      for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+        const date = new Date(year, month, dayNum);
+        const key = date.toISOString().slice(0, 10);
+        const dayData = state.days[key];
+        const count = dayData ? completedCount(dayData) : 0;
+        const isToday = key === todayKey();
+
+        const cell = document.createElement("div");
+        cell.className = `month-day ${isToday ? "today" : ""}`;
+        const miniLights = Array.from({ length: 5 }).map((_, i) => {
+          const litClass = dayData && dayData.completed[i] ? "lit" : "";
+          return `<span class="${litClass}"></span>`;
+        }).join("");
+
+        cell.innerHTML = `
+          <div class="top">
+            <div class="num">${dayNum}</div>
+            <div class="small">${count}/5</div>
           </div>
-          <div class="radio-pill ${reminderPreference === option.id ? "active" : ""}">
-            ${reminderPreference === option.id ? "Selected" : "Choose"}
-          </div>
+          <div class="mini-lights">${miniLights}</div>
+          <div class="small">${count > 0 ? "Returned" : "Quiet day"}</div>
         `;
-        btn.onclick = () => {
-          reminderPreference = option.id;
-          saveReminderPreference(option.id);
-          renderReminderSettings();
-        };
-        list.appendChild(btn);
-      });
-
-      const selected = REMINDER_OPTIONS.find(opt => opt.id === reminderPreference) || REMINDER_OPTIONS[1];
-      document.getElementById("reminderPreviewText").textContent = selected.preview;
-    }
-
-    function openDayDetail(dayNumber) {
-      selectedDay = state.days.find(d => d.day === dayNumber);
-      renderSheet();
-      document.getElementById("sheetBackdrop").classList.add("show");
-      document.getElementById("daySheet").classList.add("show");
-      document.getElementById("settingsSheet").classList.remove("show");
-    }
-
-    function closeDayDetail() {
-      selectedDay = null;
-      document.getElementById("daySheet").classList.remove("show");
-      if (!document.getElementById("settingsSheet").classList.contains("show")) {
-        document.getElementById("sheetBackdrop").classList.remove("show");
+        els.monthGrid.appendChild(cell);
       }
-    }
 
-    function openSettings() {
-      renderReminderSettings();
-      document.getElementById("sheetBackdrop").classList.add("show");
-      document.getElementById("settingsSheet").classList.add("show");
-      document.getElementById("daySheet").classList.remove("show");
-    }
-
-    function closeSettings() {
-      document.getElementById("settingsSheet").classList.remove("show");
-      if (!document.getElementById("daySheet").classList.contains("show")) {
-        document.getElementById("sheetBackdrop").classList.remove("show");
-      }
-    }
-
-    function closeAllSheets() {
-      closeDayDetail();
-      closeSettings();
-    }
-
-    function showTab(tab) {
-      document.getElementById("todayView").classList.add("hidden");
-      document.getElementById("pathView").classList.add("hidden");
-      document.getElementById("reflectionView").classList.add("hidden");
-      document.getElementById("tabToday").classList.remove("active");
-      document.getElementById("tabPath").classList.remove("active");
-      document.getElementById("tabReflection").classList.remove("active");
-
-      if (tab === "today") {
-        document.getElementById("todayView").classList.remove("hidden");
-        document.getElementById("tabToday").classList.add("active");
-      } else if (tab === "path") {
-        document.getElementById("pathView").classList.remove("hidden");
-        document.getElementById("tabPath").classList.add("active");
+      if (lit <= 8) {
+        els.monthSummaryLine.textContent = copy.month.low;
+      } else if (lit <= 20) {
+        els.monthSummaryLine.textContent = copy.month.mid;
       } else {
-        document.getElementById("reflectionView").classList.remove("hidden");
-        document.getElementById("tabReflection").classList.add("active");
+        els.monthSummaryLine.textContent = copy.month.high;
       }
     }
 
-    function ensureFreshState() {
-      const currentMonthKey = getMonthKey();
-      if (state.monthKey !== currentMonthKey) {
-        state = {
-          monthKey: currentMonthKey,
-          date: getTodayKey(),
-          days: buildDefaultDays()
-        };
-        saveState();
+    function renderSettings() {
+      els.settingsTitle.textContent = copy.settings.title;
+      els.settingsSubtitle.textContent = copy.settings.subtitle;
+      els.profileTitle.textContent = copy.settings.profileTitle;
+      els.profileSub.textContent = copy.settings.profileSub;
+      els.nameLabel.textContent = copy.settings.nameLabel;
+      els.languageTitle.textContent = copy.settings.languageTitle;
+      els.languageSub.textContent = copy.settings.languageSub;
+      els.appearanceTitle.textContent = copy.settings.appearanceTitle;
+      els.appearanceSub.textContent = copy.settings.appearanceSub;
+      els.remindersTitle.textContent = copy.settings.remindersTitle;
+      els.remindersSub.textContent = copy.settings.remindersSub;
+      els.enableRemindersLabel.textContent = copy.settings.enableRemindersLabel;
+      els.morningLabel.textContent = copy.settings.morningLabel;
+      els.afternoonLabel.textContent = copy.settings.afternoonLabel;
+      els.eveningLabel.textContent = copy.settings.eveningLabel;
+      els.toneLabel.textContent = copy.settings.toneLabel;
+      els.browserNotificationsLabel.textContent = copy.settings.browserNotificationsLabel;
+      els.browserNotificationsSub.textContent = copy.settings.browserNotificationsSub;
+      els.enableNotificationsBtn.textContent = copy.settings.enableNotificationsBtn;
+      els.dailyViewTitle.textContent = copy.settings.dailyViewTitle;
+      els.dailyViewSub.textContent = copy.settings.dailyViewSub;
+      els.showReflectionLabel.textContent = copy.settings.showReflectionLabel;
+      els.showStreakLabel.textContent = copy.settings.showStreakLabel;
+      els.showMonthSummaryLabel.textContent = copy.settings.showMonthSummaryLabel;
+      els.privacyTitle.textContent = copy.settings.privacyTitle;
+      els.privacySub.textContent = copy.settings.privacySub;
+      els.dataTitle.textContent = copy.settings.dataTitle;
+      els.dataSub.textContent = copy.settings.dataSub;
+      els.clearDataBtn.textContent = copy.settings.clearDataBtn;
+      els.settingsBottomLine.textContent = copy.settings.bottomLine;
+
+      els.nameInput.value = state.profile.name || "";
+      els.languageSelect.value = state.profile.language || "en";
+      els.themeSelect.value = state.profile.theme || "dark";
+      els.morningTime.value = state.settings.morningTime;
+      els.afternoonTime.value = state.settings.afternoonTime;
+      els.eveningTime.value = state.settings.eveningTime;
+
+      setToggle(els.remindersToggle, state.settings.remindersEnabled);
+      setToggle(els.showReflectionToggle, state.settings.showReflection);
+      setToggle(els.showStreakToggle, state.settings.showStreak);
+      setToggle(els.showMonthSummaryToggle, state.settings.showMonthSummary);
+
+      els.tonePills.innerHTML = "";
+      copy.tones.forEach(tone => {
+        const pill = document.createElement("button");
+        pill.className = `pill ${state.settings.tone === tone ? "active" : ""}`;
+        pill.textContent = tone;
+        pill.type = "button";
+        pill.addEventListener("click", () => {
+          state.settings.tone = tone;
+          saveState();
+          renderSettings();
+        });
+        els.tonePills.appendChild(pill);
+      });
+
+      updateNotificationStatus();
+    }
+
+    function setToggle(el, active) {
+      el.classList.toggle("active", !!active);
+    }
+
+    function updateNotificationStatus() {
+      if (!("Notification" in window)) {
+        els.notificationStatusText.textContent = "Notifications are not supported in this browser.";
+        els.enableNotificationsBtn.disabled = true;
         return;
       }
-      syncTodayFlags();
-      saveState();
+
+      els.enableNotificationsBtn.disabled = false;
+      if (Notification.permission === "granted") {
+        els.notificationStatusText.textContent = "Notifications enabled";
+      } else if (Notification.permission === "denied") {
+        els.notificationStatusText.textContent = "Notifications blocked in browser settings";
+      } else {
+        els.notificationStatusText.textContent = "Notifications not enabled yet";
+      }
     }
 
-    function renderAll() {
-      ensureFreshState();
-      renderStars();
+    function toggleLight(index) {
+      const day = getDayData();
+      day.completed[index] = !day.completed[index];
+      if (day.completed[index]) {
+        day.completedAt[index] = formatTime(new Date());
+      } else {
+        delete day.completedAt[index];
+      }
+      day.lastUpdated = new Date().toISOString();
+      state.stats.lastVisitDate = todayKey();
+      updateBestStreak();
+      saveState(true);
       renderToday();
-      renderPath();
-      renderReflection();
-      renderReminderSettings();
+      renderDetail();
+      renderMonth();
     }
 
-    renderAll();
+    function render() {
+      applyTheme();
+      renderToday();
+      renderDetail();
+      renderMonth();
+      renderSettings();
+    }
+
+    function bindEvents() {
+      els.openTodayBtn.addEventListener("click", () => showPage("detail"));
+      els.viewMonthBtn.addEventListener("click", () => showPage("month"));
+      els.backToTodayBtn.addEventListener("click", () => showPage("today"));
+      els.monthBackBtn.addEventListener("click", () => showPage("today"));
+      els.topSettingsBtn.addEventListener("click", () => showPage("settings"));
+      els.settingsBackBtn.addEventListener("click", () => showPage("today"));
+
+      els.reflectionInput.addEventListener("input", (event) => {
+        const day = getDayData();
+        day.reflection = event.target.value;
+        day.lastUpdated = new Date().toISOString();
+        els.saveStatusText.textContent = copy.detail.saveSaving;
+        if (reflectionSaveTimer) clearTimeout(reflectionSaveTimer);
+        reflectionSaveTimer = setTimeout(() => {
+          saveState(true);
+          renderMonth();
+        }, 700);
+      });
+
+      els.nameInput.addEventListener("input", (event) => {
+        state.profile.name = event.target.value;
+        saveState();
+      });
+
+      els.languageSelect.addEventListener("change", (event) => {
+        state.profile.language = event.target.value;
+        saveState();
+      });
+
+      els.themeSelect.addEventListener("change", (event) => {
+        state.profile.theme = event.target.value;
+        saveState();
+        applyTheme();
+      });
+
+      els.morningTime.addEventListener("change", (event) => {
+        state.settings.morningTime = event.target.value;
+        saveState();
+      });
+
+      els.afternoonTime.addEventListener("change", (event) => {
+        state.settings.afternoonTime = event.target.value;
+        saveState();
+      });
+
+      els.eveningTime.addEventListener("change", (event) => {
+        state.settings.eveningTime = event.target.value;
+        saveState();
+      });
+
+      els.remindersToggle.addEventListener("click", () => {
+        toggleBooleanSetting("remindersEnabled");
+      });
+
+      els.showReflectionToggle.addEventListener("click", () => {
+        toggleBooleanSetting("showReflection");
+        renderDetail();
+      });
+
+      els.showStreakToggle.addEventListener("click", () => {
+        toggleBooleanSetting("showStreak");
+      });
+
+      els.showMonthSummaryToggle.addEventListener("click", () => {
+        toggleBooleanSetting("showMonthSummary");
+        renderMonth();
+      });
+
+      els.enableNotificationsBtn.addEventListener("click", async () => {
+        if (!("Notification" in window)) return;
+        try {
+          const permission = await Notification.requestPermission();
+          updateNotificationStatus();
+          if (permission === "granted") {
+            try {
+              new Notification("PureTime", {
+                body: "Gentle notifications are now enabled on this device."
+              });
+            } catch (error) {
+              console.error("Notification preview failed:", error);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
+
+      els.clearDataBtn.addEventListener("click", () => {
+        const ok = confirm("This will remove your saved lights, reflections, and settings from this device.");
+        if (!ok) return;
+        state = createDefaultState();
+        saveState();
+        render();
+        showPage("today");
+      });
+
+      window.addEventListener("beforeunload", () => {
+        saveState();
+      });
+    }
+
+    bindEvents();
+    render();
   </script>
 </body>
 </html>
