@@ -9,10 +9,34 @@
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #020617;
+      background: #0a1022;
       color: #f8fafc;
+      overflow-x: hidden;
+    }
+    .bg-layer-1 {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at top, rgba(248,231,181,0.14), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(94,71,123,0.18), transparent 35%),
+        linear-gradient(180deg, #0b1024 0%, #15142b 55%, #0a1022 100%);
+      z-index: 0;
+    }
+    .bg-layer-2 {
+      position: fixed;
+      inset: 0;
+      opacity: 0.28;
+      background-image:
+        radial-gradient(circle at 20% 25%, rgba(255,255,255,0.7) 1px, transparent 1px),
+        radial-gradient(circle at 75% 15%, rgba(255,255,255,0.6) 1px, transparent 1px),
+        radial-gradient(circle at 60% 75%, rgba(255,255,255,0.6) 1px, transparent 1px),
+        radial-gradient(circle at 30% 65%, rgba(255,255,255,0.55) 1px, transparent 1px);
+      background-size: 240px 240px;
+      z-index: 0;
     }
     .app {
+      position: relative;
+      z-index: 1;
       max-width: 430px;
       margin: 0 auto;
       min-height: 100vh;
@@ -25,67 +49,129 @@
       margin-bottom: 24px;
     }
     .brand-small {
-      font-size: 12px;
-      letter-spacing: 0.22em;
+      font-size: 11px;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
-      color: #64748b;
+      color: #bfae87;
     }
     .brand-title {
       margin-top: 6px;
       font-size: 18px;
-      color: #e2e8f0;
+      color: #fff8ee;
       font-weight: 600;
     }
     .mode-pill {
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
-      color: #94a3b8;
+      border: 1px solid rgba(248,231,181,0.1);
+      background: rgba(248,231,181,0.08);
+      color: #ebdcb8;
       border-radius: 999px;
       padding: 8px 12px;
       font-size: 12px;
     }
     .card {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(233,217,175,0.12);
+      background: rgba(15,18,34,0.74);
+      border-radius: 30px;
       padding: 20px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.42);
+      backdrop-filter: blur(20px);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(248,231,181,0.12), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(196,168,112,0.10), transparent 24%);
+      pointer-events: none;
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.08;
+      background-image:
+        linear-gradient(45deg, rgba(248,231,181,0.9) 1px, transparent 1px),
+        linear-gradient(-45deg, rgba(248,231,181,0.9) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+    .card-content {
+      position: relative;
+      z-index: 1;
     }
     .section-label {
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: #64748b;
+      letter-spacing: 0.28em;
+      color: #bfae87;
       margin: 0;
     }
     .section-title {
       font-size: 32px;
       margin: 10px 0 0;
       font-weight: 700;
+      color: #fff8ee;
     }
     .section-subtitle {
       font-size: 14px;
-      color: #94a3b8;
+      color: #d9cfd7;
       margin: 10px 0 0;
-      line-height: 1.5;
+      line-height: 1.55;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .moon-badge {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: rgba(248,231,181,0.15);
+      border: 1px solid rgba(248,231,181,0.15);
+      flex-shrink: 0;
+    }
+    .moon-badge .moon-main {
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: #f8e7b5;
+      opacity: 0.92;
+    }
+    .moon-badge .moon-cut {
+      position: absolute;
+      left: 16px;
+      top: 6px;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: #161a30;
     }
     .stars-list {
-      margin-top: 24px;
       display: grid;
       gap: 12px;
     }
     .star-btn {
       width: 100%;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(15,23,42,0.75);
-      border-radius: 20px;
+      border: 1px solid rgba(248,231,181,0.10);
+      background: rgba(29,34,61,0.66);
+      border-radius: 22px;
       padding: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       color: white;
       cursor: pointer;
+      text-align: left;
     }
     .star-btn:active {
       transform: scale(0.99);
@@ -94,27 +180,27 @@
       font-size: 14px;
       font-weight: 600;
       margin: 0;
+      color: #fff8ee;
     }
     .star-hint {
       font-size: 12px;
-      color: #64748b;
+      color: #b9adba;
       margin: 6px 0 0;
     }
-    .dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.14);
+    .star-icon-wrap {
+      width: 24px;
+      height: 24px;
       transition: all 0.25s ease;
+      opacity: 0.8;
     }
-    .dot.active {
-      background: #fef3c7;
-      box-shadow: 0 0 16px rgba(255,235,170,0.75);
+    .star-icon-wrap.active {
+      opacity: 1;
+      filter: drop-shadow(0 0 10px rgba(248,231,181,0.78));
     }
     .node-card {
-      margin-top: 24px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(15,23,42,0.85);
+      margin-top: 28px;
+      border: 1px solid rgba(248,231,181,0.10);
+      background: rgba(24,28,51,0.78);
       border-radius: 28px;
       padding: 20px;
     }
@@ -124,50 +210,123 @@
       align-items: center;
       margin-bottom: 16px;
       font-size: 14px;
-      color: #cbd5e1;
+      color: #d9cfd7;
     }
-    .node-wrap {
+    .node-head span:last-child {
+      color: #f0e7d4;
+    }
+    .today-node-wrap {
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 24px 0;
     }
-    .node {
+    .today-node {
+      position: relative;
+      width: 176px;
+      height: 176px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .today-node-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(248,231,181,0.16), transparent 62%);
+      filter: blur(24px);
+    }
+    .today-star {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      opacity: 0.8;
+      transition: all 0.25s ease;
+    }
+    .today-star.active {
+      opacity: 1;
+      filter: drop-shadow(0 0 10px rgba(248,231,181,0.78));
+    }
+    .star-pos-1 { top: 10px; left: 50%; transform: translateX(-50%); }
+    .star-pos-2 { top: 42px; right: 18px; }
+    .star-pos-3 { bottom: 20px; right: 34px; }
+    .star-pos-4 { bottom: 20px; left: 34px; }
+    .star-pos-5 { top: 42px; left: 18px; }
+
+    .today-moon-shell {
+      position: relative;
+      width: 112px;
+      height: 112px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .today-moon-shell.level-0 {
+      background: rgba(255,255,255,0.08);
+    }
+    .today-moon-shell.level-1,
+    .today-moon-shell.level-2,
+    .today-moon-shell.level-3,
+    .today-moon-shell.level-4 {
+      background: rgba(248,231,181,0.14);
+      box-shadow: 0 0 24px rgba(248,231,181,0.18);
+    }
+    .today-moon-shell.level-5 {
+      background: rgba(248,231,181,0.22);
+      box-shadow: 0 0 38px rgba(248,231,181,0.30);
+    }
+    .today-moon-core {
       border-radius: 999px;
       transition: all 0.3s ease;
-      position: relative;
     }
-    .node::before, .node::after {
-      content: "";
-      position: absolute;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      inset: 12px;
+    .today-moon-core.level-0 {
+      width: 56px;
+      height: 56px;
+      background: rgba(255,255,255,0.08);
     }
-    .node::after {
-      inset: 28px;
-      border-color: rgba(255,255,255,0.08);
+    .today-moon-core.level-1 {
+      width: 64px;
+      height: 64px;
+      background: rgba(227,197,125,0.74);
     }
-    .node-0 { width: 64px; height: 64px; background: rgba(255,255,255,0.08); }
-    .node-1 { width: 84px; height: 84px; background: rgba(252,211,77,0.5); box-shadow: 0 0 18px rgba(255,220,140,0.18); }
-    .node-2 { width: 96px; height: 96px; background: rgba(253,230,138,0.65); box-shadow: 0 0 22px rgba(255,230,160,0.22); }
-    .node-3 { width: 112px; height: 112px; background: rgba(254,243,199,0.82); box-shadow: 0 0 30px rgba(255,230,160,0.32); }
-    .node-4 { width: 128px; height: 128px; background: rgba(254,243,199,0.92); box-shadow: 0 0 38px rgba(255,235,170,0.40); }
-    .node-5 { width: 144px; height: 144px; background: rgba(255,251,235,1); box-shadow: 0 0 54px rgba(255,240,180,0.50); }
+    .today-moon-core.level-2 {
+      width: 64px;
+      height: 64px;
+      background: rgba(239,210,143,0.80);
+    }
+    .today-moon-core.level-3 {
+      width: 68px;
+      height: 68px;
+      background: rgba(244,223,168,0.86);
+    }
+    .today-moon-core.level-4 {
+      width: 70px;
+      height: 70px;
+      background: rgba(248,231,181,0.90);
+    }
+    .today-moon-core.level-5 {
+      width: 74px;
+      height: 74px;
+      background: #fff3d1;
+      box-shadow: 0 0 18px rgba(248,231,181,0.38);
+    }
 
     .center-text {
       text-align: center;
-      color: #cbd5e1;
+      color: #e7dcc4;
       font-size: 14px;
       margin: 0;
     }
     .primary-btn {
       width: 100%;
       margin-top: 24px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.08);
-      color: white;
-      border-radius: 18px;
+      border: 1px solid rgba(248,231,181,0.14);
+      background: rgba(248,231,181,0.08);
+      color: #fff7e6;
+      border-radius: 999px;
       padding: 16px;
       font-size: 14px;
       font-weight: 600;
@@ -180,11 +339,12 @@
       margin-top: 16px;
     }
     .chip {
-      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(248,231,181,0.10);
+      background: rgba(248,231,181,0.08);
       border-radius: 999px;
       padding: 8px 12px;
       font-size: 12px;
-      color: #cbd5e1;
+      color: #f1e8d5;
     }
     .path-list {
       position: relative;
@@ -194,11 +354,11 @@
     .path-list::before {
       content: "";
       position: absolute;
-      left: 15px;
-      top: 8px;
-      bottom: 8px;
+      left: 16px;
+      top: 12px;
+      bottom: 12px;
       width: 1px;
-      background: rgba(255,255,255,0.1);
+      background: linear-gradient(to bottom, rgba(248,231,181,0.10), rgba(248,231,181,0.35), transparent);
     }
     .path-item {
       position: relative;
@@ -207,23 +367,34 @@
       margin-bottom: 18px;
     }
     .path-node {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       margin-top: 8px;
       border-radius: 999px;
       position: relative;
       z-index: 1;
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.10);
     }
-    .path-node.l1, .path-node.l2 { background: rgba(253,224,71,0.7); }
-    .path-node.l3, .path-node.l4 { background: rgba(254,240,138,0.9); box-shadow: 0 0 14px rgba(255,230,160,0.45); }
-    .path-node.l5 { background: #fef3c7; box-shadow: 0 0 18px rgba(255,240,180,0.65); }
-    .path-node.today { box-shadow: 0 0 0 5px rgba(254,243,199,0.15); }
+    .path-node.l1, .path-node.l2 {
+      background: #d8b46d;
+      box-shadow: 0 0 14px rgba(216,180,109,0.28);
+    }
+    .path-node.l3, .path-node.l4 {
+      background: #efd28f;
+      box-shadow: 0 0 18px rgba(239,210,143,0.48);
+    }
+    .path-node.l5 {
+      background: #f8e7b5;
+      box-shadow: 0 0 22px rgba(248,231,181,0.68);
+    }
+    .path-node.today {
+      box-shadow: 0 0 0 5px rgba(248,231,181,0.12);
+    }
     .path-card {
       flex: 1;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(15,23,42,0.65);
-      border-radius: 20px;
+      border: 1px solid rgba(248,231,181,0.10);
+      background: rgba(24,28,51,0.72);
+      border-radius: 22px;
       padding: 14px 16px;
     }
     .path-head {
@@ -232,8 +403,12 @@
       font-size: 14px;
       margin-bottom: 12px;
     }
+    .path-head span:first-child {
+      color: #fff8ee;
+      font-weight: 600;
+    }
     .path-head span:last-child {
-      color: #94a3b8;
+      color: #b9adba;
       font-size: 12px;
     }
     .bars {
@@ -244,17 +419,19 @@
       height: 10px;
       flex: 1;
       border-radius: 999px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
     }
     .bar.on {
-      background: rgba(254,243,199,0.92);
+      background: rgba(248,231,181,0.90);
     }
-    .reflection-grid {
+    .reflection-grid-shell {
       margin-top: 24px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(15,23,42,0.75);
+      border: 1px solid rgba(248,231,181,0.10);
+      background: rgba(24,28,51,0.78);
       border-radius: 28px;
       padding: 20px;
+    }
+    .reflection-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 10px;
@@ -265,8 +442,8 @@
       background: rgba(255,255,255,0.08);
     }
     .reflection-dot.on {
-      background: rgba(254,243,199,0.9);
-      box-shadow: 0 0 12px rgba(255,235,170,0.35);
+      background: rgba(248,231,181,0.90);
+      box-shadow: 0 0 12px rgba(248,231,181,0.38);
     }
     .stats {
       margin-top: 24px;
@@ -275,60 +452,67 @@
       gap: 10px;
     }
     .stat {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(15,23,42,0.65);
-      border-radius: 18px;
+      border: 1px solid rgba(248,231,181,0.10);
+      background: rgba(24,28,51,0.72);
+      border-radius: 20px;
       padding: 16px 10px;
       text-align: center;
     }
     .stat-value {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
+      color: #fff8ee;
     }
     .stat-label {
       margin-top: 6px;
       font-size: 12px;
-      color: #94a3b8;
+      color: #b9adba;
     }
     .bottom-nav {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      background: rgba(2,6,23,0.92);
-      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(248,231,181,0.10);
+      background: rgba(10,16,34,0.88);
+      backdrop-filter: blur(18px);
       padding: 14px 16px;
+      z-index: 10;
     }
     .bottom-nav-inner {
       max-width: 430px;
       margin: 0 auto;
       display: flex;
       gap: 6px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(248,231,181,0.10);
       background: rgba(255,255,255,0.04);
-      border-radius: 24px;
+      border-radius: 999px;
       padding: 6px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
     }
     .tab-btn {
       flex: 1;
       border: 0;
       background: transparent;
-      color: #94a3b8;
-      border-radius: 18px;
+      color: #d7d0d9;
+      border-radius: 999px;
       padding: 12px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
     }
     .tab-btn.active {
-      background: rgba(255,255,255,0.1);
-      color: white;
+      background: rgba(248,231,181,0.14);
+      color: #f8e7b5;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.03);
     }
     .hidden { display: none; }
   </style>
 </head>
 <body>
+  <div class="bg-layer-1"></div>
+  <div class="bg-layer-2"></div>
+
   <div class="app">
     <div class="topbar">
       <div>
@@ -339,60 +523,105 @@
     </div>
 
     <section id="todayView" class="card">
-      <p class="section-label">Today</p>
-      <h1 class="section-title">April 5</h1>
-      <p class="section-subtitle">A little light still counts.</p>
-
-      <div class="stars-list" id="starsList"></div>
-
-      <div class="node-card">
-        <div class="node-head">
-          <span>Today Node</span>
-          <span id="todayCount">0 / 5</span>
+      <div class="card-content">
+        <div class="header-row">
+          <div>
+            <p class="section-label">Today</p>
+            <h1 class="section-title">April 5</h1>
+            <p class="section-subtitle">A little light still counts.</p>
+          </div>
+          <div class="moon-badge">
+            <div class="moon-main"></div>
+            <div class="moon-cut"></div>
+          </div>
         </div>
-        <div class="node-wrap">
-          <div id="todayNode" class="node node-0"></div>
+
+        <div class="stars-list" id="starsList"></div>
+
+        <div class="node-card">
+          <div class="node-head">
+            <span>Today Node</span>
+            <span id="todayCount">0 / 5</span>
+          </div>
+
+          <div class="today-node-wrap">
+            <div class="today-node">
+              <div class="today-node-glow"></div>
+
+              <div class="today-star star-pos-1" id="nodeStar1"></div>
+              <div class="today-star star-pos-2" id="nodeStar2"></div>
+              <div class="today-star star-pos-3" id="nodeStar3"></div>
+              <div class="today-star star-pos-4" id="nodeStar4"></div>
+              <div class="today-star star-pos-5" id="nodeStar5"></div>
+
+              <div class="today-moon-shell level-0" id="todayMoonShell">
+                <div class="today-moon-core level-0" id="todayMoonCore"></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="center-text" id="todayText">0 of 5 lights completed</p>
         </div>
-        <p class="center-text" id="todayText">0 of 5 lights today</p>
+
+        <button class="primary-btn" onclick="showTab('path')">View My Path</button>
       </div>
-
-      <button class="primary-btn" onclick="showTab('path')">View My Path</button>
     </section>
 
     <section id="pathView" class="card hidden">
-      <p class="section-label">Star Path</p>
-      <h2 class="section-title">April Path</h2>
+      <div class="card-content">
+        <div class="header-row">
+          <div>
+            <p class="section-label">Star Path</p>
+            <h2 class="section-title">April Path</h2>
+          </div>
+          <div style="margin-top: 4px; text-align: right; font-size: 12px; color: #b9adba;">
+            <div>Moonlit</div>
+            <div>quiet route</div>
+          </div>
+        </div>
 
-      <div class="chips">
-        <div class="chip">5 days lit</div>
-        <div class="chip"><span id="totalLightsChip">19</span> lights</div>
-        <div class="chip">3-day streak</div>
+        <div class="chips">
+          <div class="chip">5 days lit</div>
+          <div class="chip"><span id="totalLightsChip">19</span> lights</div>
+          <div class="chip">3-day streak</div>
+        </div>
+
+        <div class="path-list" id="pathList"></div>
+
+        <button class="primary-btn" onclick="showTab('reflection')">Monthly Reflection</button>
       </div>
-
-      <div class="path-list" id="pathList"></div>
-
-      <button class="primary-btn" onclick="showTab('reflection')">Monthly Reflection</button>
     </section>
 
     <section id="reflectionView" class="card hidden">
-      <p class="section-label">Reflection</p>
-      <h2 class="section-title">April Summary</h2>
-      <p class="section-subtitle">Not every day was full, but the path is still yours.</p>
-
-      <div class="reflection-grid" id="reflectionGrid"></div>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-value">5</div>
-          <div class="stat-label">Days Lit</div>
+      <div class="card-content">
+        <div class="header-row">
+          <div>
+            <p class="section-label">Reflection</p>
+            <h2 class="section-title">April Summary</h2>
+            <p class="section-subtitle">Not every day was full, but the path is still yours.</p>
+          </div>
+          <div style="height:48px;width:48px;border-radius:999px;border:1px solid rgba(248,231,181,0.10);background:rgba(248,231,181,0.08);display:flex;align-items:center;justify-content:center;color:#f8e7b5;font-size:20px;">
+            ✦
+          </div>
         </div>
-        <div class="stat">
-          <div class="stat-value" id="totalLightsStat">19</div>
-          <div class="stat-label">Total Lights</div>
+
+        <div class="reflection-grid-shell">
+          <div class="reflection-grid" id="reflectionGrid"></div>
         </div>
-        <div class="stat">
-          <div class="stat-value">3</div>
-          <div class="stat-label">Best Streak</div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Days Lit</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="totalLightsStat">19</div>
+            <div class="stat-label">Total Lights</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Best Streak</div>
+          </div>
         </div>
       </div>
     </section>
@@ -407,13 +636,46 @@
   </div>
 
   <script>
-    const prayers = [
+    const STORAGE_KEY = "puretime-five-lights-state";
+
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+    }
+
+    const defaultPrayers = [
       { name: "Fajr", active: true },
       { name: "Dhuhr", active: true },
       { name: "Asr", active: false },
       { name: "Maghrib", active: true },
       { name: "Isha", active: false }
     ];
+
+    function loadPrayers() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [...defaultPrayers];
+
+      try {
+        const saved = JSON.parse(raw);
+        if (saved.date === getTodayKey() && Array.isArray(saved.prayers)) {
+          return saved.prayers;
+        }
+      } catch (e) {}
+
+      return [...defaultPrayers];
+    }
+
+    function savePrayers() {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          date: getTodayKey(),
+          prayers: prayers
+        })
+      );
+    }
+
+    let prayers = loadPrayers();
 
     const pathDays = [
       { day: 1, lights: 5 },
@@ -425,18 +687,33 @@
       { day: 7, lights: 0 }
     ];
 
+    function starSVG(active) {
+      return `
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path
+            d="M12 2.8l2.25 4.56 5.03.73-3.64 3.55.86 5.01L12 14.38l-4.5 2.27.86-5.01-3.64-3.55 5.03-.73L12 2.8z"
+            fill="${active ? '#F8E7B5' : 'transparent'}"
+            stroke="${active ? '#F8E7B5' : 'rgba(255,255,255,0.38)'}"
+            stroke-width="1.45"
+            stroke-linejoin="round"
+          />
+        </svg>
+      `;
+    }
+
     function activeCount() {
       return prayers.filter(p => p.active).length;
     }
 
     function totalLights() {
-      let previous = pathDays.reduce((sum, item) => sum + (item.today ? 0 : item.lights), 0);
+      const previous = pathDays.reduce((sum, item) => sum + (item.today ? 0 : item.lights), 0);
       return previous + activeCount();
     }
 
     function renderStars() {
       const el = document.getElementById("starsList");
       el.innerHTML = "";
+
       prayers.forEach((star, index) => {
         const btn = document.createElement("button");
         btn.className = "star-btn";
@@ -445,24 +722,39 @@
             <p class="star-name">${star.name}</p>
             <p class="star-hint">${star.active ? "Light recorded" : "Tap to light"}</p>
           </div>
-          <div class="dot ${star.active ? "active" : ""}"></div>
+          <div class="star-icon-wrap ${star.active ? "active" : ""}">
+            ${starSVG(star.active)}
+          </div>
         `;
         btn.onclick = () => {
           prayers[index].active = !prayers[index].active;
+          savePrayers();
           renderAll();
         };
         el.appendChild(btn);
       });
     }
 
+    function renderTodayNodeStars(count) {
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById(`nodeStar${i}`);
+        el.className = `today-star star-pos-${i}` + (i <= count ? " active" : "");
+        el.innerHTML = starSVG(i <= count);
+      }
+    }
+
     function renderToday() {
       const count = activeCount();
       document.getElementById("todayCount").textContent = `${count} / 5`;
       document.getElementById("todayText").textContent =
-        count === 5 ? "Today is fully lit." : `${count} of 5 lights today`;
+        count === 5 ? "Today is complete and softly lit." : `${count} of 5 lights completed`;
 
-      const node = document.getElementById("todayNode");
-      node.className = `node node-${count}`;
+      const shell = document.getElementById("todayMoonShell");
+      const core = document.getElementById("todayMoonCore");
+      shell.className = `today-moon-shell level-${count}`;
+      core.className = `today-moon-core level-${count}`;
+
+      renderTodayNodeStars(count);
     }
 
     function renderPath() {
