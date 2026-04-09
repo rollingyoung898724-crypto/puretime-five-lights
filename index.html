@@ -12,19 +12,15 @@
       --text: #f6f2ea;
       --muted: #b8b4ad;
       --gold: #e7c98a;
-      --gold-soft: rgba(231,201,138,0.14);
       --danger: #d88c8c;
       --shadow: 0 20px 50px rgba(0,0,0,0.25);
       --radius-xl: 24px;
       --radius-lg: 18px;
-      --radius-md: 14px;
       --transition: 180ms ease;
       --max: 1120px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
@@ -37,9 +33,7 @@
         linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%);
     }
 
-    body {
-      padding: 24px 16px 60px;
-    }
+    body { padding: 24px 16px 60px; }
 
     .app {
       max-width: var(--max);
@@ -76,9 +70,7 @@
       animation: fadeIn 220ms ease;
     }
 
-    .page.active {
-      display: block;
-    }
+    .page.active { display: block; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
@@ -364,9 +356,7 @@
       background: rgba(255,255,255,0.03);
     }
 
-    .section-block {
-      margin-top: 18px;
-    }
+    .section-block { margin-top: 18px; }
 
     .section-title {
       font-size: 1.15rem;
@@ -624,54 +614,29 @@
       color: #fff2d0;
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     @media (max-width: 960px) {
-      .lights-preview {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
+      .lights-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .summary-grid,
-      .field-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .month-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
+      .field-grid { grid-template-columns: 1fr; }
+      .month-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
 
     @media (max-width: 640px) {
-      body {
-        padding: 16px 12px 40px;
-      }
-
+      body { padding: 16px 12px 40px; }
       .hero,
       .card,
       .light-card,
       .setting-group,
-      .summary-card {
-        padding: 18px;
-      }
-
-      .month-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .footer-row {
-        grid-template-columns: 1fr;
-      }
-
+      .summary-card { padding: 18px; }
+      .month-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .footer-row { grid-template-columns: 1fr; }
       .month-nav {
         flex-direction: column;
         align-items: stretch;
       }
-
-      .month-nav-center {
-        order: -1;
-      }
+      .month-nav-center { order: -1; }
     }
   </style>
 </head>
@@ -929,7 +894,9 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "puretime-five-lights-prayer-v4-i18n-lite";
+    const STORAGE_KEY = "puretime-five-lights-prayer-v5-fixed-keys";
+
+    const PRAYER_KEYS = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
 
     const i18n = {
       en: {
@@ -1044,14 +1011,12 @@
         subtitle: "Not a scorecard — just a gentle record of prayer and return.",
         gridTitlePrefix: "Viewing",
         summaryDaysReturned: "Days with prayer",
-        summaryStreak: "Current gentle streak",
         summaryLights: "Prayers marked",
         low: "A quiet month still counts. You are still returning.",
         mid: "You have made space for prayer in small ways throughout the month.",
         high: "Your month carries a steady rhythm of return.",
         quietDay: "Quiet day",
-        prayerMarked: "Prayer marked",
-        futureLocked: "Future locked"
+        prayerMarked: "Prayer marked"
       },
       settings: {
         title: "Settings",
@@ -1088,11 +1053,11 @@
       tones: ["Gentle", "Neutral", "Minimal"],
       feelings: ["Calm", "Tired", "Full", "Heavy", "Hopeful", "Grateful"],
       lights: [
-        { id: 0, key: "fajr", desc: "The first prayer light of the day." },
-        { id: 1, key: "dhuhr", desc: "A midday return in the middle of the day." },
-        { id: 2, key: "asr", desc: "A late-day pause before the evening comes in." },
-        { id: 3, key: "maghrib", desc: "A prayer light at sunset." },
-        { id: 4, key: "isha", desc: "A quiet prayer to close the day." }
+        { key: "fajr", desc: "The first prayer light of the day." },
+        { key: "dhuhr", desc: "A midday return in the middle of the day." },
+        { key: "asr", desc: "A late-day pause before the evening comes in." },
+        { key: "maghrib", desc: "A prayer light at sunset." },
+        { key: "isha", desc: "A quiet prayer to close the day." }
       ]
     };
 
@@ -1102,6 +1067,27 @@
       const m = String(now.getMonth() + 1).padStart(2, "0");
       const d = String(now.getDate()).padStart(2, "0");
       return `${y}-${m}-${d}`;
+    }
+
+    function createEmptyPrayerMap(defaultValue) {
+      return {
+        fajr: defaultValue,
+        dhuhr: defaultValue,
+        asr: defaultValue,
+        maghrib: defaultValue,
+        isha: defaultValue
+      };
+    }
+
+    function createEmptyDay() {
+      return {
+        completed: createEmptyPrayerMap(false),
+        completedAt: createEmptyPrayerMap(""),
+        addedLater: createEmptyPrayerMap(false),
+        reflection: "",
+        feeling: "",
+        lastUpdated: new Date().toISOString()
+      };
     }
 
     function createDefaultState() {
@@ -1133,12 +1119,58 @@
       };
     }
 
+    function normalizeDayData(day) {
+      const normalized = createEmptyDay();
+      if (!day) return normalized;
+
+      // 兼容旧数组结构
+      if (Array.isArray(day.completed)) {
+        PRAYER_KEYS.forEach((key, index) => {
+          normalized.completed[key] = !!day.completed[index];
+        });
+      } else if (day.completed && typeof day.completed === "object") {
+        PRAYER_KEYS.forEach((key) => {
+          normalized.completed[key] = !!day.completed[key];
+        });
+      }
+
+      if (day.completedAt && typeof day.completedAt === "object") {
+        PRAYER_KEYS.forEach((key, index) => {
+          normalized.completedAt[key] =
+            day.completedAt[key] ??
+            (Array.isArray(day.completedAt) ? (day.completedAt[index] || "") : "") ??
+            "";
+        });
+      }
+
+      if (day.addedLater && typeof day.addedLater === "object") {
+        PRAYER_KEYS.forEach((key, index) => {
+          normalized.addedLater[key] =
+            !!day.addedLater[key] ||
+            !!(Array.isArray(day.addedLater) ? day.addedLater[index] : false);
+        });
+      }
+
+      normalized.reflection = day.reflection || "";
+      normalized.feeling = day.feeling || "";
+      normalized.lastUpdated = day.lastUpdated || new Date().toISOString();
+
+      return normalized;
+    }
+
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return createDefaultState();
         const parsed = JSON.parse(raw);
         const defaults = createDefaultState();
+
+        const normalizedDays = {};
+        const sourceDays = parsed.days || {};
+        Object.keys(sourceDays).forEach((key) => {
+          normalizedDays[key] = normalizeDayData(sourceDays[key]);
+        });
+
         return {
           ...defaults,
           ...parsed,
@@ -1146,7 +1178,7 @@
           settings: { ...defaults.settings, ...(parsed.settings || {}) },
           ui: { ...defaults.ui, ...(parsed.ui || {}) },
           stats: { ...defaults.stats, ...(parsed.stats || {}) },
-          days: parsed.days || {}
+          days: normalizedDays
         };
       } catch (error) {
         console.error("Failed to load state:", error);
@@ -1288,21 +1320,15 @@
 
     function getDayData(key = selectedDateKey()) {
       if (!state.days[key]) {
-        state.days[key] = {
-          completed: [false, false, false, false, false],
-          completedAt: {},
-          addedLater: {},
-          reflection: "",
-          feeling: "",
-          lastUpdated: new Date().toISOString()
-        };
+        state.days[key] = createEmptyDay();
+      } else {
+        state.days[key] = normalizeDayData(state.days[key]);
       }
-      if (!state.days[key].addedLater) state.days[key].addedLater = {};
       return state.days[key];
     }
 
     function completedCount(dayData) {
-      return dayData.completed.filter(Boolean).length;
+      return Object.values(dayData.completed).filter(Boolean).length;
     }
 
     function progressPercent(dayData) {
@@ -1408,14 +1434,14 @@
 
     function daysReturnedInMonth(yyyyMm) {
       return Object.entries(state.days).filter(([key, day]) => {
-        return key.startsWith(yyyyMm) && completedCount(day) > 0;
+        return key.startsWith(yyyyMm) && completedCount(normalizeDayData(day)) > 0;
       }).length;
     }
 
     function lightsLitInMonth(yyyyMm) {
       return Object.entries(state.days).reduce((sum, [key, day]) => {
         if (key.startsWith(yyyyMm)) {
-          return sum + completedCount(day);
+          return sum + completedCount(normalizeDayData(day));
         }
         return sum;
       }, 0);
@@ -1432,7 +1458,7 @@
         const d = String(cursor.getDate()).padStart(2, "0");
         const key = `${y}-${m}-${d}`;
         const day = state.days[key];
-        if (day && completedCount(day) > 0) {
+        if (day && completedCount(normalizeDayData(day)) > 0) {
           streak += 1;
           cursor.setDate(cursor.getDate() - 1);
         } else {
@@ -1478,8 +1504,8 @@
       }
     }
 
-    function localizedPrayerName(lightKey) {
-      return t(i18n.en.prayers[lightKey], i18n.ar.prayers[lightKey]);
+    function localizedPrayerName(prayerKey) {
+      return t(i18n.en.prayers[prayerKey], i18n.ar.prayers[prayerKey]);
     }
 
     function applyLocalizedStaticText() {
@@ -1487,7 +1513,6 @@
       els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
       els.backToTodayBtn.textContent = t(i18n.en.nav.backToToday, i18n.ar.nav.backToToday);
       els.detailOpenMonthBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month);
-      els.monthBackBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month) === i18n.ar.nav.month ? "العودة إلى الصفحة السابقة" : "Back to detail";
       els.selectedDateLabel.textContent = t(i18n.en.nav.selectedDate, i18n.ar.nav.selectedDate);
       els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
       els.reflectionTitle.textContent = t(i18n.en.labels.reflection, i18n.ar.labels.reflection);
@@ -1517,8 +1542,8 @@
       els.selectedDateSummary.textContent = formatLongDateWithYear(parseDateKey(selected));
 
       els.todayLightsPreview.innerHTML = "";
-      copy.lights.forEach((light, index) => {
-        const lit = !!day.completed[index];
+      copy.lights.forEach((light) => {
+        const lit = !!day.completed[light.key];
         const item = document.createElement("div");
         item.className = `preview-light ${lit ? "lit" : ""}`;
         item.innerHTML = `
@@ -1531,14 +1556,14 @@
     }
 
     function renderDetail() {
-      const key = selectedDateKey();
-      const day = getDayData(key);
+      const dateKey = selectedDateKey();
+      const day = getDayData(dateKey);
       const count = completedCount(day);
-      const isToday = key === todayKey();
-      const isFuture = isFutureDate(key);
+      const isToday = dateKey === todayKey();
+      const isFuture = isFutureDate(dateKey);
 
       els.backToTodayBtn.textContent = t(i18n.en.nav.backToToday, i18n.ar.nav.backToToday);
-      els.detailDateLine.textContent = formatLongDateWithYear(parseDateKey(key));
+      els.detailDateLine.textContent = formatLongDateWithYear(parseDateKey(dateKey));
       els.detailTitle.textContent = isToday ? copy.today.title : "Selected day";
       els.detailSubtitle.textContent = copy.detail.title;
       els.detailProgressLabel.textContent = copy.detail.progressLabel;
@@ -1550,10 +1575,10 @@
       els.detailOpenMonthBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month);
       els.detailLightList.innerHTML = "";
 
-      copy.lights.forEach((light, index) => {
-        const lit = !!day.completed[index];
-        const timestamp = day.completedAt[index];
-        const addedLater = !!day.addedLater[index];
+      copy.lights.forEach((light) => {
+        const lit = !!day.completed[light.key];
+        const timestamp = day.completedAt[light.key];
+        const addedLater = !!day.addedLater[light.key];
 
         const card = document.createElement("div");
         card.className = "light-card";
@@ -1566,7 +1591,7 @@
                 <p class="light-desc">${light.desc}</p>
               </div>
             </div>
-            <button class="btn ${lit ? "" : "btn-primary"}" data-light-index="${index}" ${isFuture ? "disabled" : ""}>
+            <button class="btn ${lit ? "" : "btn-primary"}" data-light-key="${light.key}" ${isFuture ? "disabled" : ""}>
               ${isFuture ? t(i18n.en.actions.locked, i18n.ar.actions.locked) : (lit ? t(i18n.en.actions.marked, i18n.ar.actions.marked) : t(i18n.en.actions.markPrayer, i18n.ar.actions.markPrayer))}
             </button>
           </div>
@@ -1590,7 +1615,7 @@
 
       els.feelingTitle.textContent = copy.detail.feelingTitle;
       els.feelingButtons.innerHTML = "";
-      copy.feelings.forEach(feeling => {
+      copy.feelings.forEach((feeling) => {
         const btn = document.createElement("button");
         btn.className = `feeling-btn ${day.feeling === feeling ? "active" : ""}`;
         btn.type = "button";
@@ -1598,7 +1623,7 @@
         if (isFuture) btn.disabled = true;
         btn.addEventListener("click", () => {
           if (isFuture) return;
-          const current = getDayData(key);
+          const current = getDayData(dateKey);
           current.feeling = current.feeling === feeling ? "" : feeling;
           current.lastUpdated = new Date().toISOString();
           saveState(true);
@@ -1609,13 +1634,13 @@
       });
 
       els.saveStatusText.textContent = isFuture ? "Future dates cannot be edited." : copy.detail.saveSaved;
-      els.detailClosingLine.textContent = randomFrom(copy.detail.closingLines, key + "-closing");
+      els.detailClosingLine.textContent = randomFrom(copy.detail.closingLines, dateKey + "-closing");
 
-      Array.from(els.detailLightList.querySelectorAll("[data-light-index]")).forEach(btn => {
+      Array.from(els.detailLightList.querySelectorAll("[data-light-key]")).forEach(btn => {
         btn.addEventListener("click", () => {
           if (isFuture) return;
-          const index = Number(btn.dataset.lightIndex);
-          toggleLightForDate(key, index);
+          const prayerKey = btn.dataset.lightKey;
+          toggleLightForDate(dateKey, prayerKey);
         });
       });
     }
@@ -1660,7 +1685,8 @@
 
       for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
         const key = `${cursor}-${String(dayNum).padStart(2, "0")}`;
-        const dayData = state.days[key];
+        const rawDayData = state.days[key];
+        const dayData = rawDayData ? normalizeDayData(rawDayData) : null;
         const count = dayData ? completedCount(dayData) : 0;
         const isToday = key === todayKey();
         const isSelected = key === selected;
@@ -1670,8 +1696,8 @@
         const cell = document.createElement("div");
         cell.className = `month-day ${isToday ? "today" : ""} ${isSelected ? "selected" : ""} ${future ? "future-disabled" : ""}`;
 
-        const miniLights = Array.from({ length: 5 }).map((_, i) => {
-          const litClass = dayData && dayData.completed[i] ? "lit" : "";
+        const miniLights = PRAYER_KEYS.map((prayerKey) => {
+          const litClass = dayData && dayData.completed[prayerKey] ? "lit" : "";
           return `<span class="${litClass}"></span>`;
         }).join("");
 
@@ -1765,7 +1791,7 @@
       setToggle(els.showMonthSummaryToggle, state.settings.showMonthSummary);
 
       els.tonePills.innerHTML = "";
-      copy.tones.forEach(tone => {
+      copy.tones.forEach((tone) => {
         const pill = document.createElement("button");
         pill.className = `pill ${state.settings.tone === tone ? "active" : ""}`;
         pill.type = "button";
@@ -1781,18 +1807,18 @@
       updateNotificationStatus();
     }
 
-    function toggleLightForDate(key, index) {
-      if (isFutureDate(key)) return;
+    function toggleLightForDate(dateKey, prayerKey) {
+      if (isFutureDate(dateKey)) return;
 
-      const day = getDayData(key);
-      day.completed[index] = !day.completed[index];
+      const day = getDayData(dateKey);
+      day.completed[prayerKey] = !day.completed[prayerKey];
 
-      if (day.completed[index]) {
-        day.completedAt[index] = formatTime(new Date());
-        day.addedLater[index] = isPastDate(key);
+      if (day.completed[prayerKey]) {
+        day.completedAt[prayerKey] = formatTime(new Date());
+        day.addedLater[prayerKey] = isPastDate(dateKey);
       } else {
-        delete day.completedAt[index];
-        delete day.addedLater[index];
+        day.completedAt[prayerKey] = "";
+        day.addedLater[prayerKey] = false;
       }
 
       day.lastUpdated = new Date().toISOString();
@@ -1835,7 +1861,13 @@
       });
 
       els.settingsBackBtn.addEventListener("click", () => {
-        showPage(previousPageBeforeSettings || "today");
+        const fallbackPage =
+          previousPageBeforeSettings &&
+          previousPageBeforeSettings !== "settings"
+            ? previousPageBeforeSettings
+            : (selectedDateKey() && selectedDateKey() !== todayKey() ? "detail" : "today");
+
+        showPage(fallbackPage);
       });
 
       els.reflectionInput.addEventListener("input", (event) => {
