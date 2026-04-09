@@ -5,1169 +5,1937 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PureTime Five Lights</title>
   <style>
-    :root{
-      --bg-1:#0a1022;
-      --bg-2:#14192f;
-      --card:rgba(18,24,44,0.76);
-      --card-2:rgba(24,30,54,0.82);
-      --line:rgba(248,231,181,0.12);
-      --soft:rgba(248,231,181,0.08);
-      --gold:#f8e7b5;
-      --gold-2:#e6c982;
-      --text:#fff8ee;
-      --muted:#cfc5c8;
-      --muted-2:#b8adba;
-      --shadow:0 24px 70px rgba(0,0,0,0.42);
-      --radius:28px;
+    :root {
+      --bg: #0f1220;
+      --card: rgba(255,255,255,0.06);
+      --line: rgba(255,255,255,0.08);
+      --text: #f6f2ea;
+      --muted: #b8b4ad;
+      --gold: #e7c98a;
+      --gold-soft: rgba(231,201,138,0.14);
+      --danger: #d88c8c;
+      --shadow: 0 20px 50px rgba(0,0,0,0.25);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --transition: 180ms ease;
+      --max: 1120px;
     }
 
-    * { box-sizing: border-box; }
-    html, body { margin:0; padding:0; }
-    body{
-      min-height:100vh;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Noto Sans Arabic","Helvetica Neue",Arial,sans-serif;
-      color:var(--text);
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(248,231,181,0.13), transparent 28%),
-        radial-gradient(circle at bottom left, rgba(98,74,132,0.18), transparent 34%),
-        linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 55%, #0a1022 100%);
+        radial-gradient(circle at top, rgba(231,201,138,0.08), transparent 28%),
+        linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%);
     }
 
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.26;
-      background-image:
-        radial-gradient(circle at 20% 25%, rgba(255,255,255,.75) 1px, transparent 1px),
-        radial-gradient(circle at 75% 15%, rgba(255,255,255,.6) 1px, transparent 1px),
-        radial-gradient(circle at 58% 72%, rgba(255,255,255,.55) 1px, transparent 1px),
-        radial-gradient(circle at 28% 68%, rgba(255,255,255,.5) 1px, transparent 1px);
-      background-size:240px 240px;
+    body {
+      padding: 24px 16px 60px;
     }
 
-    .app{
-      position:relative;
-      max-width:430px;
-      margin:0 auto;
-      min-height:100vh;
-      padding:24px 16px 108px;
+    .app {
+      max-width: var(--max);
+      margin: 0 auto;
     }
 
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:20px;
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
-    .topbar.rtl{ flex-direction:row-reverse; }
-
-    .brand-small{
-      font-size:11px;
-      letter-spacing:.32em;
-      text-transform:uppercase;
-      color:#bfae87;
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .brand-title{
-      margin-top:4px;
-      font-size:18px;
-      font-weight:600;
-      color:var(--text);
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
 
-    .pill{
-      border:1px solid var(--line);
-      background:var(--soft);
-      color:#ebdcb8;
-      border-radius:999px;
-      padding:8px 12px;
-      font-size:12px;
-      white-space:nowrap;
+    .brand-sub {
+      font-size: 0.88rem;
+      color: var(--muted);
     }
 
-    .card{
-      position:relative;
-      overflow:hidden;
-      border:1px solid var(--line);
-      border-radius:30px;
-      background:var(--card);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(14px);
-      padding:20px;
+    .page {
+      display: none;
+      animation: fadeIn 220ms ease;
     }
 
-    .card + .card{ margin-top:16px; }
-
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      background:
-        radial-gradient(circle at top right, rgba(248,231,181,.12), transparent 28%),
-        radial-gradient(circle at bottom left, rgba(196,168,112,.1), transparent 24%);
+    .page.active {
+      display: block;
     }
 
-    .inner{ position:relative; z-index:1; }
-
-    .lang-wrap{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      align-items:center;
-      margin-bottom:16px;
-      border:1px solid var(--line);
-      background:rgba(24,28,51,.56);
-      border-radius:20px;
-      padding:8px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .lang-label{
-      padding:0 4px 0 6px;
-      font-size:12px;
-      color:#cdbf9a;
+    .hero,
+    .card,
+    .light-card,
+    .summary-card,
+    .setting-group,
+    .month-day {
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
     }
 
-    .lang-btn{
-      border:0;
-      background:transparent;
-      color:var(--muted-2);
-      border-radius:999px;
-      padding:8px 12px;
-      font-size:12px;
-      cursor:pointer;
+    .hero {
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 18px;
     }
 
-    .lang-btn.active{
-      background:rgba(248,231,181,.14);
-      color:#fff3d0;
+    .card,
+    .setting-group,
+    .summary-card,
+    .light-card {
+      border-radius: var(--radius-xl);
+      padding: 22px;
     }
 
-    .row{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
+    .date-line {
+      color: var(--gold);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
     }
 
-    .row.rtl{ flex-direction:row-reverse; }
-
-    .text-right{ text-align:right; }
-    .text-left{ text-align:left; }
-
-    .eyebrow{
-      font-size:11px;
-      letter-spacing:.28em;
-      text-transform:uppercase;
-      color:#bfae87;
+    .hero h1,
+    .section-title {
+      margin: 0;
+      line-height: 1.15;
     }
 
-    .title{
-      margin:10px 0 0;
-      font-size:32px;
-      font-weight:700;
-      color:var(--text);
+    .hero h1 {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      margin-bottom: 10px;
     }
 
-    .sub{
-      margin:10px 0 0;
-      font-size:14px;
-      line-height:1.65;
-      color:var(--muted);
+    .hero p,
+    .small-note,
+    .section-sub,
+    .setting-group p {
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0;
     }
 
-    .moon{
-      position:relative;
-      width:40px;
-      height:40px;
-      border-radius:50%;
-      border:1px solid var(--line);
-      background:rgba(248,231,181,.14);
-      flex:0 0 auto;
+    .summary-grid,
+    .lights-preview,
+    .light-list,
+    .month-grid,
+    .feelings,
+    .settings-grid {
+      display: grid;
+      gap: 18px;
     }
 
-    .moon::before{
-      content:"";
-      position:absolute;
-      left:8px;
-      top:5px;
-      width:26px;
-      height:26px;
-      border-radius:50%;
-      background:var(--gold);
-      opacity:.94;
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    .moon::after{
-      content:"";
-      position:absolute;
-      left:16px;
-      top:5px;
-      width:26px;
-      height:26px;
-      border-radius:50%;
-      background:#161a30;
+    .label,
+    .eyebrow {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
     }
 
-    .stars-list{ margin-top:22px; display:grid; gap:12px; }
-
-    .star-btn{
-      width:100%;
-      border:1px solid var(--line);
-      background:rgba(29,34,61,.66);
-      border-radius:22px;
-      padding:16px;
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      cursor:pointer;
-      text-align:left;
-      transition:transform .15s ease, background .2s ease;
+    .btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), opacity var(--transition);
+      font-size: 0.95rem;
     }
 
-    .star-btn:active{ transform:scale(.99); }
-    .star-btn.rtl{ flex-direction:row-reverse; text-align:right; }
-
-    .star-name{
-      margin:0;
-      font-size:14px;
-      font-weight:600;
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.14);
     }
 
-    .star-hint{
-      margin:6px 0 0;
-      font-size:12px;
-      color:var(--muted-2);
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
-    .star-icon{
-      width:24px;
-      height:24px;
-      flex:0 0 auto;
-      transition:filter .2s ease, opacity .2s ease;
-      opacity:.85;
+    .btn-primary {
+      background: linear-gradient(180deg, rgba(231,201,138,0.22), rgba(214,176,109,0.12));
+      border-color: rgba(231,201,138,0.34);
+      color: #fff5de;
     }
 
-    .star-icon.active{
-      filter:drop-shadow(0 0 10px rgba(248,231,181,.78));
-      opacity:1;
+    .btn-danger {
+      border-color: rgba(216,140,140,0.35);
+      color: #ffd7d7;
     }
 
-    .node-card{
-      margin-top:24px;
-      border:1px solid var(--line);
-      border-radius:28px;
-      background:var(--card-2);
-      padding:20px;
+    .cta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .node-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:14px;
-      color:#e7dcc4;
-      font-size:14px;
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-top: 14px;
     }
 
-    .node-head.rtl{ flex-direction:row-reverse; }
-
-    .node-wrap{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px 0 18px;
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(231,201,138,0.5), rgba(231,201,138,0.95));
+      border-radius: 999px;
+      transition: width 220ms ease;
     }
 
-    .node-shell{
-      position:relative;
-      width:176px;
-      height:176px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .lights-preview {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 
-    .node-glow{
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(248,231,181,.16), transparent 62%);
-      filter:blur(22px);
+    .preview-light {
+      border-radius: var(--radius-lg);
+      padding: 14px 10px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid var(--line);
+      text-align: center;
     }
 
-    .mini-star{
-      position:absolute;
-      width:20px;
-      height:20px;
-      opacity:.82;
+    .preview-orb {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      place-items: center;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
     }
 
-    .mini-star.active{
-      filter:drop-shadow(0 0 10px rgba(248,231,181,.78));
-      opacity:1;
+    .preview-orb::after {
+      content: "";
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      transition: all var(--transition);
     }
 
-    .mini-star.s1{ top:10px; left:50%; transform:translateX(-50%); }
-    .mini-star.s2{ top:42px; right:18px; }
-    .mini-star.s3{ bottom:20px; right:34px; }
-    .mini-star.s4{ bottom:20px; left:34px; }
-    .mini-star.s5{ top:42px; left:18px; }
-
-    .node-ring{
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:50%;
-      border:1px solid rgba(255,255,255,.1);
-      transition:all .28s ease;
+    .preview-light.lit .preview-orb,
+    .light-status-dot.lit {
+      background: radial-gradient(circle at 30% 30%, rgba(255,245,222,0.85), rgba(231,201,138,0.42));
+      border-color: rgba(231,201,138,0.45);
+      box-shadow: 0 0 24px rgba(231,201,138,0.2);
     }
 
-    .node-ring::before,
-    .node-ring::after{
-      content:"";
-      position:absolute;
-      border-radius:50%;
-      border:1px solid rgba(255,255,255,.08);
+    .preview-light.lit .preview-orb::after {
+      background: rgba(255,248,234,0.92);
+      box-shadow: 0 0 18px rgba(255,248,234,0.5);
     }
 
-    .node-ring::before{ inset:12px; }
-    .node-ring::after{ inset:28px; }
-
-    .n0{ width:112px; height:112px; background:rgba(255,255,255,.08); }
-    .n1{ width:120px; height:120px; background:rgba(227,197,125,.16); box-shadow:0 0 24px rgba(227,197,125,.18); }
-    .n2{ width:124px; height:124px; background:rgba(239,210,143,.18); box-shadow:0 0 28px rgba(239,210,143,.22); }
-    .n3{ width:130px; height:130px; background:rgba(244,223,168,.20); box-shadow:0 0 32px rgba(244,223,168,.26); }
-    .n4{ width:136px; height:136px; background:rgba(248,231,181,.22); box-shadow:0 0 38px rgba(248,231,181,.32); }
-    .n5{ width:144px; height:144px; background:rgba(255,243,209,.24); box-shadow:0 0 48px rgba(248,231,181,.42); }
-
-    .core{
-      border-radius:50%;
-      transition:all .28s ease;
+    .preview-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 4px;
     }
 
-    .c0{ width:56px; height:56px; background:rgba(255,255,255,.08); }
-    .c1{ width:62px; height:62px; background:rgba(227,197,125,.74); }
-    .c2{ width:64px; height:64px; background:rgba(239,210,143,.8); }
-    .c3{ width:68px; height:68px; background:rgba(244,223,168,.86); }
-    .c4{ width:70px; height:70px; background:rgba(248,231,181,.9); }
-    .c5{ width:74px; height:74px; background:#fff3d1; box-shadow:0 0 18px rgba(248,231,181,.38); }
-
-    .center-line{
-      text-align:center;
-      font-size:14px;
-      color:#e7dcc4;
-      line-height:1.7;
+    .preview-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
     }
 
-    .primary-btn{
-      width:100%;
-      margin-top:22px;
-      border:1px solid var(--line);
-      background:rgba(248,231,181,.08);
-      color:#fff7e6;
-      border-radius:999px;
-      padding:16px;
-      font-size:14px;
-      font-weight:600;
-      cursor:pointer;
+    .footer-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
     }
 
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:16px;
+    .light-list {
+      grid-template-columns: 1fr;
     }
 
-    .chips.rtl{ justify-content:flex-end; }
-
-    .chip{
-      border:1px solid var(--line);
-      background:rgba(248,231,181,.08);
-      color:#f1e8d5;
-      border-radius:999px;
-      padding:8px 12px;
-      font-size:12px;
+    .light-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
     }
 
-    .path-list{
-      position:relative;
-      margin-top:24px;
-      display:grid;
-      gap:18px;
+    .light-head-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
     }
 
-    .path-list::before{
-      content:"";
-      position:absolute;
-      top:10px;
-      bottom:10px;
-      width:1px;
-      background:linear-gradient(to bottom, rgba(248,231,181,.1), rgba(248,231,181,.35), transparent);
+    .light-status-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.06);
+      flex-shrink: 0;
     }
 
-    .path-list.ltr::before{ left:8px; }
-    .path-list.rtl::before{ right:8px; }
-
-    .path-item{
-      position:relative;
-      display:flex;
-      align-items:flex-start;
-      gap:14px;
+    .light-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 4px;
     }
 
-    .path-item.rtl{ flex-direction:row-reverse; }
-
-    .path-node{
-      position:relative;
-      z-index:1;
-      width:14px;
-      height:14px;
-      border-radius:50%;
-      margin-top:7px;
-      background:rgba(255,255,255,.12);
-      flex:0 0 auto;
+    .light-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      margin: 0;
     }
 
-    .path-node.l1,.path-node.l2{ background:rgba(216,180,109,.7); }
-    .path-node.l3,.path-node.l4{
-      background:rgba(239,210,143,.9);
-      box-shadow:0 0 14px rgba(239,210,143,.45);
-    }
-    .path-node.l5{
-      background:var(--gold);
-      box-shadow:0 0 18px rgba(248,231,181,.65);
-    }
-    .path-node.today{ box-shadow:0 0 0 5px rgba(248,231,181,.12); }
-
-    .path-card{
-      flex:1;
-      border:1px solid var(--line);
-      background:rgba(24,28,51,.72);
-      border-radius:22px;
-      padding:14px 16px;
+    .light-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
     }
 
-    .path-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      margin-bottom:12px;
+    .meta-chip {
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.84rem;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid var(--line);
+      color: var(--muted);
     }
 
-    .path-head.rtl{ flex-direction:row-reverse; }
-
-    .path-day{
-      font-size:14px;
-      font-weight:600;
-      color:var(--text);
+    .meta-chip.success {
+      color: #fcedcc;
+      border-color: rgba(231,201,138,0.25);
+      background: rgba(231,201,138,0.1);
     }
 
-    .path-count{
-      font-size:12px;
-      color:var(--muted-2);
+    .meta-chip.later {
+      color: #ffe4b0;
+      border-color: rgba(231,201,138,0.28);
+      background: rgba(231,201,138,0.08);
     }
 
-    .bars{
-      display:flex;
-      gap:6px;
+    .meta-chip.future {
+      color: #cfc8bc;
+      border-color: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
     }
 
-    .bars.rtl{ flex-direction:row-reverse; }
-
-    .bar{
-      height:10px;
-      flex:1;
-      border-radius:999px;
-      background:rgba(255,255,255,.08);
+    .section-block {
+      margin-top: 18px;
     }
 
-    .bar.on{ background:rgba(248,231,181,.92); }
-
-    .reflection-grid{
-      margin-top:24px;
-      border:1px solid var(--line);
-      background:rgba(24,28,51,.78);
-      border-radius:28px;
-      padding:20px;
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-      gap:10px;
+    .section-title {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
     }
 
-    .reflection-dot{
-      aspect-ratio:1/1;
-      border-radius:50%;
-      background:rgba(255,255,255,.08);
+    textarea,
+    input,
+    select {
+      width: 100%;
+      background: rgba(255,255,255,0.045);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font: inherit;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition);
     }
 
-    .reflection-dot.on{
-      background:rgba(248,231,181,.9);
-      box-shadow:0 0 12px rgba(248,231,181,.38);
+    textarea:focus,
+    input:focus,
+    select:focus {
+      border-color: rgba(231,201,138,0.38);
+      background: rgba(255,255,255,0.06);
     }
 
-    .stats{
-      margin-top:24px;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
+    textarea {
+      min-height: 136px;
+      resize: vertical;
+      line-height: 1.6;
     }
 
-    .stat{
-      border:1px solid var(--line);
-      background:rgba(24,28,51,.72);
-      border-radius:20px;
-      padding:16px 10px;
-      text-align:center;
+    .feelings {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 
-    .stat-value{
-      font-size:22px;
-      font-weight:700;
-      color:var(--text);
+    .feeling-btn {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
     }
 
-    .stat-label{
-      margin-top:6px;
-      font-size:12px;
-      color:var(--muted-2);
-      line-height:1.5;
+    .feeling-btn.active {
+      background: rgba(231,201,138,0.14);
+      border-color: rgba(231,201,138,0.32);
+      color: #fff3d7;
     }
 
-    .bottom-nav{
-      position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
-      border-top:1px solid var(--line);
-      background:rgba(10,16,34,.88);
-      backdrop-filter:blur(16px);
-      padding:14px 16px;
+    .save-status {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
-    .bottom-nav-inner{
-      max-width:430px;
-      margin:0 auto;
-      display:flex;
-      gap:6px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      border-radius:999px;
-      padding:6px;
-      box-shadow:0 10px 30px rgba(0,0,0,.22);
+    .summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .tab-btn{
-      flex:1;
-      border:0;
-      background:transparent;
-      color:#d7d0d9;
-      border-radius:999px;
-      padding:12px;
-      font-size:14px;
-      font-weight:600;
-      cursor:pointer;
+    .summary-card .big {
+      font-size: 1.35rem;
+      font-weight: 700;
     }
 
-    .tab-btn.active{
-      background:rgba(248,231,181,.14);
-      color:var(--gold);
-      box-shadow:inset 0 0 0 1px rgba(248,231,181,.06);
+    .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
-    .hidden{ display:none !important; }
+    .month-nav-center {
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
 
-    @media (max-width:480px){
-      .title{ font-size:29px; }
-      .reflection-grid{ gap:8px; }
-      .stats{ gap:8px; }
+    .month-grid {
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      margin-top: 16px;
+    }
+
+    .month-day {
+      border-radius: 18px;
+      padding: 12px 10px;
+      min-height: 116px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform var(--transition), border-color var(--transition), background var(--transition), opacity var(--transition);
+    }
+
+    .month-day:hover:not(.future-disabled) {
+      transform: translateY(-1px);
+      border-color: rgba(231,201,138,0.2);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .month-day.today {
+      border-color: rgba(231,201,138,0.36);
+    }
+
+    .month-day.selected {
+      border-color: rgba(231,201,138,0.54);
+      box-shadow: 0 0 0 1px rgba(231,201,138,0.12), var(--shadow);
+    }
+
+    .month-day.future-disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .month-day .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .month-day .num-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .month-day .num {
+      font-weight: 700;
+      font-size: 0.96rem;
+    }
+
+    .month-day .weekday-inline {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .mini-lights {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .mini-lights span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .mini-lights span.lit {
+      background: rgba(231,201,138,0.95);
+      box-shadow: 0 0 10px rgba(231,201,138,0.24);
+      border-color: rgba(231,201,138,0.34);
+    }
+
+    .month-day .small {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .setting-group h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .inline-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 54px;
+      height: 32px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+
+    .toggle::after {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      top: 3px;
+      left: 3px;
+      border-radius: 50%;
+      background: #f7f2e9;
+      transition: all var(--transition);
+    }
+
+    .toggle.active {
+      background: rgba(231,201,138,0.32);
+      border-color: rgba(231,201,138,0.32);
+    }
+
+    .toggle.active::after {
+      left: 25px;
+      background: #fff7e5;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .pill.active {
+      background: rgba(231,201,138,0.14);
+      border-color: rgba(231,201,138,0.3);
+      color: #fff2d0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 960px) {
+      .lights-preview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .summary-grid,
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .month-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 16px 12px 40px;
+      }
+
+      .hero,
+      .card,
+      .light-card,
+      .setting-group,
+      .summary-card {
+        padding: 18px;
+      }
+
+      .month-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .footer-row {
+        grid-template-columns: 1fr;
+      }
+
+      .month-nav {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .month-nav-center {
+        order: -1;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app" id="appRoot">
-    <div class="topbar" id="topbar">
-      <div id="brandWrap">
-        <div class="brand-small" id="brandSmall">PureTime</div>
-        <div class="brand-title" id="brandTitle">Five Lights</div>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-title">PureTime</div>
+        <div class="brand-sub">Five Lights</div>
       </div>
-      <div class="pill" id="modePill">Gentle Mode</div>
+      <button class="btn" id="topSettingsBtn">Settings</button>
     </div>
 
-    <section class="card" id="todayView">
-      <div class="inner">
-        <div class="lang-wrap" id="langWrap">
-          <span class="lang-label" id="langLabel">Language</span>
-          <button class="lang-btn active" id="langEn">English</button>
-          <button class="lang-btn" id="langAr">Arabic</button>
-          <button class="lang-btn" id="langBoth">English + Arabic</button>
+    <section class="page active" id="page-today">
+      <div class="hero">
+        <div class="date-line" id="todayDateLine"></div>
+        <h1 id="todayTitle"></h1>
+        <p id="todaySubtitle"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="label" id="todayProgressLabel"></div>
+            <h2 id="todayProgressText"></h2>
+          </div>
         </div>
 
-        <div class="row" id="todayHeader">
-          <div class="text-left" id="todayTextWrap">
-            <p class="eyebrow" id="todayLabel">Today</p>
-            <h1 class="title" id="todayDate">April 5</h1>
-            <p class="sub" id="todayLine">A little light still counts.</p>
-          </div>
-          <div class="moon"></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="todayProgressFill"></div>
         </div>
 
-        <div class="stars-list" id="starsList"></div>
+        <div style="height:18px;"></div>
+        <div class="lights-preview" id="todayLightsPreview"></div>
 
-        <div class="node-card">
-          <div class="node-head" id="nodeHead">
-            <span id="todayNodeLabel">Today Node</span>
-            <span id="todayCount">0 / 5</span>
+        <div style="height:18px;"></div>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="openTodayBtn"></button>
+          <button class="btn" id="quickMonthBtn">View this month</button>
+        </div>
+
+        <div style="height:10px;"></div>
+        <div class="small-note" id="todayReassurance"></div>
+      </div>
+
+      <div class="card">
+        <div class="footer-row">
+          <div>
+            <div class="eyebrow" id="streakLabel"></div>
+            <div id="streakValue"></div>
+          </div>
+          <div>
+            <div class="eyebrow" id="selectedDateLabel">Selected date</div>
+            <div id="selectedDateSummary"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="small-note" id="todayBottomQuote"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-detail">
+      <div class="hero">
+        <div class="cta-row">
+          <button class="btn" id="backToTodayBtn"></button>
+          <button class="btn" id="detailOpenMonthBtn">Month</button>
+        </div>
+        <div class="date-line" id="detailDateLine"></div>
+        <h1 id="detailTitle"></h1>
+        <p id="detailSubtitle"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="label" id="detailProgressLabel"></div>
+            <h2 id="detailProgressText"></h2>
+          </div>
+        </div>
+        <div class="small-note" id="detailSupport"></div>
+      </div>
+
+      <div class="light-list" id="detailLightList"></div>
+
+      <div class="card section-block" id="reflectionCard">
+        <h2 class="section-title" id="reflectionTitle"></h2>
+        <p class="section-sub" id="reflectionHelper"></p>
+        <textarea id="reflectionInput"></textarea>
+
+        <div class="section-block">
+          <h2 class="section-title" id="feelingTitle"></h2>
+          <div class="feelings" id="feelingButtons"></div>
+        </div>
+
+        <div class="save-status" id="saveStatusText"></div>
+      </div>
+
+      <div class="card">
+        <div class="small-note" id="detailClosingLine"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-month">
+      <div class="hero">
+        <div class="cta-row">
+          <button class="btn" id="monthBackBtn"></button>
+        </div>
+        <div class="date-line" id="monthDateLine"></div>
+        <h1 id="monthTitle"></h1>
+        <p id="monthSubtitle"></p>
+      </div>
+
+      <div class="summary-grid" id="monthSummaryGrid"></div>
+
+      <div class="card">
+        <div class="month-nav">
+          <button class="btn" id="prevMonthBtn">Previous month</button>
+          <div class="month-nav-center">
+            <div class="section-title" id="monthGridTitle"></div>
+          </div>
+          <button class="btn" id="nextMonthBtn">Next month</button>
+        </div>
+
+        <div class="month-grid" id="monthGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="small-note" id="monthSummaryLine"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-settings">
+      <div class="hero">
+        <div class="cta-row">
+          <button class="btn" id="settingsBackBtn">Back</button>
+        </div>
+        <div class="date-line">PureTime</div>
+        <h1 id="settingsTitle"></h1>
+        <p id="settingsSubtitle"></p>
+      </div>
+
+      <div class="settings-grid">
+        <div class="setting-group">
+          <h3 id="profileTitle"></h3>
+          <p id="profileSub"></p>
+          <div class="field">
+            <label for="nameInput" id="nameLabel"></label>
+            <input id="nameInput" type="text" />
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3 id="languageTitle"></h3>
+          <p id="languageSub"></p>
+          <div class="field">
+            <select id="languageSelect">
+              <option value="en">English</option>
+              <option value="ar">Arabic</option>
+              <option value="both">English + Arabic</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3 id="appearanceTitle"></h3>
+          <p id="appearanceSub"></p>
+          <div class="field">
+            <select id="themeSelect">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="auto">Auto</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3 id="remindersTitle"></h3>
+          <p id="remindersSub"></p>
+
+          <div class="inline-row">
+            <div><strong id="enableRemindersLabel"></strong></div>
+            <div class="toggle" id="remindersToggle" role="button"></div>
           </div>
 
-          <div class="node-wrap">
-            <div class="node-shell">
-              <div class="node-glow"></div>
-              <div class="mini-star s1" id="ms1"></div>
-              <div class="mini-star s2" id="ms2"></div>
-              <div class="mini-star s3" id="ms3"></div>
-              <div class="mini-star s4" id="ms4"></div>
-              <div class="mini-star s5" id="ms5"></div>
-              <div class="node-ring n0" id="nodeRing">
-                <div class="core c0" id="nodeCore"></div>
-              </div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="morningTime" id="morningLabel"></label>
+              <input id="morningTime" type="time" />
+            </div>
+            <div class="field">
+              <label for="afternoonTime" id="afternoonLabel"></label>
+              <input id="afternoonTime" type="time" />
+            </div>
+            <div class="field">
+              <label for="eveningTime" id="eveningLabel"></label>
+              <input id="eveningTime" type="time" />
             </div>
           </div>
 
-          <p class="center-line" id="todayStatus">0 of 5 lights completed</p>
-        </div>
-
-        <button class="primary-btn" id="viewPathBtn">View My Path</button>
-      </div>
-    </section>
-
-    <section class="card hidden" id="pathView">
-      <div class="inner">
-        <div class="lang-wrap">
-          <span class="lang-label" id="langLabel2">Language</span>
-          <button class="lang-btn active" data-lang="en">English</button>
-          <button class="lang-btn" data-lang="ar">Arabic</button>
-          <button class="lang-btn" data-lang="both">English + Arabic</button>
-        </div>
-
-        <div class="row" id="pathHeader">
-          <div class="text-left" id="pathTextWrap">
-            <p class="eyebrow" id="pathLabel">Star Path</p>
-            <h2 class="title" id="pathTitle">April Path</h2>
+          <div class="field" style="margin-top:14px;">
+            <label id="toneLabel"></label>
+            <div class="pill-row" id="tonePills"></div>
           </div>
-          <div class="text-left" id="pathMood" style="margin-top:4px;font-size:12px;color:var(--muted-2);line-height:1.6;">
-            <div id="pathMood1">Moonlit</div>
-            <div id="pathMood2">quiet route</div>
+
+          <div class="field" style="margin-top:16px;">
+            <label id="browserNotificationsLabel"></label>
+            <div class="small-note" id="browserNotificationsSub"></div>
+            <div class="cta-row" style="margin-top:12px;">
+              <button class="btn" id="enableNotificationsBtn"></button>
+              <div class="small-note" id="notificationStatusText"></div>
+            </div>
           </div>
         </div>
 
-        <div class="chips ltr" id="chipsWrap">
-          <span class="chip" id="chipDays">5 days lit</span>
-          <span class="chip" id="chipLights">19 lights</span>
-          <span class="chip" id="chipStreak">3-day streak</span>
+        <div class="setting-group">
+          <h3 id="dailyViewTitle"></h3>
+          <p id="dailyViewSub"></p>
+
+          <div class="inline-row">
+            <div id="showReflectionLabel"></div>
+            <div class="toggle" id="showReflectionToggle" role="button"></div>
+          </div>
+
+          <div class="inline-row">
+            <div id="showStreakLabel"></div>
+            <div class="toggle" id="showStreakToggle" role="button"></div>
+          </div>
+
+          <div class="inline-row">
+            <div id="showMonthSummaryLabel"></div>
+            <div class="toggle" id="showMonthSummaryToggle" role="button"></div>
+          </div>
         </div>
 
-        <div class="path-list ltr" id="pathList"></div>
-
-        <button class="primary-btn" id="monthlyReflectionBtn">Monthly Reflection</button>
-      </div>
-    </section>
-
-    <section class="card hidden" id="reflectionView">
-      <div class="inner">
-        <div class="lang-wrap">
-          <span class="lang-label" id="langLabel3">Language</span>
-          <button class="lang-btn active" data-lang="en">English</button>
-          <button class="lang-btn" data-lang="ar">Arabic</button>
-          <button class="lang-btn" data-lang="both">English + Arabic</button>
+        <div class="setting-group">
+          <h3 id="privacyTitle"></h3>
+          <p id="privacySub"></p>
         </div>
 
-        <div class="row" id="reflectionHeader">
-          <div class="text-left" id="reflectionTextWrap">
-            <p class="eyebrow" id="reflectionLabel">Reflection</p>
-            <h2 class="title" id="reflectionTitle">April Summary</h2>
-            <p class="sub" id="reflectionLine">Not every day was full, but the path is still yours.</p>
+        <div class="setting-group">
+          <h3 id="dataTitle"></h3>
+          <p id="dataSub"></p>
+          <div class="cta-row">
+            <button class="btn btn-danger" id="clearDataBtn"></button>
           </div>
-          <div style="width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:rgba(248,231,181,.08);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:22px;">✦</div>
         </div>
 
-        <div class="reflection-grid" id="reflectionGrid"></div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-value">5</div>
-            <div class="stat-label" id="statDays">Days Lit</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value" id="statLights">19</div>
-            <div class="stat-label" id="statTotalLights">Total Lights</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value">3</div>
-            <div class="stat-label" id="statBestStreak">Best Streak</div>
-          </div>
+        <div class="setting-group">
+          <p id="settingsBottomLine" class="small-note"></p>
         </div>
       </div>
     </section>
-  </div>
-
-  <div class="bottom-nav">
-    <div class="bottom-nav-inner">
-      <button class="tab-btn active" id="tabToday">Today</button>
-      <button class="tab-btn" id="tabPath">Path</button>
-      <button class="tab-btn" id="tabReflection">Reflection</button>
-    </div>
   </div>
 
   <script>
-    const STORAGE_KEY = "puretime-five-lights-v2";
+    const STORAGE_KEY = "puretime-five-lights-prayer-v4-i18n-lite";
 
-    const copy = {
+    const i18n = {
       en: {
-        brand: "PureTime",
-        product: "Five Lights",
-        mode: "Gentle Mode",
-        language: "Language",
-        english: "English",
-        arabic: "Arabic",
-        both: "English + Arabic",
-        todayTab: "Today",
-        pathTab: "Path",
-        reflectionTab: "Reflection",
-        todayLabel: "Today",
-        todayDate: "April 5",
-        todayLine: "A little light still counts.",
-        lightRecorded: "Light recorded",
-        tapToLight: "Tap to light",
-        todayNode: "Today Node",
-        todayComplete: "Today is complete and softly lit.",
-        todayProgress: (n) => `${n} of 5 lights completed`,
-        viewPath: "View My Path",
-        pathLabel: "Star Path",
-        pathTitle: "April Path",
-        pathMood1: "Moonlit",
-        pathMood2: "quiet route",
-        daysLit: "5 days lit",
-        lightsWord: "lights",
-        streak: "3-day streak",
-        day: "Day",
-        monthlyReflection: "Monthly Reflection",
-        reflectionLabel: "Reflection",
-        reflectionTitle: "April Summary",
-        reflectionLine: "Not every day was full, but the path is still yours.",
-        totalLights: "Total Lights",
-        bestStreak: "Best Streak"
+        nav: {
+          today: "Today",
+          month: "Month",
+          settings: "Settings",
+          backToToday: "Back to today",
+          selectedDate: "Selected date"
+        },
+        actions: {
+          openToday: "Open today",
+          markPrayer: "Mark prayer",
+          marked: "Marked",
+          locked: "Locked"
+        },
+        labels: {
+          reflection: "Reflection",
+          addedLater: "Added later",
+          futureLocked: "Future locked",
+          currentGentleStreak: "Current gentle streak"
+        },
+        prayers: {
+          fajr: "Fajr",
+          dhuhr: "Dhuhr",
+          asr: "Asr",
+          maghrib: "Maghrib",
+          isha: "Isha"
+        }
       },
       ar: {
-        brand: "بيور تايم",
-        product: "الأنوار الخمسة",
-        mode: "وضع هادئ",
-        language: "اللغة",
-        english: "الإنجليزية",
-        arabic: "العربية",
-        both: "الإنجليزية + العربية",
-        todayTab: "اليوم",
-        pathTab: "المسار",
-        reflectionTab: "التأمل",
-        todayLabel: "اليوم",
-        todayDate: "٥ أبريل",
-        todayLine: "حتى القليل من النور له أثر.",
-        lightRecorded: "تمّ تسجيلها",
-        tapToLight: "اضغطي للتحديد",
-        todayNode: "نور اليوم",
-        todayComplete: "اكتمل يومك بلطف ونور.",
-        todayProgress: (n) => `اكتمل ${n} من 5`,
-        viewPath: "عرض مساري",
-        pathLabel: "مسار النجوم",
-        pathTitle: "مسار أبريل",
-        pathMood1: "مضيء بالقمر",
-        pathMood2: "ومساره هادئ",
-        daysLit: "٥ أيام مضيئة",
-        lightsWord: "نور",
-        streak: "سلسلة ٣ أيام",
-        day: "اليوم",
-        monthlyReflection: "تأمل الشهر",
-        reflectionLabel: "التأمل",
-        reflectionTitle: "ملخص أبريل",
-        reflectionLine: "ليس من الضروري أن يكون كل يوم كاملاً حتى يبقى هذا المسار لك.",
-        totalLights: "إجمالي الأنوار",
-        bestStreak: "أفضل سلسلة"
+        nav: {
+          today: "اليوم",
+          month: "الشهر",
+          settings: "الإعدادات",
+          backToToday: "العودة إلى اليوم",
+          selectedDate: "التاريخ المحدد"
+        },
+        actions: {
+          openToday: "افتحي اليوم",
+          markPrayer: "سجّلي الصلاة",
+          marked: "تم التسجيل",
+          locked: "مغلق"
+        },
+        labels: {
+          reflection: "تأمل",
+          addedLater: "أضيف لاحقًا",
+          futureLocked: "تاريخ مستقبلي مغلق",
+          currentGentleStreak: "الاستمرار اللطيف الحالي"
+        },
+        prayers: {
+          fajr: "الفجر",
+          dhuhr: "الظهر",
+          asr: "العصر",
+          maghrib: "المغرب",
+          isha: "العشاء"
+        }
       }
     };
 
-    const prayerNames = {
-      en: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"],
-      ar: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"]
-    };
+    function langMode() {
+      return state?.profile?.language || "en";
+    }
 
-    const defaultState = {
-      languageMode: "en",
-      todayStars: [
-        { key: "fajr", active: true },
-        { key: "dhuhr", active: true },
-        { key: "asr", active: false },
-        { key: "maghrib", active: true },
-        { key: "isha", active: false }
+    function t(enText, arText) {
+      const mode = langMode();
+      if (mode === "ar") return arText;
+      if (mode === "both") return `${enText} / ${arText}`;
+      return enText;
+    }
+
+    const copy = {
+      today: {
+        title: "Today’s Five Lights",
+        progressLabel: "Today’s prayer progress",
+        reassurance: "No pressure. You can return at your own pace.",
+        bottomQuotes: [
+          "A small light can still change the tone of a day.",
+          "You are allowed to begin again today.",
+          "This space is yours: quiet, private, and gentle.",
+          "Even one small return still counts.",
+          "A soft beginning is still a beginning."
+        ],
+        subtitles: [
+          "A gentle way to hold the five prayers of today.",
+          "Return softly, one prayer at a time.",
+          "A quiet space for prayer, reflection, and return.",
+          "You do not need to rush through the day.",
+          "Five lights, one day, at your own pace."
+        ]
+      },
+      detail: {
+        title: "A gentle page for this day",
+        progressLabel: "Prayer status",
+        support: "You can mark this day prayer by prayer.",
+        reflectionHelper: "A few words are enough. This space is private.",
+        reflectionPlaceholder: "Write a few quiet words for this day...",
+        feelingTitle: "How did this day feel?",
+        saveSaving: "Saving...",
+        saveSaved: "All changes saved",
+        closingLines: [
+          "Nothing needs to be perfect for this day to matter.",
+          "A quiet record is still a meaningful one.",
+          "Even after a missed prayer, this space stays gentle.",
+          "You can return to any day with softness."
+        ],
+        notOpened: "Not marked yet",
+        markedAt: "Marked at"
+      },
+      month: {
+        title: "This month",
+        subtitle: "Not a scorecard — just a gentle record of prayer and return.",
+        gridTitlePrefix: "Viewing",
+        summaryDaysReturned: "Days with prayer",
+        summaryStreak: "Current gentle streak",
+        summaryLights: "Prayers marked",
+        low: "A quiet month still counts. You are still returning.",
+        mid: "You have made space for prayer in small ways throughout the month.",
+        high: "Your month carries a steady rhythm of return.",
+        quietDay: "Quiet day",
+        prayerMarked: "Prayer marked",
+        futureLocked: "Future locked"
+      },
+      settings: {
+        title: "Settings",
+        subtitle: "Shape this space in a way that feels gentle for you.",
+        profileTitle: "Profile",
+        profileSub: "Optional",
+        nameLabel: "Name or nickname",
+        languageTitle: "Language",
+        languageSub: "Choose how this space should read for you.",
+        appearanceTitle: "Appearance",
+        appearanceSub: "Keep it simple, warm, and easy on the eyes.",
+        remindersTitle: "Reminders",
+        remindersSub: "A few quiet prompts during the day, if you want them.",
+        enableRemindersLabel: "Enable gentle reminders",
+        morningLabel: "Morning reminder",
+        afternoonLabel: "Midday reminder",
+        eveningLabel: "Evening reminder",
+        toneLabel: "Reminder tone",
+        browserNotificationsLabel: "Browser notifications",
+        browserNotificationsSub: "Allow notifications if you’d like reminders to appear on this device.",
+        enableNotificationsBtn: "Enable notifications",
+        dailyViewTitle: "Daily view",
+        dailyViewSub: "Choose what feels visible and useful for you.",
+        showReflectionLabel: "Show reflection",
+        showStreakLabel: "Show gentle streak",
+        showMonthSummaryLabel: "Show monthly summary",
+        privacyTitle: "Privacy",
+        privacySub: "Your entries are stored on this device. This space stays personal here.",
+        dataTitle: "Your data",
+        dataSub: "This will remove your saved prayer records, reflections, and settings from this device.",
+        clearDataBtn: "Clear all records",
+        bottomLine: "Small adjustments can make this space feel more like yours."
+      },
+      tones: ["Gentle", "Neutral", "Minimal"],
+      feelings: ["Calm", "Tired", "Full", "Heavy", "Hopeful", "Grateful"],
+      lights: [
+        { id: 0, key: "fajr", desc: "The first prayer light of the day." },
+        { id: 1, key: "dhuhr", desc: "A midday return in the middle of the day." },
+        { id: 2, key: "asr", desc: "A late-day pause before the evening comes in." },
+        { id: 3, key: "maghrib", desc: "A prayer light at sunset." },
+        { id: 4, key: "isha", desc: "A quiet prayer to close the day." }
       ]
     };
 
-    let state = loadState();
-    let currentTab = "today";
+    function todayKey() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
 
-    const pathDays = [
-      { day: 1, lights: 5 },
-      { day: 2, lights: 4 },
-      { day: 3, lights: 5 },
-      { day: 4, lights: 2 },
-      { day: 5, today: true },
-      { day: 6, lights: 0 },
-      { day: 7, lights: 0 }
-    ];
-
-    const el = {
-      appRoot: document.getElementById("appRoot"),
-      topbar: document.getElementById("topbar"),
-      brandSmall: document.getElementById("brandSmall"),
-      brandTitle: document.getElementById("brandTitle"),
-      modePill: document.getElementById("modePill"),
-      todayView: document.getElementById("todayView"),
-      pathView: document.getElementById("pathView"),
-      reflectionView: document.getElementById("reflectionView"),
-      todayHeader: document.getElementById("todayHeader"),
-      todayTextWrap: document.getElementById("todayTextWrap"),
-      todayLabel: document.getElementById("todayLabel"),
-      todayDate: document.getElementById("todayDate"),
-      todayLine: document.getElementById("todayLine"),
-      starsList: document.getElementById("starsList"),
-      nodeHead: document.getElementById("nodeHead"),
-      todayNodeLabel: document.getElementById("todayNodeLabel"),
-      todayCount: document.getElementById("todayCount"),
-      todayStatus: document.getElementById("todayStatus"),
-      nodeRing: document.getElementById("nodeRing"),
-      nodeCore: document.getElementById("nodeCore"),
-      viewPathBtn: document.getElementById("viewPathBtn"),
-      pathHeader: document.getElementById("pathHeader"),
-      pathTextWrap: document.getElementById("pathTextWrap"),
-      pathLabel: document.getElementById("pathLabel"),
-      pathTitle: document.getElementById("pathTitle"),
-      pathMood: document.getElementById("pathMood"),
-      pathMood1: document.getElementById("pathMood1"),
-      pathMood2: document.getElementById("pathMood2"),
-      chipsWrap: document.getElementById("chipsWrap"),
-      chipDays: document.getElementById("chipDays"),
-      chipLights: document.getElementById("chipLights"),
-      chipStreak: document.getElementById("chipStreak"),
-      pathList: document.getElementById("pathList"),
-      monthlyReflectionBtn: document.getElementById("monthlyReflectionBtn"),
-      reflectionHeader: document.getElementById("reflectionHeader"),
-      reflectionTextWrap: document.getElementById("reflectionTextWrap"),
-      reflectionLabel: document.getElementById("reflectionLabel"),
-      reflectionTitle: document.getElementById("reflectionTitle"),
-      reflectionLine: document.getElementById("reflectionLine"),
-      reflectionGrid: document.getElementById("reflectionGrid"),
-      statDays: document.getElementById("statDays"),
-      statLights: document.getElementById("statLights"),
-      statTotalLights: document.getElementById("statTotalLights"),
-      statBestStreak: document.getElementById("statBestStreak"),
-      tabToday: document.getElementById("tabToday"),
-      tabPath: document.getElementById("tabPath"),
-      tabReflection: document.getElementById("tabReflection"),
-      langLabel: document.getElementById("langLabel"),
-      langLabel2: document.getElementById("langLabel2"),
-      langLabel3: document.getElementById("langLabel3"),
-      langEn: document.getElementById("langEn"),
-      langAr: document.getElementById("langAr"),
-      langBoth: document.getElementById("langBoth"),
-      ms1: document.getElementById("ms1"),
-      ms2: document.getElementById("ms2"),
-      ms3: document.getElementById("ms3"),
-      ms4: document.getElementById("ms4"),
-      ms5: document.getElementById("ms5")
-    };
+    function createDefaultState() {
+      return {
+        profile: {
+          name: "",
+          language: "en",
+          theme: "dark"
+        },
+        settings: {
+          remindersEnabled: false,
+          morningTime: "08:00",
+          afternoonTime: "14:00",
+          eveningTime: "21:00",
+          tone: "Gentle",
+          showReflection: true,
+          showStreak: true,
+          showMonthSummary: true
+        },
+        ui: {
+          selectedDate: todayKey(),
+          monthCursor: todayKey().slice(0, 7)
+        },
+        days: {},
+        stats: {
+          bestStreak: 0,
+          lastVisitDate: ""
+        }
+      };
+    }
 
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(defaultState);
+        if (!raw) return createDefaultState();
         const parsed = JSON.parse(raw);
+        const defaults = createDefaultState();
         return {
-          languageMode: parsed.languageMode || "en",
-          todayStars: Array.isArray(parsed.todayStars) ? parsed.todayStars : structuredClone(defaultState.todayStars)
+          ...defaults,
+          ...parsed,
+          profile: { ...defaults.profile, ...(parsed.profile || {}) },
+          settings: { ...defaults.settings, ...(parsed.settings || {}) },
+          ui: { ...defaults.ui, ...(parsed.ui || {}) },
+          stats: { ...defaults.stats, ...(parsed.stats || {}) },
+          days: parsed.days || {}
         };
-      } catch {
-        return structuredClone(defaultState);
+      } catch (error) {
+        console.error("Failed to load state:", error);
+        return createDefaultState();
       }
     }
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    let state = loadState();
+    let currentPage = "today";
+    let previousPageBeforeSettings = "today";
+    let reflectionSaveTimer = null;
+    let saveStatusTimer = null;
+
+    const els = {
+      pages: {
+        today: document.getElementById("page-today"),
+        detail: document.getElementById("page-detail"),
+        month: document.getElementById("page-month"),
+        settings: document.getElementById("page-settings")
+      },
+
+      topSettingsBtn: document.getElementById("topSettingsBtn"),
+
+      todayDateLine: document.getElementById("todayDateLine"),
+      todayTitle: document.getElementById("todayTitle"),
+      todaySubtitle: document.getElementById("todaySubtitle"),
+      todayProgressLabel: document.getElementById("todayProgressLabel"),
+      todayProgressText: document.getElementById("todayProgressText"),
+      todayProgressFill: document.getElementById("todayProgressFill"),
+      todayLightsPreview: document.getElementById("todayLightsPreview"),
+      openTodayBtn: document.getElementById("openTodayBtn"),
+      quickMonthBtn: document.getElementById("quickMonthBtn"),
+      todayReassurance: document.getElementById("todayReassurance"),
+      streakLabel: document.getElementById("streakLabel"),
+      streakValue: document.getElementById("streakValue"),
+      selectedDateLabel: document.getElementById("selectedDateLabel"),
+      selectedDateSummary: document.getElementById("selectedDateSummary"),
+      todayBottomQuote: document.getElementById("todayBottomQuote"),
+
+      backToTodayBtn: document.getElementById("backToTodayBtn"),
+      detailOpenMonthBtn: document.getElementById("detailOpenMonthBtn"),
+      detailDateLine: document.getElementById("detailDateLine"),
+      detailTitle: document.getElementById("detailTitle"),
+      detailSubtitle: document.getElementById("detailSubtitle"),
+      detailProgressLabel: document.getElementById("detailProgressLabel"),
+      detailProgressText: document.getElementById("detailProgressText"),
+      detailSupport: document.getElementById("detailSupport"),
+      detailLightList: document.getElementById("detailLightList"),
+      reflectionCard: document.getElementById("reflectionCard"),
+      reflectionTitle: document.getElementById("reflectionTitle"),
+      reflectionHelper: document.getElementById("reflectionHelper"),
+      reflectionInput: document.getElementById("reflectionInput"),
+      feelingTitle: document.getElementById("feelingTitle"),
+      feelingButtons: document.getElementById("feelingButtons"),
+      saveStatusText: document.getElementById("saveStatusText"),
+      detailClosingLine: document.getElementById("detailClosingLine"),
+
+      monthBackBtn: document.getElementById("monthBackBtn"),
+      monthDateLine: document.getElementById("monthDateLine"),
+      monthTitle: document.getElementById("monthTitle"),
+      monthSubtitle: document.getElementById("monthSubtitle"),
+      monthSummaryGrid: document.getElementById("monthSummaryGrid"),
+      monthGridTitle: document.getElementById("monthGridTitle"),
+      monthGrid: document.getElementById("monthGrid"),
+      monthSummaryLine: document.getElementById("monthSummaryLine"),
+      prevMonthBtn: document.getElementById("prevMonthBtn"),
+      nextMonthBtn: document.getElementById("nextMonthBtn"),
+
+      settingsBackBtn: document.getElementById("settingsBackBtn"),
+      settingsTitle: document.getElementById("settingsTitle"),
+      settingsSubtitle: document.getElementById("settingsSubtitle"),
+      profileTitle: document.getElementById("profileTitle"),
+      profileSub: document.getElementById("profileSub"),
+      nameLabel: document.getElementById("nameLabel"),
+      nameInput: document.getElementById("nameInput"),
+      languageTitle: document.getElementById("languageTitle"),
+      languageSub: document.getElementById("languageSub"),
+      languageSelect: document.getElementById("languageSelect"),
+      appearanceTitle: document.getElementById("appearanceTitle"),
+      appearanceSub: document.getElementById("appearanceSub"),
+      themeSelect: document.getElementById("themeSelect"),
+      remindersTitle: document.getElementById("remindersTitle"),
+      remindersSub: document.getElementById("remindersSub"),
+      enableRemindersLabel: document.getElementById("enableRemindersLabel"),
+      remindersToggle: document.getElementById("remindersToggle"),
+      morningLabel: document.getElementById("morningLabel"),
+      afternoonLabel: document.getElementById("afternoonLabel"),
+      eveningLabel: document.getElementById("eveningLabel"),
+      morningTime: document.getElementById("morningTime"),
+      afternoonTime: document.getElementById("afternoonTime"),
+      eveningTime: document.getElementById("eveningTime"),
+      toneLabel: document.getElementById("toneLabel"),
+      tonePills: document.getElementById("tonePills"),
+      browserNotificationsLabel: document.getElementById("browserNotificationsLabel"),
+      browserNotificationsSub: document.getElementById("browserNotificationsSub"),
+      enableNotificationsBtn: document.getElementById("enableNotificationsBtn"),
+      notificationStatusText: document.getElementById("notificationStatusText"),
+      dailyViewTitle: document.getElementById("dailyViewTitle"),
+      dailyViewSub: document.getElementById("dailyViewSub"),
+      showReflectionLabel: document.getElementById("showReflectionLabel"),
+      showReflectionToggle: document.getElementById("showReflectionToggle"),
+      showStreakLabel: document.getElementById("showStreakLabel"),
+      showStreakToggle: document.getElementById("showStreakToggle"),
+      showMonthSummaryLabel: document.getElementById("showMonthSummaryLabel"),
+      showMonthSummaryToggle: document.getElementById("showMonthSummaryToggle"),
+      privacyTitle: document.getElementById("privacyTitle"),
+      privacySub: document.getElementById("privacySub"),
+      dataTitle: document.getElementById("dataTitle"),
+      dataSub: document.getElementById("dataSub"),
+      clearDataBtn: document.getElementById("clearDataBtn"),
+      settingsBottomLine: document.getElementById("settingsBottomLine")
+    };
+
+    function selectedDateKey() {
+      return state.ui.selectedDate || todayKey();
     }
 
-    function activeCount() {
-      return state.todayStars.filter(s => s.active).length;
+    function monthCursorKey() {
+      return state.ui.monthCursor || todayKey().slice(0, 7);
     }
 
-    function totalLights() {
-      let previous = pathDays.reduce((sum, item) => sum + (item.today ? 0 : item.lights), 0);
-      return previous + activeCount();
+    function ensureUiState() {
+      if (!state.ui.selectedDate) state.ui.selectedDate = todayKey();
+      if (!state.ui.monthCursor) state.ui.monthCursor = selectedDateKey().slice(0, 7);
     }
 
-    function isArabicOnly() {
-      return state.languageMode === "ar";
+    function parseDateKey(key) {
+      const [y, m, d] = key.split("-").map(Number);
+      return new Date(y, m - 1, d);
     }
 
-    function isBoth() {
-      return state.languageMode === "both";
+    function isFutureDate(key) {
+      return key > todayKey();
     }
 
-    function label(en, ar) {
-      if (state.languageMode === "ar") return ar;
-      if (state.languageMode === "both") return `${en} / ${ar}`;
-      return en;
+    function isPastDate(key) {
+      return key < todayKey();
     }
 
-    function prayerLabel(index) {
-      return label(prayerNames.en[index], prayerNames.ar[index]);
+    function getDayData(key = selectedDateKey()) {
+      if (!state.days[key]) {
+        state.days[key] = {
+          completed: [false, false, false, false, false],
+          completedAt: {},
+          addedLater: {},
+          reflection: "",
+          feeling: "",
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      if (!state.days[key].addedLater) state.days[key].addedLater = {};
+      return state.days[key];
     }
 
-    function starSvg(active) {
-      return `
-        <svg viewBox="0 0 24 24" class="star-icon ${active ? "active" : ""}">
-          <path
-            d="M12 2.8l2.25 4.56 5.03.73-3.64 3.55.86 5.01L12 14.38l-4.5 2.27.86-5.01-3.64-3.55 5.03-.73L12 2.8z"
-            fill="${active ? "#F8E7B5" : "transparent"}"
-            stroke="${active ? "#F8E7B5" : "rgba(255,255,255,0.38)"}"
-            stroke-width="1.45"
-            stroke-linejoin="round"
-          />
-        </svg>
-      `;
+    function completedCount(dayData) {
+      return dayData.completed.filter(Boolean).length;
     }
 
-    function setDirection() {
-      const rtl = isArabicOnly();
-      document.documentElement.lang = rtl ? "ar" : "en";
-      document.documentElement.dir = rtl ? "rtl" : "ltr";
-
-      el.topbar.classList.toggle("rtl", rtl);
-      el.todayHeader.classList.toggle("rtl", rtl);
-      el.pathHeader.classList.toggle("rtl", rtl);
-      el.reflectionHeader.classList.toggle("rtl", rtl);
-      el.nodeHead.classList.toggle("rtl", rtl);
-
-      el.todayTextWrap.className = rtl ? "text-right" : "text-left";
-      el.pathTextWrap.className = rtl ? "text-right" : "text-left";
-      el.reflectionTextWrap.className = rtl ? "text-right" : "text-left";
-      el.pathMood.className = rtl ? "text-left" : "text-left";
-
-      el.chipsWrap.classList.toggle("rtl", rtl);
-      el.chipsWrap.classList.toggle("ltr", !rtl);
-      el.pathList.classList.toggle("rtl", rtl);
-      el.pathList.classList.toggle("ltr", !rtl);
+    function progressPercent(dayData) {
+      return (completedCount(dayData) / copy.lights.length) * 100;
     }
 
-    function setLangButtons() {
-      const buttons = document.querySelectorAll(".lang-btn");
-      buttons.forEach(btn => btn.classList.remove("active"));
+    function saveState(showStatus = false) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (showStatus) setSaveStatus(copy.detail.saveSaved);
+      } catch (error) {
+        console.error("Failed to save:", error);
+      }
+    }
 
-      const map = {
-        en: ["langEn"],
-        ar: ["langAr"],
-        both: ["langBoth"]
-      };
+    function setSaveStatus(text) {
+      els.saveStatusText.textContent = text;
+      if (saveStatusTimer) clearTimeout(saveStatusTimer);
+      saveStatusTimer = setTimeout(() => {
+        els.saveStatusText.textContent = copy.detail.saveSaved;
+      }, 1800);
+    }
 
-      Object.keys(map).forEach(mode => {
-        if (state.languageMode === mode) {
-          map[mode].forEach(id => el[id].classList.add("active"));
-          document.querySelectorAll(`[data-lang="${mode}"]`).forEach(btn => btn.classList.add("active"));
-        }
+    function formatLongDate(date = new Date()) {
+      return new Intl.DateTimeFormat("en-GB", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      }).format(date);
+    }
+
+    function formatLongDateWithYear(date = new Date()) {
+      return new Intl.DateTimeFormat("en-GB", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }).format(date);
+    }
+
+    function formatMonthYear(date = new Date()) {
+      return new Intl.DateTimeFormat("en-GB", {
+        month: "long",
+        year: "numeric"
+      }).format(date);
+    }
+
+    function formatTime(date = new Date()) {
+      return new Intl.DateTimeFormat("en-GB", {
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function formatWeekdayShort(date) {
+      return new Intl.DateTimeFormat("en-GB", {
+        weekday: "short"
+      }).format(date);
+    }
+
+    function randomFrom(arr, seedKey = todayKey()) {
+      let hash = 0;
+      for (let i = 0; i < seedKey.length; i++) {
+        hash = (hash << 5) - hash + seedKey.charCodeAt(i);
+        hash |= 0;
+      }
+      return arr[Math.abs(hash) % arr.length];
+    }
+
+    function showPage(name) {
+      if (name !== "settings") {
+        previousPageBeforeSettings = name;
+      }
+      currentPage = name;
+      Object.entries(els.pages).forEach(([key, page]) => {
+        page.classList.toggle("active", key === name);
       });
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function renderTopCopy() {
-      const cEn = copy.en;
-      const cAr = copy.ar;
-
-      el.brandSmall.textContent = label(cEn.brand, cAr.brand);
-      el.brandTitle.textContent = label(cEn.product, cAr.product);
-      el.modePill.textContent = label(cEn.mode, cAr.mode);
-
-      el.langLabel.textContent = label(cEn.language, cAr.language);
-      el.langLabel2.textContent = label(cEn.language, cAr.language);
-      el.langLabel3.textContent = label(cEn.language, cAr.language);
-
-      el.langEn.textContent = label(cEn.english, cAr.english);
-      el.langAr.textContent = label(cEn.arabic, cAr.arabic);
-      el.langBoth.textContent = label(cEn.both, cAr.both);
-
-      document.querySelectorAll('[data-lang="en"]').forEach(b => b.textContent = label(cEn.english, cAr.english));
-      document.querySelectorAll('[data-lang="ar"]').forEach(b => b.textContent = label(cEn.arabic, cAr.arabic));
-      document.querySelectorAll('[data-lang="both"]').forEach(b => b.textContent = label(cEn.both, cAr.both));
-
-      el.todayLabel.textContent = label(cEn.todayLabel, cAr.todayLabel);
-      el.todayDate.textContent = label(cEn.todayDate, cAr.todayDate);
-      el.todayLine.textContent = label(cEn.todayLine, cAr.todayLine);
-      el.todayNodeLabel.textContent = label(cEn.todayNode, cAr.todayNode);
-      el.viewPathBtn.textContent = label(cEn.viewPath, cAr.viewPath);
-
-      el.pathLabel.textContent = label(cEn.pathLabel, cAr.pathLabel);
-      el.pathTitle.textContent = label(cEn.pathTitle, cAr.pathTitle);
-      el.pathMood1.textContent = label(cEn.pathMood1, cAr.pathMood1);
-      el.pathMood2.textContent = label(cEn.pathMood2, cAr.pathMood2);
-      el.chipDays.textContent = label(cEn.daysLit, cAr.daysLit);
-      el.chipLights.textContent = label(`${totalLights()} ${cEn.lightsWord}`, `${totalLights()} ${cAr.lightsWord}`);
-      el.chipStreak.textContent = label(cEn.streak, cAr.streak);
-      el.monthlyReflectionBtn.textContent = label(cEn.monthlyReflection, cAr.monthlyReflection);
-
-      el.reflectionLabel.textContent = label(cEn.reflectionLabel, cAr.reflectionLabel);
-      el.reflectionTitle.textContent = label(cEn.reflectionTitle, cAr.reflectionTitle);
-      el.reflectionLine.textContent = label(cEn.reflectionLine, cAr.reflectionLine);
-      el.statDays.textContent = label(cEn.daysLit, cAr.daysLit);
-      el.statTotalLights.textContent = label(cEn.totalLights, cAr.totalLights);
-      el.statBestStreak.textContent = label(cEn.bestStreak, cAr.bestStreak);
-
-      el.tabToday.textContent = label(cEn.todayTab, cAr.todayTab);
-      el.tabPath.textContent = label(cEn.pathTab, cAr.pathTab);
-      el.tabReflection.textContent = label(cEn.reflectionTab, cAr.reflectionTab);
+    function selectDate(key, goToDetail = false) {
+      state.ui.selectedDate = key;
+      state.ui.monthCursor = key.slice(0, 7);
+      saveState();
+      render();
+      if (goToDetail) showPage("detail");
     }
 
-    function renderStars() {
-      el.starsList.innerHTML = "";
-      state.todayStars.forEach((star, index) => {
-        const btn = document.createElement("button");
-        btn.className = `star-btn ${isArabicOnly() ? "rtl" : ""}`;
-        btn.innerHTML = `
-          <div>
-            <p class="star-name">${prayerLabel(index)}</p>
-            <p class="star-hint">${star.active ? label(copy.en.lightRecorded, copy.ar.lightRecorded) : label(copy.en.tapToLight, copy.ar.tapToLight)}</p>
-          </div>
-          ${starSvg(star.active)}
+    function setMonthCursor(yyyyMm) {
+      state.ui.monthCursor = yyyyMm;
+      saveState();
+      renderMonth();
+    }
+
+    function shiftMonth(yyyyMm, diff) {
+      const [y, m] = yyyyMm.split("-").map(Number);
+      const date = new Date(y, m - 1 + diff, 1);
+      const ny = date.getFullYear();
+      const nm = String(date.getMonth() + 1).padStart(2, "0");
+      return `${ny}-${nm}`;
+    }
+
+    function daysReturnedInMonth(yyyyMm) {
+      return Object.entries(state.days).filter(([key, day]) => {
+        return key.startsWith(yyyyMm) && completedCount(day) > 0;
+      }).length;
+    }
+
+    function lightsLitInMonth(yyyyMm) {
+      return Object.entries(state.days).reduce((sum, [key, day]) => {
+        if (key.startsWith(yyyyMm)) {
+          return sum + completedCount(day);
+        }
+        return sum;
+      }, 0);
+    }
+
+    function getCurrentStreak() {
+      let streak = 0;
+      const cursor = new Date();
+      cursor.setHours(0, 0, 0, 0);
+
+      while (true) {
+        const y = cursor.getFullYear();
+        const m = String(cursor.getMonth() + 1).padStart(2, "0");
+        const d = String(cursor.getDate()).padStart(2, "0");
+        const key = `${y}-${m}-${d}`;
+        const day = state.days[key];
+        if (day && completedCount(day) > 0) {
+          streak += 1;
+          cursor.setDate(cursor.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function updateBestStreak() {
+      const current = getCurrentStreak();
+      if (current > state.stats.bestStreak) {
+        state.stats.bestStreak = current;
+      }
+    }
+
+    function setToggle(el, active) {
+      el.classList.toggle("active", !!active);
+    }
+
+    function toggleBooleanSetting(path) {
+      state.settings[path] = !state.settings[path];
+      saveState();
+      render();
+    }
+
+    function applyTheme() {
+      const theme = state.profile.theme || "dark";
+      if (theme === "light") {
+        document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.78)");
+        document.documentElement.style.setProperty("--line", "rgba(27,23,19,0.08)");
+        document.documentElement.style.setProperty("--text", "#1d1b19");
+        document.documentElement.style.setProperty("--muted", "#6f685f");
+        document.body.style.background =
+          "radial-gradient(circle at top, rgba(214,176,109,0.12), transparent 28%), linear-gradient(180deg, #faf6ef 0%, #f4efe7 100%)";
+      } else {
+        document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.06)");
+        document.documentElement.style.setProperty("--line", "rgba(255,255,255,0.08)");
+        document.documentElement.style.setProperty("--text", "#f6f2ea");
+        document.documentElement.style.setProperty("--muted", "#b8b4ad");
+        document.body.style.background =
+          "radial-gradient(circle at top, rgba(231,201,138,0.08), transparent 28%), linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%)";
+      }
+    }
+
+    function localizedPrayerName(lightKey) {
+      return t(i18n.en.prayers[lightKey], i18n.ar.prayers[lightKey]);
+    }
+
+    function applyLocalizedStaticText() {
+      els.topSettingsBtn.textContent = t(i18n.en.nav.settings, i18n.ar.nav.settings);
+      els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
+      els.backToTodayBtn.textContent = t(i18n.en.nav.backToToday, i18n.ar.nav.backToToday);
+      els.detailOpenMonthBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month);
+      els.monthBackBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month) === i18n.ar.nav.month ? "العودة إلى الصفحة السابقة" : "Back to detail";
+      els.selectedDateLabel.textContent = t(i18n.en.nav.selectedDate, i18n.ar.nav.selectedDate);
+      els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
+      els.reflectionTitle.textContent = t(i18n.en.labels.reflection, i18n.ar.labels.reflection);
+    }
+
+    function renderToday() {
+      const today = todayKey();
+      const day = getDayData(today);
+      const count = completedCount(day);
+
+      els.todayDateLine.textContent = formatLongDate(parseDateKey(today));
+      els.todayTitle.textContent = copy.today.title;
+      els.todaySubtitle.textContent = randomFrom(copy.today.subtitles);
+      els.todayProgressLabel.textContent = copy.today.progressLabel;
+      els.todayProgressText.textContent = `${count} of 5 prayers marked`;
+      els.todayProgressFill.style.width = `${progressPercent(day)}%`;
+      els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
+      els.todayReassurance.textContent = copy.today.reassurance;
+      els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
+      els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, today + "-quote");
+
+      const streak = getCurrentStreak();
+      els.streakValue.textContent = `${streak} day${streak === 1 ? "" : "s"} of return`;
+      els.streakLabel.parentElement.parentElement.parentElement.classList.toggle("hidden", !state.settings.showStreak);
+
+      const selected = selectedDateKey();
+      els.selectedDateSummary.textContent = formatLongDateWithYear(parseDateKey(selected));
+
+      els.todayLightsPreview.innerHTML = "";
+      copy.lights.forEach((light, index) => {
+        const lit = !!day.completed[index];
+        const item = document.createElement("div");
+        item.className = `preview-light ${lit ? "lit" : ""}`;
+        item.innerHTML = `
+          <div class="preview-orb"></div>
+          <div class="preview-name">${localizedPrayerName(light.key)}</div>
+          <div class="preview-desc">${light.desc}</div>
         `;
-        btn.addEventListener("click", () => {
-          state.todayStars[index].active = !state.todayStars[index].active;
-          saveState();
-          renderAll();
-        });
-        el.starsList.appendChild(btn);
+        els.todayLightsPreview.appendChild(item);
       });
     }
 
-    function renderTodayNode() {
-      const count = activeCount();
-      el.todayCount.textContent = `${count} / 5`;
+    function renderDetail() {
+      const key = selectedDateKey();
+      const day = getDayData(key);
+      const count = completedCount(day);
+      const isToday = key === todayKey();
+      const isFuture = isFutureDate(key);
 
-      const progressText = count === 5
-        ? label(copy.en.todayComplete, copy.ar.todayComplete)
-        : label(copy.en.todayProgress(count), copy.ar.todayProgress(count));
+      els.backToTodayBtn.textContent = t(i18n.en.nav.backToToday, i18n.ar.nav.backToToday);
+      els.detailDateLine.textContent = formatLongDateWithYear(parseDateKey(key));
+      els.detailTitle.textContent = isToday ? copy.today.title : "Selected day";
+      els.detailSubtitle.textContent = copy.detail.title;
+      els.detailProgressLabel.textContent = copy.detail.progressLabel;
+      els.detailProgressText.textContent = `${count} of 5 marked`;
+      els.detailSupport.textContent = isFuture
+        ? "Future dates can be viewed, but not marked yet."
+        : copy.detail.support;
 
-      el.todayStatus.textContent = progressText;
+      els.detailOpenMonthBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month);
+      els.detailLightList.innerHTML = "";
 
-      el.nodeRing.className = `node-ring n${count}`;
-      el.nodeCore.className = `core c${count}`;
+      copy.lights.forEach((light, index) => {
+        const lit = !!day.completed[index];
+        const timestamp = day.completedAt[index];
+        const addedLater = !!day.addedLater[index];
 
-      [el.ms1, el.ms2, el.ms3, el.ms4, el.ms5].forEach((star, i) => {
-        star.className = `mini-star s${i+1} ${i < count ? "active" : ""}`;
-        star.innerHTML = starSvg(i < count);
-      });
-    }
-
-    function renderPath() {
-      const rtl = isArabicOnly();
-      el.pathList.innerHTML = "";
-
-      pathDays.forEach(item => {
-        const lights = item.today ? activeCount() : item.lights;
-        const row = document.createElement("div");
-        row.className = `path-item ${rtl ? "rtl" : ""}`;
-
-        let bars = "";
-        for (let i = 0; i < 5; i++) {
-          bars += `<div class="bar ${i < lights ? "on" : ""}"></div>`;
-        }
-
-        row.innerHTML = `
-          <div class="path-node l${lights} ${item.today ? "today" : ""}"></div>
-          <div class="path-card">
-            <div class="path-head ${rtl ? "rtl" : ""}">
-              <span class="path-day">${label(`${copy.en.day} ${item.day}`, `${copy.ar.day} ${item.day}`)}</span>
-              <span class="path-count">${lights}/5</span>
+        const card = document.createElement("div");
+        card.className = "light-card";
+        card.innerHTML = `
+          <div class="light-head">
+            <div class="light-head-left">
+              <div class="light-status-dot ${lit ? "lit" : ""}"></div>
+              <div>
+                <div class="light-title">${localizedPrayerName(light.key)}</div>
+                <p class="light-desc">${light.desc}</p>
+              </div>
             </div>
-            <div class="bars ${rtl ? "rtl" : ""}">${bars}</div>
+            <button class="btn ${lit ? "" : "btn-primary"}" data-light-index="${index}" ${isFuture ? "disabled" : ""}>
+              ${isFuture ? t(i18n.en.actions.locked, i18n.ar.actions.locked) : (lit ? t(i18n.en.actions.marked, i18n.ar.actions.marked) : t(i18n.en.actions.markPrayer, i18n.ar.actions.markPrayer))}
+            </button>
+          </div>
+          <div class="light-meta">
+            <div class="meta-chip ${lit ? "success" : (isFuture ? "future" : "")}">
+              ${isFuture ? t(i18n.en.labels.futureLocked, i18n.ar.labels.futureLocked) : (lit ? t(i18n.en.actions.marked, i18n.ar.actions.marked) : copy.detail.notOpened)}
+            </div>
+            ${lit && timestamp ? `<div class="meta-chip">${copy.detail.markedAt} ${timestamp}</div>` : ""}
+            ${lit && addedLater ? `<div class="meta-chip later">${t(i18n.en.labels.addedLater, i18n.ar.labels.addedLater)}</div>` : ""}
           </div>
         `;
-        el.pathList.appendChild(row);
+        els.detailLightList.appendChild(card);
+      });
+
+      els.reflectionTitle.textContent = t(i18n.en.labels.reflection, i18n.ar.labels.reflection);
+      els.reflectionHelper.textContent = copy.detail.reflectionHelper;
+      els.reflectionInput.placeholder = copy.detail.reflectionPlaceholder;
+      els.reflectionInput.value = day.reflection || "";
+      els.reflectionCard.classList.toggle("hidden", !state.settings.showReflection);
+      els.reflectionInput.disabled = isFuture;
+
+      els.feelingTitle.textContent = copy.detail.feelingTitle;
+      els.feelingButtons.innerHTML = "";
+      copy.feelings.forEach(feeling => {
+        const btn = document.createElement("button");
+        btn.className = `feeling-btn ${day.feeling === feeling ? "active" : ""}`;
+        btn.type = "button";
+        btn.textContent = feeling;
+        if (isFuture) btn.disabled = true;
+        btn.addEventListener("click", () => {
+          if (isFuture) return;
+          const current = getDayData(key);
+          current.feeling = current.feeling === feeling ? "" : feeling;
+          current.lastUpdated = new Date().toISOString();
+          saveState(true);
+          renderDetail();
+          renderMonth();
+        });
+        els.feelingButtons.appendChild(btn);
+      });
+
+      els.saveStatusText.textContent = isFuture ? "Future dates cannot be edited." : copy.detail.saveSaved;
+      els.detailClosingLine.textContent = randomFrom(copy.detail.closingLines, key + "-closing");
+
+      Array.from(els.detailLightList.querySelectorAll("[data-light-index]")).forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (isFuture) return;
+          const index = Number(btn.dataset.lightIndex);
+          toggleLightForDate(key, index);
+        });
       });
     }
 
-    function renderReflection() {
-      const total = totalLights();
-      el.statLights.textContent = total;
-      el.reflectionGrid.innerHTML = "";
+    function renderMonth() {
+      const cursor = monthCursorKey();
+      const [year, month] = cursor.split("-").map(Number);
+      const date = new Date(year, month - 1, 1);
+      const selected = selectedDateKey();
 
-      for (let i = 0; i < 28; i++) {
-        const dot = document.createElement("div");
-        dot.className = `reflection-dot ${i < total ? "on" : ""}`;
-        el.reflectionGrid.appendChild(dot);
+      els.monthBackBtn.textContent = langMode() === "ar" ? "العودة إلى الصفحة السابقة" : "Back to detail";
+      els.monthDateLine.textContent = formatMonthYear(date);
+      els.monthTitle.textContent = copy.month.title;
+      els.monthSubtitle.textContent = copy.month.subtitle;
+      els.monthGridTitle.textContent = `${copy.month.gridTitlePrefix} ${formatMonthYear(date)}`;
+
+      const returned = daysReturnedInMonth(cursor);
+      const streak = getCurrentStreak();
+      const lit = lightsLitInMonth(cursor);
+
+      els.monthSummaryGrid.innerHTML = `
+        <div class="summary-card">
+          <div class="eyebrow">${copy.month.summaryDaysReturned}</div>
+          <div class="big">${returned} day${returned === 1 ? "" : "s"}</div>
+        </div>
+        <div class="summary-card">
+          <div class="eyebrow">${t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak)}</div>
+          <div class="big">${streak} day${streak === 1 ? "" : "s"}</div>
+        </div>
+        <div class="summary-card">
+          <div class="eyebrow">${copy.month.summaryLights}</div>
+          <div class="big">${lit} this month</div>
+        </div>
+      `;
+      els.monthSummaryGrid.classList.toggle("hidden", !state.settings.showMonthSummary);
+
+      els.monthGrid.innerHTML = "";
+
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const currentMonthKey = todayKey().slice(0, 7);
+      els.nextMonthBtn.disabled = cursor >= currentMonthKey;
+
+      for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+        const key = `${cursor}-${String(dayNum).padStart(2, "0")}`;
+        const dayData = state.days[key];
+        const count = dayData ? completedCount(dayData) : 0;
+        const isToday = key === todayKey();
+        const isSelected = key === selected;
+        const future = isFutureDate(key);
+        const weekdayShort = formatWeekdayShort(new Date(year, month - 1, dayNum));
+
+        const cell = document.createElement("div");
+        cell.className = `month-day ${isToday ? "today" : ""} ${isSelected ? "selected" : ""} ${future ? "future-disabled" : ""}`;
+
+        const miniLights = Array.from({ length: 5 }).map((_, i) => {
+          const litClass = dayData && dayData.completed[i] ? "lit" : "";
+          return `<span class="${litClass}"></span>`;
+        }).join("");
+
+        cell.innerHTML = `
+          <div class="top">
+            <div class="num-wrap">
+              <span class="num">${dayNum}</span>
+              <span class="weekday-inline">· ${weekdayShort}</span>
+            </div>
+            <div class="small">${count}/5</div>
+          </div>
+          <div class="mini-lights">${miniLights}</div>
+          <div class="small">${future ? t(i18n.en.labels.futureLocked, i18n.ar.labels.futureLocked) : (count > 0 ? copy.month.prayerMarked : copy.month.quietDay)}</div>
+        `;
+
+        cell.addEventListener("click", () => {
+          if (future) return;
+          selectDate(key, true);
+        });
+
+        els.monthGrid.appendChild(cell);
+      }
+
+      if (lit <= 8) {
+        els.monthSummaryLine.textContent = copy.month.low;
+      } else if (lit <= 20) {
+        els.monthSummaryLine.textContent = copy.month.mid;
+      } else {
+        els.monthSummaryLine.textContent = copy.month.high;
       }
     }
 
-    function showTab(tab) {
-      currentTab = tab;
-
-      el.todayView.classList.toggle("hidden", tab !== "today");
-      el.pathView.classList.toggle("hidden", tab !== "path");
-      el.reflectionView.classList.toggle("hidden", tab !== "reflection");
-
-      el.tabToday.classList.toggle("active", tab === "today");
-      el.tabPath.classList.toggle("active", tab === "path");
-      el.tabReflection.classList.toggle("active", tab === "reflection");
+    function updateNotificationStatus() {
+      if (!("Notification" in window)) {
+        els.notificationStatusText.textContent = "Notifications are not supported in this browser.";
+        els.enableNotificationsBtn.disabled = true;
+        return;
+      }
+      els.enableNotificationsBtn.disabled = false;
+      if (Notification.permission === "granted") {
+        els.notificationStatusText.textContent = "Notifications enabled";
+      } else if (Notification.permission === "denied") {
+        els.notificationStatusText.textContent = "Notifications blocked in browser settings";
+      } else {
+        els.notificationStatusText.textContent = "Notifications not enabled yet";
+      }
     }
 
-    function renderAll() {
-      setDirection();
-      setLangButtons();
-      renderTopCopy();
-      renderStars();
-      renderTodayNode();
-      renderPath();
-      renderReflection();
-      showTab(currentTab);
+    function renderSettings() {
+      els.settingsTitle.textContent = t(i18n.en.nav.settings, i18n.ar.nav.settings);
+      els.settingsSubtitle.textContent = copy.settings.subtitle;
+      els.profileTitle.textContent = copy.settings.profileTitle;
+      els.profileSub.textContent = copy.settings.profileSub;
+      els.nameLabel.textContent = copy.settings.nameLabel;
+      els.languageTitle.textContent = copy.settings.languageTitle;
+      els.languageSub.textContent = copy.settings.languageSub;
+      els.appearanceTitle.textContent = copy.settings.appearanceTitle;
+      els.appearanceSub.textContent = copy.settings.appearanceSub;
+      els.remindersTitle.textContent = copy.settings.remindersTitle;
+      els.remindersSub.textContent = copy.settings.remindersSub;
+      els.enableRemindersLabel.textContent = copy.settings.enableRemindersLabel;
+      els.morningLabel.textContent = copy.settings.morningLabel;
+      els.afternoonLabel.textContent = copy.settings.afternoonLabel;
+      els.eveningLabel.textContent = copy.settings.eveningLabel;
+      els.toneLabel.textContent = copy.settings.toneLabel;
+      els.browserNotificationsLabel.textContent = copy.settings.browserNotificationsLabel;
+      els.browserNotificationsSub.textContent = copy.settings.browserNotificationsSub;
+      els.enableNotificationsBtn.textContent = copy.settings.enableNotificationsBtn;
+      els.dailyViewTitle.textContent = copy.settings.dailyViewTitle;
+      els.dailyViewSub.textContent = copy.settings.dailyViewSub;
+      els.showReflectionLabel.textContent = copy.settings.showReflectionLabel;
+      els.showStreakLabel.textContent = copy.settings.showStreakLabel;
+      els.showMonthSummaryLabel.textContent = copy.settings.showMonthSummaryLabel;
+      els.privacyTitle.textContent = copy.settings.privacyTitle;
+      els.privacySub.textContent = copy.settings.privacySub;
+      els.dataTitle.textContent = copy.settings.dataTitle;
+      els.dataSub.textContent = copy.settings.dataSub;
+      els.clearDataBtn.textContent = copy.settings.clearDataBtn;
+      els.settingsBottomLine.textContent = copy.settings.bottomLine;
+
+      els.nameInput.value = state.profile.name || "";
+      els.languageSelect.value = state.profile.language || "en";
+      els.themeSelect.value = state.profile.theme || "dark";
+      els.morningTime.value = state.settings.morningTime;
+      els.afternoonTime.value = state.settings.afternoonTime;
+      els.eveningTime.value = state.settings.eveningTime;
+
+      setToggle(els.remindersToggle, state.settings.remindersEnabled);
+      setToggle(els.showReflectionToggle, state.settings.showReflection);
+      setToggle(els.showStreakToggle, state.settings.showStreak);
+      setToggle(els.showMonthSummaryToggle, state.settings.showMonthSummary);
+
+      els.tonePills.innerHTML = "";
+      copy.tones.forEach(tone => {
+        const pill = document.createElement("button");
+        pill.className = `pill ${state.settings.tone === tone ? "active" : ""}`;
+        pill.type = "button";
+        pill.textContent = tone;
+        pill.addEventListener("click", () => {
+          state.settings.tone = tone;
+          saveState();
+          renderSettings();
+        });
+        els.tonePills.appendChild(pill);
+      });
+
+      updateNotificationStatus();
     }
 
-    function bindLanguageButtons() {
-      el.langEn.addEventListener("click", () => { state.languageMode = "en"; saveState(); renderAll(); });
-      el.langAr.addEventListener("click", () => { state.languageMode = "ar"; saveState(); renderAll(); });
-      el.langBoth.addEventListener("click", () => { state.languageMode = "both"; saveState(); renderAll(); });
+    function toggleLightForDate(key, index) {
+      if (isFutureDate(key)) return;
 
-      document.querySelectorAll('[data-lang="en"]').forEach(btn => btn.addEventListener("click", () => {
-        state.languageMode = "en"; saveState(); renderAll();
-      }));
-      document.querySelectorAll('[data-lang="ar"]').forEach(btn => btn.addEventListener("click", () => {
-        state.languageMode = "ar"; saveState(); renderAll();
-      }));
-      document.querySelectorAll('[data-lang="both"]').forEach(btn => btn.addEventListener("click", () => {
-        state.languageMode = "both"; saveState(); renderAll();
-      }));
+      const day = getDayData(key);
+      day.completed[index] = !day.completed[index];
+
+      if (day.completed[index]) {
+        day.completedAt[index] = formatTime(new Date());
+        day.addedLater[index] = isPastDate(key);
+      } else {
+        delete day.completedAt[index];
+        delete day.addedLater[index];
+      }
+
+      day.lastUpdated = new Date().toISOString();
+      state.stats.lastVisitDate = todayKey();
+      updateBestStreak();
+      saveState(true);
+      render();
     }
 
-    document.getElementById("viewPathBtn").addEventListener("click", () => showTab("path"));
-    document.getElementById("monthlyReflectionBtn").addEventListener("click", () => showTab("reflection"));
-    el.tabToday.addEventListener("click", () => showTab("today"));
-    el.tabPath.addEventListener("click", () => showTab("path"));
-    el.tabReflection.addEventListener("click", () => showTab("reflection"));
+    function bindEvents() {
+      els.openTodayBtn.addEventListener("click", () => {
+        selectDate(todayKey(), false);
+        showPage("detail");
+      });
 
-    bindLanguageButtons();
-    renderAll();
+      els.quickMonthBtn.addEventListener("click", () => {
+        state.ui.monthCursor = todayKey().slice(0, 7);
+        saveState();
+        showPage("month");
+      });
+
+      els.backToTodayBtn.addEventListener("click", () => showPage("today"));
+      els.detailOpenMonthBtn.addEventListener("click", () => showPage("month"));
+      els.monthBackBtn.addEventListener("click", () => showPage("detail"));
+
+      els.prevMonthBtn.addEventListener("click", () => {
+        setMonthCursor(shiftMonth(monthCursorKey(), -1));
+      });
+
+      els.nextMonthBtn.addEventListener("click", () => {
+        const next = shiftMonth(monthCursorKey(), 1);
+        if (next <= todayKey().slice(0, 7)) {
+          setMonthCursor(next);
+        }
+      });
+
+      els.topSettingsBtn.addEventListener("click", () => {
+        previousPageBeforeSettings = currentPage;
+        showPage("settings");
+      });
+
+      els.settingsBackBtn.addEventListener("click", () => {
+        showPage(previousPageBeforeSettings || "today");
+      });
+
+      els.reflectionInput.addEventListener("input", (event) => {
+        const key = selectedDateKey();
+        if (isFutureDate(key)) return;
+
+        const day = getDayData(key);
+        day.reflection = event.target.value;
+        day.lastUpdated = new Date().toISOString();
+        els.saveStatusText.textContent = copy.detail.saveSaving;
+
+        if (reflectionSaveTimer) clearTimeout(reflectionSaveTimer);
+        reflectionSaveTimer = setTimeout(() => {
+          saveState(true);
+          renderMonth();
+        }, 700);
+      });
+
+      els.nameInput.addEventListener("input", (event) => {
+        state.profile.name = event.target.value;
+        saveState();
+      });
+
+      els.languageSelect.addEventListener("change", (event) => {
+        state.profile.language = event.target.value;
+        saveState();
+        render();
+      });
+
+      els.themeSelect.addEventListener("change", (event) => {
+        state.profile.theme = event.target.value;
+        saveState();
+        applyTheme();
+      });
+
+      els.morningTime.addEventListener("change", (event) => {
+        state.settings.morningTime = event.target.value;
+        saveState();
+      });
+
+      els.afternoonTime.addEventListener("change", (event) => {
+        state.settings.afternoonTime = event.target.value;
+        saveState();
+      });
+
+      els.eveningTime.addEventListener("change", (event) => {
+        state.settings.eveningTime = event.target.value;
+        saveState();
+      });
+
+      els.remindersToggle.addEventListener("click", () => toggleBooleanSetting("remindersEnabled"));
+      els.showReflectionToggle.addEventListener("click", () => toggleBooleanSetting("showReflection"));
+      els.showStreakToggle.addEventListener("click", () => toggleBooleanSetting("showStreak"));
+      els.showMonthSummaryToggle.addEventListener("click", () => toggleBooleanSetting("showMonthSummary"));
+
+      els.enableNotificationsBtn.addEventListener("click", async () => {
+        if (!("Notification" in window)) return;
+        try {
+          const permission = await Notification.requestPermission();
+          updateNotificationStatus();
+          if (permission === "granted") {
+            try {
+              new Notification("PureTime", {
+                body: "Gentle notifications are now enabled on this device."
+              });
+            } catch (error) {
+              console.error("Notification preview failed:", error);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
+
+      els.clearDataBtn.addEventListener("click", () => {
+        const ok = confirm("This will remove your saved prayer records, reflections, and settings from this device.");
+        if (!ok) return;
+        state = createDefaultState();
+        saveState();
+        render();
+        showPage("today");
+      });
+
+      window.addEventListener("beforeunload", () => {
+        saveState();
+      });
+    }
+
+    function render() {
+      ensureUiState();
+      applyTheme();
+      applyLocalizedStaticText();
+      renderToday();
+      renderDetail();
+      renderMonth();
+      renderSettings();
+    }
+
+    bindEvents();
+    render();
   </script>
 </body>
 </html>
