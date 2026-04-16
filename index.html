@@ -4,1974 +4,1104 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PureTime Five Lights</title>
+
+  <!-- Vercel Analytics / Insights -->
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+
   <style>
     :root {
-      --bg: #0f1220;
-      --card: rgba(255,255,255,0.06);
-      --line: rgba(255,255,255,0.08);
-      --text: #f6f2ea;
-      --muted: #b8b4ad;
-      --gold: #e7c98a;
-      --danger: #d88c8c;
-      --shadow: 0 20px 50px rgba(0,0,0,0.25);
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --transition: 180ms ease;
-      --max: 1120px;
+      --bg: #f8f5ef;
+      --card: #fffdf8;
+      --line: #e8dfd1;
+      --text: #3a2f26;
+      --muted: #8a7c6c;
+      --gold: #d9b45b;
+      --gold-soft: #f3e2a6;
+      --pink: #d9a3a9;
+      --shadow: 0 10px 30px rgba(58, 47, 38, 0.08);
+      --radius: 20px;
+      --radius-sm: 14px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html, body {
       margin: 0;
       padding: 0;
-      min-height: 100%;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #fbf8f3 0%, #f5efe6 100%);
       color: var(--text);
-      background:
-        radial-gradient(circle at top, rgba(231,201,138,0.08), transparent 28%),
-        linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100%;
     }
 
-    body { padding: 24px 16px 60px; }
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 20px 14px 40px;
+    }
 
     .app {
-      max-width: var(--max);
-      margin: 0 auto;
+      width: 100%;
+      max-width: 720px;
     }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
+    .hero {
+      background: rgba(255, 253, 248, 0.78);
+      border: 1px solid rgba(232, 223, 209, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 22px 18px 18px;
+      margin-bottom: 16px;
     }
 
     .brand {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
-    .brand-title {
+    .moon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff6d8 0%, #efd489 45%, #d8b45d 100%);
+      box-shadow: inset -7px -4px 10px rgba(0,0,0,0.08), 0 0 16px rgba(217,180,91,0.25);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .moon::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 10px;
+      width: 24px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 253, 248, 0.9);
+    }
+
+    .brand h1 {
+      margin: 0;
       font-size: 1.2rem;
       font-weight: 700;
       letter-spacing: 0.02em;
     }
 
-    .brand-sub {
-      font-size: 0.88rem;
-      color: var(--muted);
-    }
-
-    .page {
-      display: none;
-      animation: fadeIn 220ms ease;
-    }
-
-    .page.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero,
-    .card,
-    .light-card,
-    .summary-card,
-    .setting-group,
-    .month-day {
-      background: var(--card);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-    }
-
-    .hero {
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      margin-bottom: 18px;
-    }
-
-    .card,
-    .setting-group,
-    .summary-card,
-    .light-card {
-      border-radius: var(--radius-xl);
-      padding: 22px;
-    }
-
-    .date-line {
-      color: var(--gold);
-      font-size: 0.95rem;
-      margin-bottom: 10px;
-    }
-
-    .hero h1,
-    .section-title {
+    .sub {
       margin: 0;
-      line-height: 1.15;
-    }
-
-    .hero h1 {
-      font-size: clamp(1.8rem, 3vw, 2.5rem);
-      margin-bottom: 10px;
-    }
-
-    .hero p,
-    .small-note,
-    .section-sub,
-    .setting-group p {
       color: var(--muted);
-      line-height: 1.65;
-      margin: 0;
+      font-size: 0.94rem;
+      line-height: 1.5;
     }
 
-    .summary-grid,
-    .lights-preview,
-    .light-list,
-    .month-grid,
-    .feelings,
-    .settings-grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .label,
-    .eyebrow {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-    }
-
-    .btn {
-      appearance: none;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      padding: 12px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: transform var(--transition), background var(--transition), border-color var(--transition), opacity var(--transition);
-      font-size: 0.95rem;
-    }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.14);
-    }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .btn-primary {
-      background: linear-gradient(180deg, rgba(231,201,138,0.22), rgba(214,176,109,0.12));
-      border-color: rgba(231,201,138,0.34);
-      color: #fff5de;
-    }
-
-    .btn-danger {
-      border-color: rgba(216,140,140,0.35);
-      color: #ffd7d7;
-    }
-
-    .cta-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.05);
-      margin-top: 14px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, rgba(231,201,138,0.5), rgba(231,201,138,0.95));
-      border-radius: 999px;
-      transition: width 220ms ease;
-    }
-
-    .lights-preview {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-
-    .preview-light {
-      border-radius: var(--radius-lg);
-      padding: 14px 10px;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid var(--line);
-      text-align: center;
-    }
-
-    .preview-orb {
-      width: 52px;
-      height: 52px;
-      margin: 0 auto 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      display: grid;
-      place-items: center;
-      transition: all var(--transition);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .preview-orb::after {
-      content: "";
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.12);
-      transition: all var(--transition);
-    }
-
-    .preview-light.lit .preview-orb,
-    .light-status-dot.lit {
-      background: radial-gradient(circle at 30% 30%, rgba(255,245,222,0.85), rgba(231,201,138,0.42));
-      border-color: rgba(231,201,138,0.45);
-      box-shadow: 0 0 24px rgba(231,201,138,0.2);
-    }
-
-    .preview-light.lit .preview-orb::after {
-      background: rgba(255,248,234,0.92);
-      box-shadow: 0 0 18px rgba(255,248,234,0.5);
-    }
-
-    .preview-name {
-      font-size: 0.92rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .preview-desc {
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .footer-row {
+    .top-row {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .light-list {
-      grid-template-columns: 1fr;
-    }
-
-    .light-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
       gap: 14px;
-      margin-bottom: 12px;
+      align-items: start;
+      margin-top: 16px;
     }
 
-    .light-head-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
-    }
-
-    .light-status-dot {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.06);
-      flex-shrink: 0;
-    }
-
-    .light-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin: 0 0 4px;
-    }
-
-    .light-desc {
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.55;
-      margin: 0;
-    }
-
-    .light-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      margin-top: 14px;
-    }
-
-    .meta-chip {
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 0.84rem;
-      background: rgba(255,255,255,0.045);
+    .month-box {
+      background: var(--card);
       border: 1px solid var(--line);
-      color: var(--muted);
+      border-radius: var(--radius);
+      padding: 14px;
     }
 
-    .meta-chip.success {
-      color: #fcedcc;
-      border-color: rgba(231,201,138,0.25);
-      background: rgba(231,201,138,0.1);
-    }
-
-    .meta-chip.later {
-      color: #ffe4b0;
-      border-color: rgba(231,201,138,0.28);
-      background: rgba(231,201,138,0.08);
-    }
-
-    .meta-chip.future {
-      color: #cfc8bc;
-      border-color: rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-    }
-
-    .section-block { margin-top: 18px; }
-
-    .section-title {
-      font-size: 1.15rem;
+    .month-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 8px;
     }
 
-    textarea,
-    input,
-    select {
-      width: 100%;
-      background: rgba(255,255,255,0.045);
-      color: var(--text);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 16px;
-      font: inherit;
-      outline: none;
-      transition: border-color var(--transition), background var(--transition);
+    .month-title h2 {
+      margin: 0;
+      font-size: 1.06rem;
     }
 
-    textarea:focus,
-    input:focus,
-    select:focus {
-      border-color: rgba(231,201,138,0.38);
-      background: rgba(255,255,255,0.06);
-    }
-
-    textarea {
-      min-height: 136px;
-      resize: vertical;
-      line-height: 1.6;
-    }
-
-    .feelings {
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    }
-
-    .feeling-btn {
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      cursor: pointer;
-      transition: all var(--transition);
-      text-align: center;
-    }
-
-    .feeling-btn.active {
-      background: rgba(231,201,138,0.14);
-      border-color: rgba(231,201,138,0.32);
-      color: #fff3d7;
-    }
-
-    .save-status {
-      margin-top: 14px;
+    .month-meta {
       color: var(--muted);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
     }
 
-    .summary-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .summary-card .big {
-      font-size: 1.35rem;
-      font-weight: 700;
-    }
-
-    .month-nav {
+    .controls {
       display: flex;
-      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(58,47,38,0.08);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .primary-btn {
+      background: linear-gradient(180deg, #fff2c7 0%, #f2d88e 100%);
+      border-color: #e8cd83;
+    }
+
+    .ghost-btn {
+      background: rgba(255,255,255,0.78);
+    }
+
+    .section {
+      background: rgba(255, 253, 248, 0.82);
+      border: 1px solid rgba(232, 223, 209, 0.85);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-top: 16px;
+    }
+
+    .section h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .today-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(180deg, #fffdf8 0%, #fcf7ef 100%);
+      padding: 18px;
+    }
+
+    .today-head {
+      display: flex;
       justify-content: space-between;
+      align-items: start;
       gap: 12px;
       margin-bottom: 14px;
     }
 
-    .month-nav-center {
-      text-align: center;
-      flex: 1;
-      min-width: 0;
+    .today-head h2 {
+      margin: 0 0 4px;
+      font-size: 1.08rem;
     }
 
-    .month-grid {
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      margin-top: 16px;
-    }
-
-    .month-day {
-      border-radius: 18px;
-      padding: 12px 10px;
-      min-height: 116px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-      cursor: pointer;
-      transition: transform var(--transition), border-color var(--transition), background var(--transition), opacity var(--transition);
-    }
-
-    .month-day:hover:not(.future-disabled) {
-      transform: translateY(-1px);
-      border-color: rgba(231,201,138,0.2);
-      background: rgba(255,255,255,0.08);
-    }
-
-    .month-day.today {
-      border-color: rgba(231,201,138,0.36);
-    }
-
-    .month-day.selected {
-      border-color: rgba(231,201,138,0.54);
-      box-shadow: 0 0 0 1px rgba(231,201,138,0.12), var(--shadow);
-    }
-
-    .month-day.future-disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .month-day .top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .month-day .num-wrap {
-      display: flex;
-      align-items: baseline;
-      gap: 4px;
-      min-width: 0;
-    }
-
-    .month-day .num {
-      font-weight: 700;
-      font-size: 0.96rem;
-    }
-
-    .month-day .weekday-inline {
-      font-size: 0.72rem;
+    .today-head p {
+      margin: 0;
       color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .status-badge {
+      background: #fff7de;
+      color: #7c6632;
+      border: 1px solid #ecd89f;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
       white-space: nowrap;
     }
 
-    .mini-lights {
+    .lights {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .light-btn {
+      border-radius: 18px;
+      padding: 12px 8px;
+      min-height: 120px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff 0%, #fbf6ed 100%);
       display: flex;
-      gap: 4px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .light-btn.active {
+      background: linear-gradient(180deg, #fff7dc 0%, #f4df9e 100%);
+      border-color: #e8cd83;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35), 0 10px 24px rgba(217,180,91,0.18);
+    }
+
+    .light-icon-wrap {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #f5efe5;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .light-btn.active .light-icon-wrap {
+      background: radial-gradient(circle at center, #fff7da 0%, #f1d78e 65%, #d9b45b 100%);
+      box-shadow: 0 0 0 8px rgba(217,180,91,0.10), 0 0 24px rgba(217,180,91,0.25);
+    }
+
+    .light-flame {
+      width: 14px;
+      height: 20px;
+      background: linear-gradient(180deg, #fff8d9 0%, #ffdf89 50%, #e0aa3d 100%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform: rotate(45deg);
+      box-shadow: 0 0 14px rgba(224,170,61,0.35);
+    }
+
+    .light-btn span.label {
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .light-btn span.note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .calendar-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
 
-    .mini-lights span {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .mini-lights span.lit {
-      background: rgba(231,201,138,0.95);
-      box-shadow: 0 0 10px rgba(231,201,138,0.24);
-      border-color: rgba(231,201,138,0.34);
-    }
-
-    .month-day .small {
-      color: var(--muted);
-      font-size: 0.78rem;
-    }
-
-    .settings-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .setting-group h3 {
-      margin: 0 0 8px;
-      font-size: 1.05rem;
-    }
-
-    .field-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .legend {
+      display: flex;
       gap: 12px;
-      margin-top: 14px;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 8px;
+      flex-wrap: wrap;
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.86rem;
     }
 
-    .inline-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
+    .legend-item {
+      display: flex;
       align-items: center;
-      margin-top: 12px;
+      gap: 7px;
     }
 
-    .toggle {
-      position: relative;
-      width: 54px;
-      height: 32px;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      cursor: pointer;
-      transition: all var(--transition);
+    .legend-dot, .legend-ring {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
       flex-shrink: 0;
     }
 
-    .toggle::after {
-      content: "";
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      top: 3px;
-      left: 3px;
-      border-radius: 50%;
-      background: #f7f2e9;
-      transition: all var(--transition);
+    .legend-dot {
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(217,180,91,0.35);
     }
 
-    .toggle.active {
-      background: rgba(231,201,138,0.32);
-      border-color: rgba(231,201,138,0.32);
+    .legend-ring {
+      border: 2px solid var(--pink);
+      background: transparent;
     }
 
-    .toggle.active::after {
-      left: 25px;
-      background: #fff7e5;
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
     }
 
-    .pill-row {
+    .weekday {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      padding-bottom: 2px;
+    }
+
+    .day-card {
+      min-height: 86px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 9px 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .day-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(58,47,38,0.06);
+    }
+
+    .day-card.empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .day-card.today {
+      border-color: #e7c97a;
+      box-shadow: inset 0 0 0 1px rgba(231,201,122,0.32);
+    }
+
+    .day-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .day-num {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .day-stars {
       display: flex;
       flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      min-height: 20px;
+    }
+
+    .star {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff3bf 0%, #e8c76e 60%, #cfa74a 100%);
+      box-shadow: 0 0 8px rgba(217,180,91,0.30);
+    }
+
+    .pink-ring {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid var(--pink);
+      background: transparent;
+    }
+
+    .day-meta {
+      margin-top: auto;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .foot-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(58, 47, 38, 0.38);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 999;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 430px;
+      background: linear-gradient(180deg, #fffdf9 0%, #faf3e6 100%);
+      border: 1px solid rgba(232,223,209,0.95);
+      border-radius: 28px;
+      box-shadow: 0 24px 60px rgba(58,47,38,0.22);
+      padding: 20px 18px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal h3 {
+      margin: 0 0 8px;
+      font-size: 1.08rem;
+    }
+
+    .modal p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+
+    .touch-area {
+      margin: 18px 0 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .orb-wrap {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      display: grid;
+      place-items: center;
+    }
+
+    .pulse-ring {
+      position: absolute;
+      width: 122px;
+      height: 122px;
+      border-radius: 50%;
+      background: rgba(217,180,91,0.10);
+      transform: scale(0.8);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pulse-ring.animate {
+      animation: pulse 0.8s ease-out;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.76);
+        opacity: 0.55;
+      }
+      100% {
+        transform: scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    .touch-orb {
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      border: 1px solid #ead7a3;
+      background: radial-gradient(circle at 35% 35%, #fff7dc 0%, #f0d791 62%, #d9b45b 100%);
+      box-shadow:
+        inset 0 8px 18px rgba(255,255,255,0.38),
+        0 12px 24px rgba(217,180,91,0.22),
+        0 0 28px rgba(217,180,91,0.18);
+      display: grid;
+      place-items: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #6d592b;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .touch-count {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .touch-dots {
+      display: flex;
       gap: 10px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .touch-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #eadfcd;
+      transition: all 0.2s ease;
+    }
+
+    .touch-dot.filled {
+      background: radial-gradient(circle at 35% 35%, #fff3bf 0%, #e8c76e 60%, #cfa74a 100%);
+      box-shadow: 0 0 10px rgba(217,180,91,0.28);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
       margin-top: 12px;
     }
 
-    .pill {
-      padding: 10px 14px;
+    .small-muted {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+
+    .day-detail-box {
+      border: 1px solid var(--line);
+      background: #fffdf8;
+      border-radius: 20px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .day-detail-box h4 {
+      margin: 0 0 8px;
+      font-size: 0.98rem;
+    }
+
+    .detail-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .chip {
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      cursor: pointer;
+      background: #fff;
+      padding: 8px 12px;
+      font-size: 0.85rem;
     }
 
-    .pill.active {
-      background: rgba(231,201,138,0.14);
-      border-color: rgba(231,201,138,0.3);
-      color: #fff2d0;
-    }
-
-    .hidden { display: none !important; }
-
-    @media (max-width: 960px) {
-      .lights-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .summary-grid,
-      .field-grid { grid-template-columns: 1fr; }
-      .month-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .empty-state {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     @media (max-width: 640px) {
-      body { padding: 16px 12px 40px; }
-      .hero,
-      .card,
-      .light-card,
-      .setting-group,
-      .summary-card { padding: 18px; }
-      .month-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .footer-row { grid-template-columns: 1fr; }
-      .month-nav {
-        flex-direction: column;
-        align-items: stretch;
+      .top-row {
+        grid-template-columns: 1fr;
       }
-      .month-nav-center { order: -1; }
+
+      .lights {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .light-btn:last-child {
+        grid-column: span 2;
+      }
+
+      .days-grid {
+        gap: 8px;
+      }
+
+      .day-card {
+        min-height: 78px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="topbar">
+    <section class="hero">
       <div class="brand">
-        <div class="brand-title">PureTime</div>
-        <div class="brand-sub">Five Lights</div>
+        <div class="moon"></div>
+        <h1>PureTime · Five Lights</h1>
       </div>
-      <button class="btn" id="topSettingsBtn">Settings</button>
-    </div>
+      <p class="sub">
+        A quiet space to hold the five daily lights, one gentle step at a time.
+      </p>
 
-    <section class="page active" id="page-today">
-      <div class="hero">
-        <div class="date-line" id="todayDateLine"></div>
-        <h1 id="todayTitle"></h1>
-        <p id="todaySubtitle"></p>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="label" id="todayProgressLabel"></div>
-            <h2 id="todayProgressText"></h2>
+      <div class="top-row">
+        <div class="month-box">
+          <div class="month-title">
+            <div>
+              <h2 id="monthHeading">Month</h2>
+              <div class="month-meta" id="monthMeta">A gentle record of this month</div>
+            </div>
+          </div>
+          <div class="controls">
+            <button class="ghost-btn" id="prevMonthBtn">← Previous</button>
+            <button class="ghost-btn" id="nextMonthBtn">Next →</button>
+            <button class="primary-btn" id="goTodayBtn">Today</button>
           </div>
         </div>
 
-        <div class="progress-bar">
-          <div class="progress-fill" id="todayProgressFill"></div>
-        </div>
-
-        <div style="height:18px;"></div>
-        <div class="lights-preview" id="todayLightsPreview"></div>
-
-        <div style="height:18px;"></div>
-        <div class="cta-row">
-          <button class="btn btn-primary" id="openTodayBtn"></button>
-          <button class="btn" id="quickMonthBtn">View this month</button>
-        </div>
-
-        <div style="height:10px;"></div>
-        <div class="small-note" id="todayReassurance"></div>
-      </div>
-
-      <div class="card">
-        <div class="footer-row">
-          <div>
-            <div class="eyebrow" id="streakLabel"></div>
-            <div id="streakValue"></div>
+        <div class="month-box" style="min-width: 160px;">
+          <div class="month-title" style="margin-bottom: 10px;">
+            <h2 style="font-size: 0.98rem;">This month</h2>
           </div>
-          <div>
-            <div class="eyebrow" id="selectedDateLabel">Selected date</div>
-            <div id="selectedDateSummary"></div>
+          <div class="month-meta" id="monthSummary">
+            0 lights kept
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="small-note" id="todayBottomQuote"></div>
       </div>
     </section>
 
-    <section class="page" id="page-detail">
-      <div class="hero">
-        <div class="cta-row">
-          <button class="btn" id="backToTodayBtn"></button>
-          <button class="btn" id="detailOpenMonthBtn">Month</button>
-        </div>
-        <div class="date-line" id="detailDateLine"></div>
-        <h1 id="detailTitle"></h1>
-        <p id="detailSubtitle"></p>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
+    <section class="section">
+      <div class="today-card">
+        <div class="today-head">
           <div>
-            <div class="label" id="detailProgressLabel"></div>
-            <h2 id="detailProgressText"></h2>
+            <h2 id="todayTitle">Today</h2>
+            <p id="todaySubtitle">
+              Begin softly. Tap a light when you wish to mark it.
+            </p>
           </div>
-        </div>
-        <div class="small-note" id="detailSupport"></div>
-      </div>
-
-      <div class="light-list" id="detailLightList"></div>
-
-      <div class="card section-block" id="reflectionCard">
-        <h2 class="section-title" id="reflectionTitle"></h2>
-        <p class="section-sub" id="reflectionHelper"></p>
-        <textarea id="reflectionInput"></textarea>
-
-        <div class="section-block">
-          <h2 class="section-title" id="feelingTitle"></h2>
-          <div class="feelings" id="feelingButtons"></div>
+          <div class="status-badge" id="todayBadge">0 / 5 lights</div>
         </div>
 
-        <div class="save-status" id="saveStatusText"></div>
+        <div class="lights" id="lightsGrid"></div>
       </div>
 
-      <div class="card">
-        <div class="small-note" id="detailClosingLine"></div>
+      <div class="foot-note">
+        Free version: after lighting one prayer, you can stay for a short
+        <strong>Gentle Return</strong> of 3 touches.
       </div>
     </section>
 
-    <section class="page" id="page-month">
-      <div class="hero">
-        <div class="cta-row">
-          <button class="btn" id="monthBackBtn"></button>
+    <section class="section">
+      <div class="calendar-head">
+        <h3>Month View</h3>
+        <div class="legend">
+          <div class="legend-item">
+            <span class="legend-dot"></span>
+            <span>Prayer lights</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-ring"></span>
+            <span>Personal note ring</span>
+          </div>
         </div>
-        <div class="date-line" id="monthDateLine"></div>
-        <h1 id="monthTitle"></h1>
-        <p id="monthSubtitle"></p>
       </div>
 
-      <div class="summary-grid" id="monthSummaryGrid"></div>
+      <div class="days-grid" id="daysGrid"></div>
 
-      <div class="card">
-        <div class="month-nav">
-          <button class="btn" id="prevMonthBtn">Previous month</button>
-          <div class="month-nav-center">
-            <div class="section-title" id="monthGridTitle"></div>
-          </div>
-          <button class="btn" id="nextMonthBtn">Next month</button>
-        </div>
-
-        <div class="month-grid" id="monthGrid"></div>
-      </div>
-
-      <div class="card">
-        <div class="small-note" id="monthSummaryLine"></div>
-      </div>
-    </section>
-
-    <section class="page" id="page-settings">
-      <div class="hero">
-        <div class="cta-row">
-          <button class="btn" id="settingsBackBtn">Back</button>
-        </div>
-        <div class="date-line">PureTime</div>
-        <h1 id="settingsTitle"></h1>
-        <p id="settingsSubtitle"></p>
-      </div>
-
-      <div class="settings-grid">
-        <div class="setting-group">
-          <h3 id="profileTitle"></h3>
-          <p id="profileSub"></p>
-          <div class="field">
-            <label for="nameInput" id="nameLabel"></label>
-            <input id="nameInput" type="text" />
-          </div>
-        </div>
-
-        <div class="setting-group">
-          <h3 id="languageTitle"></h3>
-          <p id="languageSub"></p>
-          <div class="field">
-            <select id="languageSelect">
-              <option value="en">English</option>
-              <option value="ar">Arabic</option>
-              <option value="both">English + Arabic</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="setting-group">
-          <h3 id="appearanceTitle"></h3>
-          <p id="appearanceSub"></p>
-          <div class="field">
-            <select id="themeSelect">
-              <option value="dark">Dark</option>
-              <option value="light">Light</option>
-              <option value="auto">Auto</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="setting-group">
-          <h3 id="remindersTitle"></h3>
-          <p id="remindersSub"></p>
-
-          <div class="inline-row">
-            <div><strong id="enableRemindersLabel"></strong></div>
-            <div class="toggle" id="remindersToggle" role="button"></div>
-          </div>
-
-          <div class="field-grid">
-            <div class="field">
-              <label for="morningTime" id="morningLabel"></label>
-              <input id="morningTime" type="time" />
-            </div>
-            <div class="field">
-              <label for="afternoonTime" id="afternoonLabel"></label>
-              <input id="afternoonTime" type="time" />
-            </div>
-            <div class="field">
-              <label for="eveningTime" id="eveningLabel"></label>
-              <input id="eveningTime" type="time" />
-            </div>
-          </div>
-
-          <div class="field" style="margin-top:14px;">
-            <label id="toneLabel"></label>
-            <div class="pill-row" id="tonePills"></div>
-          </div>
-
-          <div class="field" style="margin-top:16px;">
-            <label id="browserNotificationsLabel"></label>
-            <div class="small-note" id="browserNotificationsSub"></div>
-            <div class="cta-row" style="margin-top:12px;">
-              <button class="btn" id="enableNotificationsBtn"></button>
-              <div class="small-note" id="notificationStatusText"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="setting-group">
-          <h3 id="dailyViewTitle"></h3>
-          <p id="dailyViewSub"></p>
-
-          <div class="inline-row">
-            <div id="showReflectionLabel"></div>
-            <div class="toggle" id="showReflectionToggle" role="button"></div>
-          </div>
-
-          <div class="inline-row">
-            <div id="showStreakLabel"></div>
-            <div class="toggle" id="showStreakToggle" role="button"></div>
-          </div>
-
-          <div class="inline-row">
-            <div id="showMonthSummaryLabel"></div>
-            <div class="toggle" id="showMonthSummaryToggle" role="button"></div>
-          </div>
-        </div>
-
-        <div class="setting-group">
-          <h3 id="privacyTitle"></h3>
-          <p id="privacySub"></p>
-        </div>
-
-        <div class="setting-group">
-          <h3 id="dataTitle"></h3>
-          <p id="dataSub"></p>
-          <div class="cta-row">
-            <button class="btn btn-danger" id="clearDataBtn"></button>
-          </div>
-        </div>
-
-        <div class="setting-group">
-          <p id="settingsBottomLine" class="small-note"></p>
-        </div>
-      </div>
+      <div id="dayDetailContainer"></div>
     </section>
   </div>
 
+  <div class="modal-backdrop" id="gentleModal">
+    <div class="modal">
+      <h3 id="gentleTitle">Gentle Return</h3>
+      <p id="gentleText">
+        Stay for a quiet moment with this light.
+      </p>
+
+      <div class="touch-area">
+        <div class="touch-dots" id="touchDots"></div>
+
+        <div class="orb-wrap">
+          <div class="pulse-ring" id="pulseRing"></div>
+          <div class="touch-orb" id="touchOrb">Touch</div>
+        </div>
+
+        <div class="touch-count" id="touchCount">0 / 3</div>
+      </div>
+
+      <div class="small-muted" id="gentleHint">
+        Three small touches. No pressure. Just a moment to stay.
+      </div>
+
+      <div class="modal-actions">
+        <button class="ghost-btn" id="skipGentleBtn">Skip</button>
+        <button class="primary-btn" id="closeGentleBtn" style="display:none;">Continue</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const STORAGE_KEY = "puretime-five-lights-prayer-v5-fixed-keys";
+    const PRAYERS = [
+      { key: "fajr", label: "Fajr", note: "Dawn light" },
+      { key: "dhuhr", label: "Dhuhr", note: "Midday pause" },
+      { key: "asr", label: "Asr", note: "Return gently" },
+      { key: "maghrib", label: "Maghrib", note: "Sunset softness" },
+      { key: "isha", label: "Isha", note: "Night quiet" }
+    ];
 
-    const PRAYER_KEYS = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
+    const STORAGE_KEY = "puretime_five_lights_v1";
 
-    const i18n = {
-      en: {
-        nav: {
-          today: "Today",
-          month: "Month",
-          settings: "Settings",
-          backToToday: "Back to today",
-          selectedDate: "Selected date"
-        },
-        actions: {
-          openToday: "Open today",
-          markPrayer: "Mark prayer",
-          marked: "Marked",
-          locked: "Locked"
-        },
-        labels: {
-          reflection: "Reflection",
-          addedLater: "Added later",
-          futureLocked: "Future locked",
-          currentGentleStreak: "Current gentle streak"
-        },
-        prayers: {
-          fajr: "Fajr",
-          dhuhr: "Dhuhr",
-          asr: "Asr",
-          maghrib: "Maghrib",
-          isha: "Isha"
-        }
-      },
-      ar: {
-        nav: {
-          today: "اليوم",
-          month: "الشهر",
-          settings: "الإعدادات",
-          backToToday: "العودة إلى اليوم",
-          selectedDate: "التاريخ المحدد"
-        },
-        actions: {
-          openToday: "افتحي اليوم",
-          markPrayer: "سجّلي الصلاة",
-          marked: "تم التسجيل",
-          locked: "مغلق"
-        },
-        labels: {
-          reflection: "تأمل",
-          addedLater: "أضيف لاحقًا",
-          futureLocked: "تاريخ مستقبلي مغلق",
-          currentGentleStreak: "الاستمرار اللطيف الحالي"
-        },
-        prayers: {
-          fajr: "الفجر",
-          dhuhr: "الظهر",
-          asr: "العصر",
-          maghrib: "المغرب",
-          isha: "العشاء"
-        }
-      }
+    const state = {
+      currentDate: new Date(),
+      selectedDateKey: formatDateKey(new Date()),
+      gentlePrayerKey: null,
+      gentleTouchCount: 0,
+      gentleMaxTouches: 3,
+      data: loadData()
     };
 
-    function langMode() {
-      return state?.profile?.language || "en";
-    }
+    const monthHeading = document.getElementById("monthHeading");
+    const monthMeta = document.getElementById("monthMeta");
+    const monthSummary = document.getElementById("monthSummary");
+    const todayTitle = document.getElementById("todayTitle");
+    const todaySubtitle = document.getElementById("todaySubtitle");
+    const todayBadge = document.getElementById("todayBadge");
+    const lightsGrid = document.getElementById("lightsGrid");
+    const daysGrid = document.getElementById("daysGrid");
+    const dayDetailContainer = document.getElementById("dayDetailContainer");
 
-    function t(enText, arText) {
-      const mode = langMode();
-      if (mode === "ar") return arText;
-      if (mode === "both") return `${enText} / ${arText}`;
-      return enText;
-    }
+    const prevMonthBtn = document.getElementById("prevMonthBtn");
+    const nextMonthBtn = document.getElementById("nextMonthBtn");
+    const goTodayBtn = document.getElementById("goTodayBtn");
 
-    const copy = {
-      today: {
-        title: "Today’s Five Lights",
-        progressLabel: "Today’s prayer progress",
-        reassurance: "No pressure. You can return at your own pace.",
-        bottomQuotes: [
-          "A small light can still change the tone of a day.",
-          "You are allowed to begin again today.",
-          "This space is yours: quiet, private, and gentle.",
-          "Even one small return still counts.",
-          "A soft beginning is still a beginning."
-        ],
-        subtitles: [
-          "A gentle way to hold the five prayers of today.",
-          "Return softly, one prayer at a time.",
-          "A quiet space for prayer, reflection, and return.",
-          "You do not need to rush through the day.",
-          "Five lights, one day, at your own pace."
-        ]
-      },
-      detail: {
-        title: "A gentle page for this day",
-        progressLabel: "Prayer status",
-        support: "You can mark this day prayer by prayer.",
-        reflectionHelper: "A few words are enough. This space is private.",
-        reflectionPlaceholder: "Write a few quiet words for this day...",
-        feelingTitle: "How did this day feel?",
-        saveSaving: "Saving...",
-        saveSaved: "All changes saved",
-        closingLines: [
-          "Nothing needs to be perfect for this day to matter.",
-          "A quiet record is still a meaningful one.",
-          "Even after a missed prayer, this space stays gentle.",
-          "You can return to any day with softness."
-        ],
-        notOpened: "Not marked yet",
-        markedAt: "Marked at"
-      },
-      month: {
-        title: "This month",
-        subtitle: "Not a scorecard — just a gentle record of prayer and return.",
-        gridTitlePrefix: "Viewing",
-        summaryDaysReturned: "Days with prayer",
-        summaryLights: "Prayers marked",
-        low: "A quiet month still counts. You are still returning.",
-        mid: "You have made space for prayer in small ways throughout the month.",
-        high: "Your month carries a steady rhythm of return.",
-        quietDay: "Quiet day",
-        prayerMarked: "Prayer marked"
-      },
-      settings: {
-        title: "Settings",
-        subtitle: "Shape this space in a way that feels gentle for you.",
-        profileTitle: "Profile",
-        profileSub: "Optional",
-        nameLabel: "Name or nickname",
-        languageTitle: "Language",
-        languageSub: "Choose how this space should read for you.",
-        appearanceTitle: "Appearance",
-        appearanceSub: "Keep it simple, warm, and easy on the eyes.",
-        remindersTitle: "Reminders",
-        remindersSub: "A few quiet prompts during the day, if you want them.",
-        enableRemindersLabel: "Enable gentle reminders",
-        morningLabel: "Morning reminder",
-        afternoonLabel: "Midday reminder",
-        eveningLabel: "Evening reminder",
-        toneLabel: "Reminder tone",
-        browserNotificationsLabel: "Browser notifications",
-        browserNotificationsSub: "Allow notifications if you’d like reminders to appear on this device.",
-        enableNotificationsBtn: "Enable notifications",
-        dailyViewTitle: "Daily view",
-        dailyViewSub: "Choose what feels visible and useful for you.",
-        showReflectionLabel: "Show reflection",
-        showStreakLabel: "Show gentle streak",
-        showMonthSummaryLabel: "Show monthly summary",
-        privacyTitle: "Privacy",
-        privacySub: "Your entries are stored on this device. This space stays personal here.",
-        dataTitle: "Your data",
-        dataSub: "This will remove your saved prayer records, reflections, and settings from this device.",
-        clearDataBtn: "Clear all records",
-        bottomLine: "Small adjustments can make this space feel more like yours."
-      },
-      tones: ["Gentle", "Neutral", "Minimal"],
-      feelings: ["Calm", "Tired", "Full", "Heavy", "Hopeful", "Grateful"],
-      lights: [
-        { key: "fajr", desc: "The first prayer light of the day." },
-        { key: "dhuhr", desc: "A midday return in the middle of the day." },
-        { key: "asr", desc: "A late-day pause before the evening comes in." },
-        { key: "maghrib", desc: "A prayer light at sunset." },
-        { key: "isha", desc: "A quiet prayer to close the day." }
-      ]
-    };
+    const gentleModal = document.getElementById("gentleModal");
+    const gentleTitle = document.getElementById("gentleTitle");
+    const gentleText = document.getElementById("gentleText");
+    const touchDots = document.getElementById("touchDots");
+    const touchOrb = document.getElementById("touchOrb");
+    const touchCount = document.getElementById("touchCount");
+    const pulseRing = document.getElementById("pulseRing");
+    const skipGentleBtn = document.getElementById("skipGentleBtn");
+    const closeGentleBtn = document.getElementById("closeGentleBtn");
+    const gentleHint = document.getElementById("gentleHint");
 
-    function todayKey() {
+    prevMonthBtn.addEventListener("click", () => {
+      state.currentDate = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() - 1, 1);
+      renderAll();
+    });
+
+    nextMonthBtn.addEventListener("click", () => {
+      state.currentDate = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() + 1, 1);
+      renderAll();
+    });
+
+    goTodayBtn.addEventListener("click", () => {
       const now = new Date();
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, "0");
-      const d = String(now.getDate()).padStart(2, "0");
+      state.currentDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      state.selectedDateKey = formatDateKey(now);
+      renderAll();
+    });
+
+    skipGentleBtn.addEventListener("click", closeGentleModal);
+    closeGentleBtn.addEventListener("click", closeGentleModal);
+
+    touchOrb.addEventListener("click", () => {
+      if (!state.gentlePrayerKey) return;
+      if (state.gentleTouchCount >= state.gentleMaxTouches) return;
+
+      state.gentleTouchCount += 1;
+      animatePulse();
+      renderGentleTouchState();
+
+      const day = getDayData(state.selectedDateKey);
+      day.gentleReturns = (day.gentleReturns || 0) + 1;
+      saveData();
+
+      if (state.gentleTouchCount >= state.gentleMaxTouches) {
+        gentleHint.textContent = "A quiet moment kept.";
+        closeGentleBtn.style.display = "inline-flex";
+      }
+    });
+
+    gentleModal.addEventListener("click", (e) => {
+      if (e.target === gentleModal) closeGentleModal();
+    });
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : { days: {} };
+      } catch (e) {
+        return { days: {} };
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+    }
+
+    function formatDateKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
       return `${y}-${m}-${d}`;
     }
 
-    function createEmptyPrayerMap(defaultValue) {
-      return {
-        fajr: defaultValue,
-        dhuhr: defaultValue,
-        asr: defaultValue,
-        maghrib: defaultValue,
-        isha: defaultValue
-      };
-    }
-
-    function createEmptyDay() {
-      return {
-        completed: createEmptyPrayerMap(false),
-        completedAt: createEmptyPrayerMap(""),
-        addedLater: createEmptyPrayerMap(false),
-        reflection: "",
-        feeling: "",
-        lastUpdated: new Date().toISOString()
-      };
-    }
-
-    function createDefaultState() {
-      return {
-        profile: {
-          name: "",
-          language: "en",
-          theme: "dark"
-        },
-        settings: {
-          remindersEnabled: false,
-          morningTime: "08:00",
-          afternoonTime: "14:00",
-          eveningTime: "21:00",
-          tone: "Gentle",
-          showReflection: true,
-          showStreak: true,
-          showMonthSummary: true
-        },
-        ui: {
-          selectedDate: todayKey(),
-          monthCursor: todayKey().slice(0, 7)
-        },
-        days: {},
-        stats: {
-          bestStreak: 0,
-          lastVisitDate: ""
-        }
-      };
-    }
-
-    function normalizeDayData(day) {
-      const normalized = createEmptyDay();
-      if (!day) return normalized;
-
-      // 兼容旧数组结构
-      if (Array.isArray(day.completed)) {
-        PRAYER_KEYS.forEach((key, index) => {
-          normalized.completed[key] = !!day.completed[index];
-        });
-      } else if (day.completed && typeof day.completed === "object") {
-        PRAYER_KEYS.forEach((key) => {
-          normalized.completed[key] = !!day.completed[key];
-        });
-      }
-
-      if (day.completedAt && typeof day.completedAt === "object") {
-        PRAYER_KEYS.forEach((key, index) => {
-          normalized.completedAt[key] =
-            day.completedAt[key] ??
-            (Array.isArray(day.completedAt) ? (day.completedAt[index] || "") : "") ??
-            "";
-        });
-      }
-
-      if (day.addedLater && typeof day.addedLater === "object") {
-        PRAYER_KEYS.forEach((key, index) => {
-          normalized.addedLater[key] =
-            !!day.addedLater[key] ||
-            !!(Array.isArray(day.addedLater) ? day.addedLater[index] : false);
-        });
-      }
-
-      normalized.reflection = day.reflection || "";
-      normalized.feeling = day.feeling || "";
-      normalized.lastUpdated = day.lastUpdated || new Date().toISOString();
-
-      return normalized;
-    }
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return createDefaultState();
-        const parsed = JSON.parse(raw);
-        const defaults = createDefaultState();
-
-        const normalizedDays = {};
-        const sourceDays = parsed.days || {};
-        Object.keys(sourceDays).forEach((key) => {
-          normalizedDays[key] = normalizeDayData(sourceDays[key]);
-        });
-
-        return {
-          ...defaults,
-          ...parsed,
-          profile: { ...defaults.profile, ...(parsed.profile || {}) },
-          settings: { ...defaults.settings, ...(parsed.settings || {}) },
-          ui: { ...defaults.ui, ...(parsed.ui || {}) },
-          stats: { ...defaults.stats, ...(parsed.stats || {}) },
-          days: normalizedDays
-        };
-      } catch (error) {
-        console.error("Failed to load state:", error);
-        return createDefaultState();
-      }
-    }
-
-    let state = loadState();
-    let currentPage = "today";
-    let previousPageBeforeSettings = "today";
-    let reflectionSaveTimer = null;
-    let saveStatusTimer = null;
-
-    const els = {
-      pages: {
-        today: document.getElementById("page-today"),
-        detail: document.getElementById("page-detail"),
-        month: document.getElementById("page-month"),
-        settings: document.getElementById("page-settings")
-      },
-
-      topSettingsBtn: document.getElementById("topSettingsBtn"),
-
-      todayDateLine: document.getElementById("todayDateLine"),
-      todayTitle: document.getElementById("todayTitle"),
-      todaySubtitle: document.getElementById("todaySubtitle"),
-      todayProgressLabel: document.getElementById("todayProgressLabel"),
-      todayProgressText: document.getElementById("todayProgressText"),
-      todayProgressFill: document.getElementById("todayProgressFill"),
-      todayLightsPreview: document.getElementById("todayLightsPreview"),
-      openTodayBtn: document.getElementById("openTodayBtn"),
-      quickMonthBtn: document.getElementById("quickMonthBtn"),
-      todayReassurance: document.getElementById("todayReassurance"),
-      streakLabel: document.getElementById("streakLabel"),
-      streakValue: document.getElementById("streakValue"),
-      selectedDateLabel: document.getElementById("selectedDateLabel"),
-      selectedDateSummary: document.getElementById("selectedDateSummary"),
-      todayBottomQuote: document.getElementById("todayBottomQuote"),
-
-      backToTodayBtn: document.getElementById("backToTodayBtn"),
-      detailOpenMonthBtn: document.getElementById("detailOpenMonthBtn"),
-      detailDateLine: document.getElementById("detailDateLine"),
-      detailTitle: document.getElementById("detailTitle"),
-      detailSubtitle: document.getElementById("detailSubtitle"),
-      detailProgressLabel: document.getElementById("detailProgressLabel"),
-      detailProgressText: document.getElementById("detailProgressText"),
-      detailSupport: document.getElementById("detailSupport"),
-      detailLightList: document.getElementById("detailLightList"),
-      reflectionCard: document.getElementById("reflectionCard"),
-      reflectionTitle: document.getElementById("reflectionTitle"),
-      reflectionHelper: document.getElementById("reflectionHelper"),
-      reflectionInput: document.getElementById("reflectionInput"),
-      feelingTitle: document.getElementById("feelingTitle"),
-      feelingButtons: document.getElementById("feelingButtons"),
-      saveStatusText: document.getElementById("saveStatusText"),
-      detailClosingLine: document.getElementById("detailClosingLine"),
-
-      monthBackBtn: document.getElementById("monthBackBtn"),
-      monthDateLine: document.getElementById("monthDateLine"),
-      monthTitle: document.getElementById("monthTitle"),
-      monthSubtitle: document.getElementById("monthSubtitle"),
-      monthSummaryGrid: document.getElementById("monthSummaryGrid"),
-      monthGridTitle: document.getElementById("monthGridTitle"),
-      monthGrid: document.getElementById("monthGrid"),
-      monthSummaryLine: document.getElementById("monthSummaryLine"),
-      prevMonthBtn: document.getElementById("prevMonthBtn"),
-      nextMonthBtn: document.getElementById("nextMonthBtn"),
-
-      settingsBackBtn: document.getElementById("settingsBackBtn"),
-      settingsTitle: document.getElementById("settingsTitle"),
-      settingsSubtitle: document.getElementById("settingsSubtitle"),
-      profileTitle: document.getElementById("profileTitle"),
-      profileSub: document.getElementById("profileSub"),
-      nameLabel: document.getElementById("nameLabel"),
-      nameInput: document.getElementById("nameInput"),
-      languageTitle: document.getElementById("languageTitle"),
-      languageSub: document.getElementById("languageSub"),
-      languageSelect: document.getElementById("languageSelect"),
-      appearanceTitle: document.getElementById("appearanceTitle"),
-      appearanceSub: document.getElementById("appearanceSub"),
-      themeSelect: document.getElementById("themeSelect"),
-      remindersTitle: document.getElementById("remindersTitle"),
-      remindersSub: document.getElementById("remindersSub"),
-      enableRemindersLabel: document.getElementById("enableRemindersLabel"),
-      remindersToggle: document.getElementById("remindersToggle"),
-      morningLabel: document.getElementById("morningLabel"),
-      afternoonLabel: document.getElementById("afternoonLabel"),
-      eveningLabel: document.getElementById("eveningLabel"),
-      morningTime: document.getElementById("morningTime"),
-      afternoonTime: document.getElementById("afternoonTime"),
-      eveningTime: document.getElementById("eveningTime"),
-      toneLabel: document.getElementById("toneLabel"),
-      tonePills: document.getElementById("tonePills"),
-      browserNotificationsLabel: document.getElementById("browserNotificationsLabel"),
-      browserNotificationsSub: document.getElementById("browserNotificationsSub"),
-      enableNotificationsBtn: document.getElementById("enableNotificationsBtn"),
-      notificationStatusText: document.getElementById("notificationStatusText"),
-      dailyViewTitle: document.getElementById("dailyViewTitle"),
-      dailyViewSub: document.getElementById("dailyViewSub"),
-      showReflectionLabel: document.getElementById("showReflectionLabel"),
-      showReflectionToggle: document.getElementById("showReflectionToggle"),
-      showStreakLabel: document.getElementById("showStreakLabel"),
-      showStreakToggle: document.getElementById("showStreakToggle"),
-      showMonthSummaryLabel: document.getElementById("showMonthSummaryLabel"),
-      showMonthSummaryToggle: document.getElementById("showMonthSummaryToggle"),
-      privacyTitle: document.getElementById("privacyTitle"),
-      privacySub: document.getElementById("privacySub"),
-      dataTitle: document.getElementById("dataTitle"),
-      dataSub: document.getElementById("dataSub"),
-      clearDataBtn: document.getElementById("clearDataBtn"),
-      settingsBottomLine: document.getElementById("settingsBottomLine")
-    };
-
-    function selectedDateKey() {
-      return state.ui.selectedDate || todayKey();
-    }
-
-    function monthCursorKey() {
-      return state.ui.monthCursor || todayKey().slice(0, 7);
-    }
-
-    function ensureUiState() {
-      if (!state.ui.selectedDate) state.ui.selectedDate = todayKey();
-      if (!state.ui.monthCursor) state.ui.monthCursor = selectedDateKey().slice(0, 7);
-    }
-
-    function parseDateKey(key) {
-      const [y, m, d] = key.split("-").map(Number);
-      return new Date(y, m - 1, d);
-    }
-
-    function isFutureDate(key) {
-      return key > todayKey();
-    }
-
-    function isPastDate(key) {
-      return key < todayKey();
-    }
-
-    function getDayData(key = selectedDateKey()) {
-      if (!state.days[key]) {
-        state.days[key] = createEmptyDay();
-      } else {
-        state.days[key] = normalizeDayData(state.days[key]);
-      }
-      return state.days[key];
-    }
-
-    function completedCount(dayData) {
-      return Object.values(dayData.completed).filter(Boolean).length;
-    }
-
-    function progressPercent(dayData) {
-      return (completedCount(dayData) / copy.lights.length) * 100;
-    }
-
-    function saveState(showStatus = false) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        if (showStatus) setSaveStatus(copy.detail.saveSaved);
-      } catch (error) {
-        console.error("Failed to save:", error);
-      }
-    }
-
-    function setSaveStatus(text) {
-      els.saveStatusText.textContent = text;
-      if (saveStatusTimer) clearTimeout(saveStatusTimer);
-      saveStatusTimer = setTimeout(() => {
-        els.saveStatusText.textContent = copy.detail.saveSaved;
-      }, 1800);
-    }
-
-    function formatLongDate(date = new Date()) {
-      return new Intl.DateTimeFormat("en-GB", {
+    function humanDate(date) {
+      return date.toLocaleDateString("en-GB", {
         weekday: "long",
-        month: "long",
-        day: "numeric"
-      }).format(date);
+        day: "numeric",
+        month: "long"
+      });
     }
 
-    function formatLongDateWithYear(date = new Date()) {
-      return new Intl.DateTimeFormat("en-GB", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      }).format(date);
-    }
-
-    function formatMonthYear(date = new Date()) {
-      return new Intl.DateTimeFormat("en-GB", {
+    function monthYearLabel(date) {
+      return date.toLocaleDateString("en-GB", {
         month: "long",
         year: "numeric"
-      }).format(date);
-    }
-
-    function formatTime(date = new Date()) {
-      return new Intl.DateTimeFormat("en-GB", {
-        hour: "numeric",
-        minute: "2-digit"
-      }).format(date);
-    }
-
-    function formatWeekdayShort(date) {
-      return new Intl.DateTimeFormat("en-GB", {
-        weekday: "short"
-      }).format(date);
-    }
-
-    function randomFrom(arr, seedKey = todayKey()) {
-      let hash = 0;
-      for (let i = 0; i < seedKey.length; i++) {
-        hash = (hash << 5) - hash + seedKey.charCodeAt(i);
-        hash |= 0;
-      }
-      return arr[Math.abs(hash) % arr.length];
-    }
-
-    function showPage(name) {
-      if (name !== "settings") {
-        previousPageBeforeSettings = name;
-      }
-      currentPage = name;
-      Object.entries(els.pages).forEach(([key, page]) => {
-        page.classList.toggle("active", key === name);
-      });
-      render();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function selectDate(key, goToDetail = false) {
-      state.ui.selectedDate = key;
-      state.ui.monthCursor = key.slice(0, 7);
-      saveState();
-      render();
-      if (goToDetail) showPage("detail");
-    }
-
-    function setMonthCursor(yyyyMm) {
-      state.ui.monthCursor = yyyyMm;
-      saveState();
-      renderMonth();
-    }
-
-    function shiftMonth(yyyyMm, diff) {
-      const [y, m] = yyyyMm.split("-").map(Number);
-      const date = new Date(y, m - 1 + diff, 1);
-      const ny = date.getFullYear();
-      const nm = String(date.getMonth() + 1).padStart(2, "0");
-      return `${ny}-${nm}`;
-    }
-
-    function daysReturnedInMonth(yyyyMm) {
-      return Object.entries(state.days).filter(([key, day]) => {
-        return key.startsWith(yyyyMm) && completedCount(normalizeDayData(day)) > 0;
-      }).length;
-    }
-
-    function lightsLitInMonth(yyyyMm) {
-      return Object.entries(state.days).reduce((sum, [key, day]) => {
-        if (key.startsWith(yyyyMm)) {
-          return sum + completedCount(normalizeDayData(day));
-        }
-        return sum;
-      }, 0);
-    }
-
-    function getCurrentStreak() {
-      let streak = 0;
-      const cursor = new Date();
-      cursor.setHours(0, 0, 0, 0);
-
-      while (true) {
-        const y = cursor.getFullYear();
-        const m = String(cursor.getMonth() + 1).padStart(2, "0");
-        const d = String(cursor.getDate()).padStart(2, "0");
-        const key = `${y}-${m}-${d}`;
-        const day = state.days[key];
-        if (day && completedCount(normalizeDayData(day)) > 0) {
-          streak += 1;
-          cursor.setDate(cursor.getDate() - 1);
-        } else {
-          break;
-        }
-      }
-      return streak;
-    }
-
-    function updateBestStreak() {
-      const current = getCurrentStreak();
-      if (current > state.stats.bestStreak) {
-        state.stats.bestStreak = current;
-      }
-    }
-
-    function setToggle(el, active) {
-      el.classList.toggle("active", !!active);
-    }
-
-    function toggleBooleanSetting(path) {
-      state.settings[path] = !state.settings[path];
-      saveState();
-      render();
-    }
-
-    function applyTheme() {
-      const theme = state.profile.theme || "dark";
-      if (theme === "light") {
-        document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.78)");
-        document.documentElement.style.setProperty("--line", "rgba(27,23,19,0.08)");
-        document.documentElement.style.setProperty("--text", "#1d1b19");
-        document.documentElement.style.setProperty("--muted", "#6f685f");
-        document.body.style.background =
-          "radial-gradient(circle at top, rgba(214,176,109,0.12), transparent 28%), linear-gradient(180deg, #faf6ef 0%, #f4efe7 100%)";
-      } else {
-        document.documentElement.style.setProperty("--card", "rgba(255,255,255,0.06)");
-        document.documentElement.style.setProperty("--line", "rgba(255,255,255,0.08)");
-        document.documentElement.style.setProperty("--text", "#f6f2ea");
-        document.documentElement.style.setProperty("--muted", "#b8b4ad");
-        document.body.style.background =
-          "radial-gradient(circle at top, rgba(231,201,138,0.08), transparent 28%), linear-gradient(180deg, #0b0e18 0%, #12172a 45%, #0f1220 100%)";
-      }
-    }
-
-    function localizedPrayerName(prayerKey) {
-      return t(i18n.en.prayers[prayerKey], i18n.ar.prayers[prayerKey]);
-    }
-
-    function applyLocalizedStaticText() {
-      els.topSettingsBtn.textContent = t(i18n.en.nav.settings, i18n.ar.nav.settings);
-      els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
-      els.backToTodayBtn.textContent = t(i18n.en.nav.backToToday, i18n.ar.nav.backToToday);
-      els.detailOpenMonthBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month);
-      els.selectedDateLabel.textContent = t(i18n.en.nav.selectedDate, i18n.ar.nav.selectedDate);
-      els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
-      els.reflectionTitle.textContent = t(i18n.en.labels.reflection, i18n.ar.labels.reflection);
-    }
-
-    function renderToday() {
-      const today = todayKey();
-      const day = getDayData(today);
-      const count = completedCount(day);
-
-      els.todayDateLine.textContent = formatLongDate(parseDateKey(today));
-      els.todayTitle.textContent = copy.today.title;
-      els.todaySubtitle.textContent = randomFrom(copy.today.subtitles);
-      els.todayProgressLabel.textContent = copy.today.progressLabel;
-      els.todayProgressText.textContent = `${count} of 5 prayers marked`;
-      els.todayProgressFill.style.width = `${progressPercent(day)}%`;
-      els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
-      els.todayReassurance.textContent = copy.today.reassurance;
-      els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
-      els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, today + "-quote");
-
-      const streak = getCurrentStreak();
-      els.streakValue.textContent = `${streak} day${streak === 1 ? "" : "s"} of return`;
-      els.streakLabel.parentElement.parentElement.parentElement.classList.toggle("hidden", !state.settings.showStreak);
-
-      const selected = selectedDateKey();
-      els.selectedDateSummary.textContent = formatLongDateWithYear(parseDateKey(selected));
-
-      els.todayLightsPreview.innerHTML = "";
-      copy.lights.forEach((light) => {
-        const lit = !!day.completed[light.key];
-        const item = document.createElement("div");
-        item.className = `preview-light ${lit ? "lit" : ""}`;
-        item.innerHTML = `
-          <div class="preview-orb"></div>
-          <div class="preview-name">${localizedPrayerName(light.key)}</div>
-          <div class="preview-desc">${light.desc}</div>
-        `;
-        els.todayLightsPreview.appendChild(item);
       });
     }
 
-    function renderDetail() {
-      const dateKey = selectedDateKey();
-      const day = getDayData(dateKey);
-      const count = completedCount(day);
-      const isToday = dateKey === todayKey();
-      const isFuture = isFutureDate(dateKey);
+    function getDayData(dateKey) {
+      if (!state.data.days[dateKey]) {
+        state.data.days[dateKey] = {
+          prayers: {
+            fajr: false,
+            dhuhr: false,
+            asr: false,
+            maghrib: false,
+            isha: false
+          },
+          noteRing: false,
+          gentleReturns: 0
+        };
+      }
+      return state.data.days[dateKey];
+    }
 
-      els.backToTodayBtn.textContent = t(i18n.en.nav.backToToday, i18n.ar.nav.backToToday);
-      els.detailDateLine.textContent = formatLongDateWithYear(parseDateKey(dateKey));
-      els.detailTitle.textContent = isToday ? copy.today.title : "Selected day";
-      els.detailSubtitle.textContent = copy.detail.title;
-      els.detailProgressLabel.textContent = copy.detail.progressLabel;
-      els.detailProgressText.textContent = `${count} of 5 marked`;
-      els.detailSupport.textContent = isFuture
-        ? "Future dates can be viewed, but not marked yet."
-        : copy.detail.support;
+    function countLitPrayers(dayData) {
+      return Object.values(dayData.prayers).filter(Boolean).length;
+    }
 
-      els.detailOpenMonthBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month);
-      els.detailLightList.innerHTML = "";
+    function isTodayKey(dateKey) {
+      return dateKey === formatDateKey(new Date());
+    }
 
-      copy.lights.forEach((light) => {
-        const lit = !!day.completed[light.key];
-        const timestamp = day.completedAt[light.key];
-        const addedLater = !!day.addedLater[light.key];
+    function renderAll() {
+      renderHeader();
+      renderTodaySection();
+      renderCalendar();
+      renderDayDetail();
+    }
 
-        const card = document.createElement("div");
-        card.className = "light-card";
-        card.innerHTML = `
-          <div class="light-head">
-            <div class="light-head-left">
-              <div class="light-status-dot ${lit ? "lit" : ""}"></div>
-              <div>
-                <div class="light-title">${localizedPrayerName(light.key)}</div>
-                <p class="light-desc">${light.desc}</p>
-              </div>
-            </div>
-            <button class="btn ${lit ? "" : "btn-primary"}" data-light-key="${light.key}" ${isFuture ? "disabled" : ""}>
-              ${isFuture ? t(i18n.en.actions.locked, i18n.ar.actions.locked) : (lit ? t(i18n.en.actions.marked, i18n.ar.actions.marked) : t(i18n.en.actions.markPrayer, i18n.ar.actions.markPrayer))}
-            </button>
-          </div>
-          <div class="light-meta">
-            <div class="meta-chip ${lit ? "success" : (isFuture ? "future" : "")}">
-              ${isFuture ? t(i18n.en.labels.futureLocked, i18n.ar.labels.futureLocked) : (lit ? t(i18n.en.actions.marked, i18n.ar.actions.marked) : copy.detail.notOpened)}
-            </div>
-            ${lit && timestamp ? `<div class="meta-chip">${copy.detail.markedAt} ${timestamp}</div>` : ""}
-            ${lit && addedLater ? `<div class="meta-chip later">${t(i18n.en.labels.addedLater, i18n.ar.labels.addedLater)}</div>` : ""}
-          </div>
-        `;
-        els.detailLightList.appendChild(card);
-      });
+    function renderHeader() {
+      const first = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth(), 1);
+      const last = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth() + 1, 0);
+      const daysInMonth = last.getDate();
 
-      els.reflectionTitle.textContent = t(i18n.en.labels.reflection, i18n.ar.labels.reflection);
-      els.reflectionHelper.textContent = copy.detail.reflectionHelper;
-      els.reflectionInput.placeholder = copy.detail.reflectionPlaceholder;
-      els.reflectionInput.value = day.reflection || "";
-      els.reflectionCard.classList.toggle("hidden", !state.settings.showReflection);
-      els.reflectionInput.disabled = isFuture;
+      monthHeading.textContent = monthYearLabel(first);
+      monthMeta.textContent = `${daysInMonth} days · one quiet record at a time`;
 
-      els.feelingTitle.textContent = copy.detail.feelingTitle;
-      els.feelingButtons.innerHTML = "";
-      copy.feelings.forEach((feeling) => {
+      let totalLights = 0;
+      let totalGentleDays = 0;
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const key = formatDateKey(new Date(first.getFullYear(), first.getMonth(), d));
+        const day = getDayData(key);
+        const lit = countLitPrayers(day);
+        totalLights += lit;
+        if ((day.gentleReturns || 0) > 0) totalGentleDays += 1;
+      }
+
+      monthSummary.textContent = `${totalLights} lights kept · ${totalGentleDays} quiet days`;
+    }
+
+    function renderTodaySection() {
+      const selected = new Date(state.selectedDateKey + "T12:00:00");
+      const day = getDayData(state.selectedDateKey);
+      const lit = countLitPrayers(day);
+
+      todayTitle.textContent = isTodayKey(state.selectedDateKey)
+        ? `Today · ${humanDate(selected)}`
+        : humanDate(selected);
+
+      todaySubtitle.textContent =
+        lit === 0
+          ? "Begin softly. Tap a light when you wish to mark it."
+          : "A small record can still hold warmth.";
+
+      todayBadge.textContent = `${lit} / 5 lights`;
+
+      lightsGrid.innerHTML = "";
+
+      PRAYERS.forEach((prayer) => {
+        const active = !!day.prayers[prayer.key];
+
         const btn = document.createElement("button");
-        btn.className = `feeling-btn ${day.feeling === feeling ? "active" : ""}`;
+        btn.className = `light-btn ${active ? "active" : ""}`;
         btn.type = "button";
-        btn.textContent = feeling;
-        if (isFuture) btn.disabled = true;
-        btn.addEventListener("click", () => {
-          if (isFuture) return;
-          const current = getDayData(dateKey);
-          current.feeling = current.feeling === feeling ? "" : feeling;
-          current.lastUpdated = new Date().toISOString();
-          saveState(true);
-          renderDetail();
-          renderMonth();
-        });
-        els.feelingButtons.appendChild(btn);
-      });
 
-      els.saveStatusText.textContent = isFuture ? "Future dates cannot be edited." : copy.detail.saveSaved;
-      els.detailClosingLine.textContent = randomFrom(copy.detail.closingLines, dateKey + "-closing");
+        btn.innerHTML = `
+          <div class="light-icon-wrap">
+            <div class="light-flame"></div>
+          </div>
+          <span class="label">${prayer.label}</span>
+          <span class="note">${prayer.note}</span>
+        `;
 
-      Array.from(els.detailLightList.querySelectorAll("[data-light-key]")).forEach(btn => {
         btn.addEventListener("click", () => {
-          if (isFuture) return;
-          const prayerKey = btn.dataset.lightKey;
-          toggleLightForDate(dateKey, prayerKey);
+          togglePrayer(state.selectedDateKey, prayer.key);
         });
+
+        lightsGrid.appendChild(btn);
       });
     }
 
-    function renderMonth() {
-      const cursor = monthCursorKey();
-      const [year, month] = cursor.split("-").map(Number);
-      const date = new Date(year, month - 1, 1);
-      const selected = selectedDateKey();
+    function togglePrayer(dateKey, prayerKey) {
+      const day = getDayData(dateKey);
+      const wasActive = !!day.prayers[prayerKey];
+      day.prayers[prayerKey] = !wasActive;
+      saveData();
+      renderAll();
 
-      els.monthBackBtn.textContent = langMode() === "ar" ? "العودة إلى الصفحة السابقة" : "Back to detail";
-      els.monthDateLine.textContent = formatMonthYear(date);
-      els.monthTitle.textContent = copy.month.title;
-      els.monthSubtitle.textContent = copy.month.subtitle;
-      els.monthGridTitle.textContent = `${copy.month.gridTitlePrefix} ${formatMonthYear(date)}`;
+      if (!wasActive) {
+        openGentleReturn(prayerKey);
+      }
+    }
 
-      const returned = daysReturnedInMonth(cursor);
-      const streak = getCurrentStreak();
-      const lit = lightsLitInMonth(cursor);
+    function renderCalendar() {
+      daysGrid.innerHTML = "";
 
-      els.monthSummaryGrid.innerHTML = `
-        <div class="summary-card">
-          <div class="eyebrow">${copy.month.summaryDaysReturned}</div>
-          <div class="big">${returned} day${returned === 1 ? "" : "s"}</div>
-        </div>
-        <div class="summary-card">
-          <div class="eyebrow">${t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak)}</div>
-          <div class="big">${streak} day${streak === 1 ? "" : "s"}</div>
-        </div>
-        <div class="summary-card">
-          <div class="eyebrow">${copy.month.summaryLights}</div>
-          <div class="big">${lit} this month</div>
-        </div>
-      `;
-      els.monthSummaryGrid.classList.toggle("hidden", !state.settings.showMonthSummary);
+      const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      weekdays.forEach((wd) => {
+        const el = document.createElement("div");
+        el.className = "weekday";
+        el.textContent = wd;
+        daysGrid.appendChild(el);
+      });
 
-      els.monthGrid.innerHTML = "";
+      const year = state.currentDate.getFullYear();
+      const month = state.currentDate.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const currentMonthKey = todayKey().slice(0, 7);
-      els.nextMonthBtn.disabled = cursor >= currentMonthKey;
+      let startOffset = firstDay.getDay();
+      startOffset = startOffset === 0 ? 6 : startOffset - 1;
+
+      for (let i = 0; i < startOffset; i++) {
+        const empty = document.createElement("div");
+        empty.className = "day-card empty";
+        daysGrid.appendChild(empty);
+      }
 
       for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
-        const key = `${cursor}-${String(dayNum).padStart(2, "0")}`;
-        const rawDayData = state.days[key];
-        const dayData = rawDayData ? normalizeDayData(rawDayData) : null;
-        const count = dayData ? completedCount(dayData) : 0;
-        const isToday = key === todayKey();
-        const isSelected = key === selected;
-        const future = isFutureDate(key);
-        const weekdayShort = formatWeekdayShort(new Date(year, month - 1, dayNum));
+        const date = new Date(year, month, dayNum);
+        const key = formatDateKey(date);
+        const dayData = getDayData(key);
+        const lit = countLitPrayers(dayData);
 
-        const cell = document.createElement("div");
-        cell.className = `month-day ${isToday ? "today" : ""} ${isSelected ? "selected" : ""} ${future ? "future-disabled" : ""}`;
+        const card = document.createElement("div");
+        card.className = "day-card";
+        if (isTodayKey(key)) card.classList.add("today");
 
-        const miniLights = PRAYER_KEYS.map((prayerKey) => {
-          const litClass = dayData && dayData.completed[prayerKey] ? "lit" : "";
-          return `<span class="${litClass}"></span>`;
-        }).join("");
+        const starsHTML = Array.from({ length: lit })
+          .map(() => `<span class="star"></span>`)
+          .join("");
 
-        cell.innerHTML = `
-          <div class="top">
-            <div class="num-wrap">
-              <span class="num">${dayNum}</span>
-              <span class="weekday-inline">· ${weekdayShort}</span>
-            </div>
-            <div class="small">${count}/5</div>
+        card.innerHTML = `
+          <div class="day-top">
+            <div class="day-num">${dayNum}</div>
           </div>
-          <div class="mini-lights">${miniLights}</div>
-          <div class="small">${future ? t(i18n.en.labels.futureLocked, i18n.ar.labels.futureLocked) : (count > 0 ? copy.month.prayerMarked : copy.month.quietDay)}</div>
+          <div class="day-stars">${starsHTML}</div>
+          <div class="day-meta">${lit}/5 lights</div>
+          ${dayData.noteRing ? `<div class="pink-ring"></div>` : ``}
         `;
 
-        cell.addEventListener("click", () => {
-          if (future) return;
-          selectDate(key, true);
+        card.addEventListener("click", () => {
+          state.selectedDateKey = key;
+          renderAll();
         });
 
-        els.monthGrid.appendChild(cell);
-      }
-
-      if (lit <= 8) {
-        els.monthSummaryLine.textContent = copy.month.low;
-      } else if (lit <= 20) {
-        els.monthSummaryLine.textContent = copy.month.mid;
-      } else {
-        els.monthSummaryLine.textContent = copy.month.high;
+        daysGrid.appendChild(card);
       }
     }
 
-    function updateNotificationStatus() {
-      if (!("Notification" in window)) {
-        els.notificationStatusText.textContent = "Notifications are not supported in this browser.";
-        els.enableNotificationsBtn.disabled = true;
-        return;
-      }
-      els.enableNotificationsBtn.disabled = false;
-      if (Notification.permission === "granted") {
-        els.notificationStatusText.textContent = "Notifications enabled";
-      } else if (Notification.permission === "denied") {
-        els.notificationStatusText.textContent = "Notifications blocked in browser settings";
-      } else {
-        els.notificationStatusText.textContent = "Notifications not enabled yet";
-      }
-    }
+    function renderDayDetail() {
+      const date = new Date(state.selectedDateKey + "T12:00:00");
+      const day = getDayData(state.selectedDateKey);
+      const lit = countLitPrayers(day);
 
-    function renderSettings() {
-      els.settingsTitle.textContent = t(i18n.en.nav.settings, i18n.ar.nav.settings);
-      els.settingsSubtitle.textContent = copy.settings.subtitle;
-      els.profileTitle.textContent = copy.settings.profileTitle;
-      els.profileSub.textContent = copy.settings.profileSub;
-      els.nameLabel.textContent = copy.settings.nameLabel;
-      els.languageTitle.textContent = copy.settings.languageTitle;
-      els.languageSub.textContent = copy.settings.languageSub;
-      els.appearanceTitle.textContent = copy.settings.appearanceTitle;
-      els.appearanceSub.textContent = copy.settings.appearanceSub;
-      els.remindersTitle.textContent = copy.settings.remindersTitle;
-      els.remindersSub.textContent = copy.settings.remindersSub;
-      els.enableRemindersLabel.textContent = copy.settings.enableRemindersLabel;
-      els.morningLabel.textContent = copy.settings.morningLabel;
-      els.afternoonLabel.textContent = copy.settings.afternoonLabel;
-      els.eveningLabel.textContent = copy.settings.eveningLabel;
-      els.toneLabel.textContent = copy.settings.toneLabel;
-      els.browserNotificationsLabel.textContent = copy.settings.browserNotificationsLabel;
-      els.browserNotificationsSub.textContent = copy.settings.browserNotificationsSub;
-      els.enableNotificationsBtn.textContent = copy.settings.enableNotificationsBtn;
-      els.dailyViewTitle.textContent = copy.settings.dailyViewTitle;
-      els.dailyViewSub.textContent = copy.settings.dailyViewSub;
-      els.showReflectionLabel.textContent = copy.settings.showReflectionLabel;
-      els.showStreakLabel.textContent = copy.settings.showStreakLabel;
-      els.showMonthSummaryLabel.textContent = copy.settings.showMonthSummaryLabel;
-      els.privacyTitle.textContent = copy.settings.privacyTitle;
-      els.privacySub.textContent = copy.settings.privacySub;
-      els.dataTitle.textContent = copy.settings.dataTitle;
-      els.dataSub.textContent = copy.settings.dataSub;
-      els.clearDataBtn.textContent = copy.settings.clearDataBtn;
-      els.settingsBottomLine.textContent = copy.settings.bottomLine;
+      const litLabels = PRAYERS.filter((p) => day.prayers[p.key]).map((p) => p.label);
 
-      els.nameInput.value = state.profile.name || "";
-      els.languageSelect.value = state.profile.language || "en";
-      els.themeSelect.value = state.profile.theme || "dark";
-      els.morningTime.value = state.settings.morningTime;
-      els.afternoonTime.value = state.settings.afternoonTime;
-      els.eveningTime.value = state.settings.eveningTime;
-
-      setToggle(els.remindersToggle, state.settings.remindersEnabled);
-      setToggle(els.showReflectionToggle, state.settings.showReflection);
-      setToggle(els.showStreakToggle, state.settings.showStreak);
-      setToggle(els.showMonthSummaryToggle, state.settings.showMonthSummary);
-
-      els.tonePills.innerHTML = "";
-      copy.tones.forEach((tone) => {
-        const pill = document.createElement("button");
-        pill.className = `pill ${state.settings.tone === tone ? "active" : ""}`;
-        pill.type = "button";
-        pill.textContent = tone;
-        pill.addEventListener("click", () => {
-          state.settings.tone = tone;
-          saveState();
-          renderSettings();
-        });
-        els.tonePills.appendChild(pill);
-      });
-
-      updateNotificationStatus();
-    }
-
-    function toggleLightForDate(dateKey, prayerKey) {
-      if (isFutureDate(dateKey)) return;
-
-      const day = getDayData(dateKey);
-      day.completed[prayerKey] = !day.completed[prayerKey];
-
-      if (day.completed[prayerKey]) {
-        day.completedAt[prayerKey] = formatTime(new Date());
-        day.addedLater[prayerKey] = isPastDate(dateKey);
-      } else {
-        day.completedAt[prayerKey] = "";
-        day.addedLater[prayerKey] = false;
-      }
-
-      day.lastUpdated = new Date().toISOString();
-      state.stats.lastVisitDate = todayKey();
-      updateBestStreak();
-      saveState(true);
-      render();
-    }
-
-    function bindEvents() {
-      els.openTodayBtn.addEventListener("click", () => {
-        selectDate(todayKey(), false);
-        showPage("detail");
-      });
-
-      els.quickMonthBtn.addEventListener("click", () => {
-        state.ui.monthCursor = todayKey().slice(0, 7);
-        saveState();
-        showPage("month");
-      });
-
-      els.backToTodayBtn.addEventListener("click", () => showPage("today"));
-      els.detailOpenMonthBtn.addEventListener("click", () => showPage("month"));
-      els.monthBackBtn.addEventListener("click", () => showPage("detail"));
-
-      els.prevMonthBtn.addEventListener("click", () => {
-        setMonthCursor(shiftMonth(monthCursorKey(), -1));
-      });
-
-      els.nextMonthBtn.addEventListener("click", () => {
-        const next = shiftMonth(monthCursorKey(), 1);
-        if (next <= todayKey().slice(0, 7)) {
-          setMonthCursor(next);
-        }
-      });
-
-      els.topSettingsBtn.addEventListener("click", () => {
-        previousPageBeforeSettings = currentPage;
-        showPage("settings");
-      });
-
-      els.settingsBackBtn.addEventListener("click", () => {
-        const fallbackPage =
-          previousPageBeforeSettings &&
-          previousPageBeforeSettings !== "settings"
-            ? previousPageBeforeSettings
-            : (selectedDateKey() && selectedDateKey() !== todayKey() ? "detail" : "today");
-
-        showPage(fallbackPage);
-      });
-
-      els.reflectionInput.addEventListener("input", (event) => {
-        const key = selectedDateKey();
-        if (isFutureDate(key)) return;
-
-        const day = getDayData(key);
-        day.reflection = event.target.value;
-        day.lastUpdated = new Date().toISOString();
-        els.saveStatusText.textContent = copy.detail.saveSaving;
-
-        if (reflectionSaveTimer) clearTimeout(reflectionSaveTimer);
-        reflectionSaveTimer = setTimeout(() => {
-          saveState(true);
-          renderMonth();
-        }, 700);
-      });
-
-      els.nameInput.addEventListener("input", (event) => {
-        state.profile.name = event.target.value;
-        saveState();
-      });
-
-      els.languageSelect.addEventListener("change", (event) => {
-        state.profile.language = event.target.value;
-        saveState();
-        render();
-      });
-
-      els.themeSelect.addEventListener("change", (event) => {
-        state.profile.theme = event.target.value;
-        saveState();
-        applyTheme();
-      });
-
-      els.morningTime.addEventListener("change", (event) => {
-        state.settings.morningTime = event.target.value;
-        saveState();
-      });
-
-      els.afternoonTime.addEventListener("change", (event) => {
-        state.settings.afternoonTime = event.target.value;
-        saveState();
-      });
-
-      els.eveningTime.addEventListener("change", (event) => {
-        state.settings.eveningTime = event.target.value;
-        saveState();
-      });
-
-      els.remindersToggle.addEventListener("click", () => toggleBooleanSetting("remindersEnabled"));
-      els.showReflectionToggle.addEventListener("click", () => toggleBooleanSetting("showReflection"));
-      els.showStreakToggle.addEventListener("click", () => toggleBooleanSetting("showStreak"));
-      els.showMonthSummaryToggle.addEventListener("click", () => toggleBooleanSetting("showMonthSummary"));
-
-      els.enableNotificationsBtn.addEventListener("click", async () => {
-        if (!("Notification" in window)) return;
-        try {
-          const permission = await Notification.requestPermission();
-          updateNotificationStatus();
-          if (permission === "granted") {
-            try {
-              new Notification("PureTime", {
-                body: "Gentle notifications are now enabled on this device."
-              });
-            } catch (error) {
-              console.error("Notification preview failed:", error);
-            }
+      dayDetailContainer.innerHTML = `
+        <div class="day-detail-box">
+          <h4>${humanDate(date)}</h4>
+          ${
+            lit === 0
+              ? `<div class="empty-state">No lights marked yet for this day.</div>`
+              : `<div class="empty-state">${lit} light${lit > 1 ? "s" : ""} held on this day.</div>`
           }
-        } catch (error) {
-          console.error(error);
-        }
+
+          <div class="detail-list">
+            ${
+              litLabels.length
+                ? litLabels.map((label) => `<span class="chip">${label}</span>`).join("")
+                : `<span class="chip">No prayer lights yet</span>`
+            }
+            ${
+              (day.gentleReturns || 0) > 0
+                ? `<span class="chip">${day.gentleReturns} gentle touch${day.gentleReturns > 1 ? "es" : ""}</span>`
+                : ``
+            }
+            <span class="chip">${day.noteRing ? "Ring added" : "No ring"}</span>
+          </div>
+
+          <div style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="ghost-btn" id="toggleRingBtn">
+              ${day.noteRing ? "Remove ring" : "Add ring"}
+            </button>
+            <button class="ghost-btn" id="selectTodayBtn">Open this day above</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("toggleRingBtn").addEventListener("click", () => {
+        day.noteRing = !day.noteRing;
+        saveData();
+        renderAll();
       });
 
-      els.clearDataBtn.addEventListener("click", () => {
-        const ok = confirm("This will remove your saved prayer records, reflections, and settings from this device.");
-        if (!ok) return;
-        state = createDefaultState();
-        saveState();
-        render();
-        showPage("today");
-      });
-
-      window.addEventListener("beforeunload", () => {
-        saveState();
+      document.getElementById("selectTodayBtn").addEventListener("click", () => {
+        const selected = new Date(state.selectedDateKey + "T12:00:00");
+        state.currentDate = new Date(selected.getFullYear(), selected.getMonth(), 1);
+        renderAll();
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     }
 
-    function render() {
-      ensureUiState();
-      applyTheme();
-      applyLocalizedStaticText();
-      renderToday();
-      renderDetail();
-      renderMonth();
-      renderSettings();
+    function openGentleReturn(prayerKey) {
+      state.gentlePrayerKey = prayerKey;
+      state.gentleTouchCount = 0;
+
+      const prayer = PRAYERS.find((p) => p.key === prayerKey);
+      gentleTitle.textContent = `Gentle Return · ${prayer.label}`;
+      gentleText.textContent = `Stay with this light for three soft touches.`;
+      gentleHint.textContent = "Three small touches. No pressure. Just a moment to stay.";
+      closeGentleBtn.style.display = "none";
+
+      renderGentleTouchState();
+      gentleModal.classList.add("show");
     }
 
-    bindEvents();
-    render();
+    function renderGentleTouchState() {
+      touchDots.innerHTML = "";
+      for (let i = 0; i < state.gentleMaxTouches; i++) {
+        const dot = document.createElement("div");
+        dot.className = `touch-dot ${i < state.gentleTouchCount ? "filled" : ""}`;
+        touchDots.appendChild(dot);
+      }
+
+      touchCount.textContent = `${state.gentleTouchCount} / ${state.gentleMaxTouches}`;
+      touchOrb.textContent = state.gentleTouchCount >= state.gentleMaxTouches ? "Done" : "Touch";
+    }
+
+    function animatePulse() {
+      pulseRing.classList.remove("animate");
+      void pulseRing.offsetWidth;
+      pulseRing.classList.add("animate");
+    }
+
+    function closeGentleModal() {
+      gentleModal.classList.remove("show");
+      state.gentlePrayerKey = null;
+      state.gentleTouchCount = 0;
+      renderAll();
+    }
+
+    renderAll();
   </script>
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
