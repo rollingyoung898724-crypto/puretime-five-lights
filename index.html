@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PureTime Five Lights</title>
+  <title>PureTime Somebody’s Salah Space</title>
+  <meta name="description" content="Start with one light. A quiet salah space for the days when consistency feels hard." />
   <style>
     :root {
       --bg: #0f1220;
@@ -646,7 +647,7 @@
     <div class="topbar">
       <div class="brand">
         <div class="brand-title">PureTime</div>
-        <div class="brand-sub">Five Lights</div>
+        <div class="brand-sub" id="brandSub">Somebody’s Salah Space</div>
       </div>
       <button class="btn" id="topSettingsBtn">Settings</button>
     </div>
@@ -666,6 +667,8 @@
           </div>
         </div>
 
+        <div class="small-note" id="todayPrayerNames" style="margin-top:8px;">Fajr · Dhuhr · Asr · Maghrib · Isha</div>
+
         <div class="progress-bar">
           <div class="progress-fill" id="todayProgressFill"></div>
         </div>
@@ -676,10 +679,12 @@
         <div style="height:18px;"></div>
         <div class="cta-row">
           <button class="btn btn-primary" id="openTodayBtn"></button>
-          <button class="btn" id="quickMonthBtn">View this month</button>
+          <button class="btn" id="quickMonthBtn" style="opacity:0.82; padding: 12px 14px;">Month</button>
         </div>
 
         <div style="height:10px;"></div>
+        <div class="small-note" id="todayPositioning">Not a scorecard. Just a gentle place to return.</div>
+        <div style="height:8px;"></div>
         <div class="small-note" id="todayReassurance"></div>
       </div>
 
@@ -908,7 +913,7 @@
           selectedDate: "Selected date"
         },
         actions: {
-          openToday: "Open today",
+          openToday: "Open Today",
           markPrayer: "Mark prayer",
           marked: "Marked",
           locked: "Locked"
@@ -917,7 +922,7 @@
           reflection: "Reflection",
           addedLater: "Added later",
           futureLocked: "Future locked",
-          currentGentleStreak: "Current gentle streak"
+          currentGentleStreak: "Recent returns"
         },
         prayers: {
           fajr: "Fajr",
@@ -945,7 +950,7 @@
           reflection: "تأمل",
           addedLater: "أضيف لاحقًا",
           futureLocked: "تاريخ مستقبلي مغلق",
-          currentGentleStreak: "الاستمرار اللطيف الحالي"
+          currentGentleStreak: "العودات الأخيرة"
         },
         prayers: {
           fajr: "الفجر",
@@ -970,9 +975,9 @@
 
     const copy = {
       today: {
-        title: "Today’s Five Lights",
-        progressLabel: "Today’s prayer progress",
-        reassurance: "No pressure. You can return at your own pace.",
+        title: "Start with one light.",
+        progressLabel: "Today’s gentle return",
+        reassurance: "No pressure. One light is still a return.",
         bottomQuotes: [
           "A small light can still change the tone of a day.",
           "You are allowed to begin again today.",
@@ -981,19 +986,19 @@
           "A soft beginning is still a beginning."
         ],
         subtitles: [
-          "A gentle way to hold the five prayers of today.",
-          "Return softly, one prayer at a time.",
-          "A quiet space for prayer, reflection, and return.",
-          "You do not need to rush through the day.",
-          "Five lights, one day, at your own pace."
+          "A quiet salah space for the days when consistency feels hard.",
+          "Not a scorecard. Not a pressure tool. Just a gentle place to return.",
+          "For the days you start again, one light at a time.",
+          "A soft place to return when salah feels heavy.",
+          "Five lights, one quiet return at a time."
         ]
       },
       detail: {
         title: "A gentle page for this day",
-        progressLabel: "Prayer status",
-        support: "You can mark this day prayer by prayer.",
-        reflectionHelper: "A few words are enough. This space is private.",
-        reflectionPlaceholder: "Write a few quiet words for this day...",
+        progressLabel: "Lights for this day",
+        support: "You can mark one light at a time. Nothing needs to be perfect here.",
+        reflectionHelper: "A few words are enough. You can also leave this empty. This space is private.",
+        reflectionPlaceholder: "Optional: write a few quiet words for this day...",
         feelingTitle: "How did this day feel?",
         saveSaving: "Saving...",
         saveSaved: "All changes saved",
@@ -1003,20 +1008,20 @@
           "Even after a missed prayer, this space stays gentle.",
           "You can return to any day with softness."
         ],
-        notOpened: "Not marked yet",
-        markedAt: "Marked at"
+        notOpened: "No light yet",
+        markedAt: "Lit at"
       },
       month: {
-        title: "This month",
-        subtitle: "Not a scorecard — just a gentle record of prayer and return.",
+        title: "Your quiet month",
+        subtitle: "A gentle trace of your returns — not a scorecard.",
         gridTitlePrefix: "Viewing",
-        summaryDaysReturned: "Days with prayer",
-        summaryLights: "Prayers marked",
+        summaryDaysReturned: "Days you returned",
+        summaryLights: "Lights this month",
         low: "A quiet month still counts. You are still returning.",
         mid: "You have made space for prayer in small ways throughout the month.",
         high: "Your month carries a steady rhythm of return.",
-        quietDay: "Quiet day",
-        prayerMarked: "Prayer marked"
+        quietDay: "Still open",
+        prayerMarked: "Light marked"
       },
       settings: {
         title: "Settings",
@@ -1041,7 +1046,7 @@
         dailyViewTitle: "Daily view",
         dailyViewSub: "Choose what feels visible and useful for you.",
         showReflectionLabel: "Show reflection",
-        showStreakLabel: "Show gentle streak",
+        showStreakLabel: "Show recent returns",
         showMonthSummaryLabel: "Show monthly summary",
         privacyTitle: "Privacy",
         privacySub: "Your entries are stored on this device. This space stays personal here.",
@@ -1051,14 +1056,51 @@
         bottomLine: "Small adjustments can make this space feel more like yours."
       },
       tones: ["Gentle", "Neutral", "Minimal"],
-      feelings: ["Calm", "Tired", "Full", "Heavy", "Hopeful", "Grateful"],
+      feelings: ["Quiet", "Heavy", "Hard to begin", "Peaceful", "Grateful", "Hopeful"],
       lights: [
         { key: "fajr", desc: "The first prayer light of the day." },
         { key: "dhuhr", desc: "A midday return in the middle of the day." },
         { key: "asr", desc: "A late-day pause before the evening comes in." },
         { key: "maghrib", desc: "A prayer light at sunset." },
         { key: "isha", desc: "A quiet prayer to close the day." }
-      ]
+      ],
+      gentleResponses: {
+        zero: [
+          "Today is still held gently.",
+          "A quiet day still belongs here.",
+          "Nothing is ruined. You can begin again softly.",
+          "Even an unlit day can be carried with care.",
+          "You do not need a full day for this space to stay open."
+        ],
+        low: [
+          "One small return still matters.",
+          "A little light is still light.",
+          "This day does not need to be complete to count.",
+          "Small steps can still soften a day.",
+          "You came back, and that matters."
+        ],
+        mid: [
+          "There is already light moving through this day.",
+          "A gentle rhythm is still a real rhythm.",
+          "This day is taking shape, one prayer at a time.",
+          "You are making room for light in quiet ways.",
+          "A steady return can be soft and simple."
+        ],
+        full: [
+          "All five lights are here today.",
+          "A full day can still feel quiet and gentle.",
+          "Today was held with all five lights.",
+          "This day carries a complete circle of return.",
+          "Five lights, softly gathered."
+        ],
+        returnAfterGap: [
+          "You can begin again from here.",
+          "Coming back gently is enough for today.",
+          "Nothing is lost by returning softly.",
+          "This space still knows how to welcome you back.",
+          "A return after distance still counts deeply."
+        ]
+      }
     };
 
     function todayKey() {
@@ -1086,6 +1128,7 @@
         addedLater: createEmptyPrayerMap(false),
         reflection: "",
         feeling: "",
+        gentleResponse: "",
         lastUpdated: new Date().toISOString()
       };
     }
@@ -1104,7 +1147,7 @@
           eveningTime: "21:00",
           tone: "Gentle",
           showReflection: true,
-          showStreak: true,
+          showStreak: false,
           showMonthSummary: true
         },
         ui: {
@@ -1152,6 +1195,7 @@
 
       normalized.reflection = day.reflection || "";
       normalized.feeling = day.feeling || "";
+      normalized.gentleResponse = day.gentleResponse || "";
       normalized.lastUpdated = day.lastUpdated || new Date().toISOString();
 
       return normalized;
@@ -1200,6 +1244,7 @@
       },
 
       topSettingsBtn: document.getElementById("topSettingsBtn"),
+      brandSub: document.getElementById("brandSub"),
 
       todayDateLine: document.getElementById("todayDateLine"),
       todayTitle: document.getElementById("todayTitle"),
@@ -1207,9 +1252,11 @@
       todayProgressLabel: document.getElementById("todayProgressLabel"),
       todayProgressText: document.getElementById("todayProgressText"),
       todayProgressFill: document.getElementById("todayProgressFill"),
+      todayPrayerNames: document.getElementById("todayPrayerNames"),
       todayLightsPreview: document.getElementById("todayLightsPreview"),
       openTodayBtn: document.getElementById("openTodayBtn"),
       quickMonthBtn: document.getElementById("quickMonthBtn"),
+      todayPositioning: document.getElementById("todayPositioning"),
       todayReassurance: document.getElementById("todayReassurance"),
       streakLabel: document.getElementById("streakLabel"),
       streakValue: document.getElementById("streakValue"),
@@ -1397,6 +1444,62 @@
       return arr[Math.abs(hash) % arr.length];
     }
 
+    function previousDateKey(dateKey) {
+      const date = parseDateKey(dateKey);
+      date.setDate(date.getDate() - 1);
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function hasRecentReturnBefore(dateKey) {
+      const prevKey = previousDateKey(dateKey);
+      const prevDay = state.days[prevKey] ? normalizeDayData(state.days[prevKey]) : null;
+      if (!prevDay) return false;
+      return completedCount(prevDay) === 0;
+    }
+
+    function responseBucketForDay(dateKey, dayData) {
+      const count = completedCount(dayData);
+      if (count === 5) return "full";
+      if (count >= 3) return "mid";
+      if (count >= 1) return "low";
+      if (hasRecentReturnBefore(dateKey)) return "returnAfterGap";
+      return "zero";
+    }
+
+    function pickNonRepeatingResponse(pool, dateKey) {
+      if (!Array.isArray(pool) || !pool.length) return "";
+      const prevKey = previousDateKey(dateKey);
+      const prevResponse = state.days[prevKey] ? normalizeDayData(state.days[prevKey]).gentleResponse : "";
+      const seedBase = Array.from(dateKey).reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+      for (let offset = 0; offset < pool.length; offset++) {
+        const candidate = pool[(seedBase + offset) % pool.length];
+        if (candidate !== prevResponse || pool.length === 1) {
+          return candidate;
+        }
+      }
+      return pool[seedBase % pool.length];
+    }
+
+    function getGentleResponseForDate(dateKey) {
+      const dayData = getDayData(dateKey);
+      if (dayData.gentleResponse) return dayData.gentleResponse;
+
+      const bucket = responseBucketForDay(dateKey, dayData);
+      const pool = copy.gentleResponses[bucket] || copy.gentleResponses.zero;
+      const response = pickNonRepeatingResponse(pool, dateKey);
+      dayData.gentleResponse = response;
+      return response;
+    }
+
+    function refreshGentleResponseForDate(dateKey) {
+      const dayData = getDayData(dateKey);
+      dayData.gentleResponse = "";
+      return getGentleResponseForDate(dateKey);
+    }
+
     function showPage(name) {
       if (name !== "settings") {
         previousPageBeforeSettings = name;
@@ -1523,7 +1626,18 @@
       return t(i18n.en.prayers[prayerKey], i18n.ar.prayers[prayerKey]);
     }
 
+
+    function formatSalahSpaceName(name) {
+      const trimmed = (name || "").trim();
+      if (!trimmed) return "Somebody’s Salah Space";
+      const normalized = trimmed.replace(/['’]s\s*$/i, "").trim();
+      if (!normalized) return "Somebody’s Salah Space";
+      return `${normalized}’s Salah Space`;
+    }
+
     function applyLocalizedStaticText() {
+      els.brandSub.textContent = formatSalahSpaceName(state?.profile?.name);
+      document.title = `PureTime ${formatSalahSpaceName(state?.profile?.name)}`;
       els.topSettingsBtn.textContent = t(i18n.en.nav.settings, i18n.ar.nav.settings);
       els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
       els.backToTodayBtn.textContent = t(i18n.en.nav.backToToday, i18n.ar.nav.backToToday);
@@ -1542,15 +1656,18 @@
       els.todayTitle.textContent = copy.today.title;
       els.todaySubtitle.textContent = randomFrom(copy.today.subtitles);
       els.todayProgressLabel.textContent = copy.today.progressLabel;
-      els.todayProgressText.textContent = `${count} of 5 prayers marked`;
+      els.todayProgressText.textContent = count === 0 ? "No lights yet today" : `${count} light${count === 1 ? "" : "s"} marked today`;
+      els.todayPrayerNames.textContent = "Fajr · Dhuhr · Asr · Maghrib · Isha";
       els.todayProgressFill.style.width = `${progressPercent(day)}%`;
       els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
-      els.todayReassurance.textContent = copy.today.reassurance;
+      els.quickMonthBtn.textContent = "Month";
+      els.todayPositioning.textContent = "Not a scorecard. Not a pressure tool. Just a gentle place to return.";
+      els.todayReassurance.textContent = getGentleResponseForDate(today);
       els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
       els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, today + "-quote");
 
       const streak = getCurrentStreak();
-      els.streakValue.textContent = `${streak} day${streak === 1 ? "" : "s"} of return`;
+      els.streakValue.textContent = `${streak} day${streak === 1 ? "" : "s"} you came back`;
       els.streakLabel.parentElement.parentElement.parentElement.classList.toggle("hidden", !state.settings.showStreak);
 
       const selected = selectedDateKey();
@@ -1582,10 +1699,10 @@
       els.detailTitle.textContent = isToday ? copy.today.title : "Selected day";
       els.detailSubtitle.textContent = copy.detail.title;
       els.detailProgressLabel.textContent = copy.detail.progressLabel;
-      els.detailProgressText.textContent = `${count} of 5 marked`;
+      els.detailProgressText.textContent = count === 0 ? "No lights marked yet" : `${count} light${count === 1 ? "" : "s"} marked`;
       els.detailSupport.textContent = isFuture
         ? "Future dates can be viewed, but not marked yet."
-        : copy.detail.support;
+        : getGentleResponseForDate(dateKey);
 
       els.detailOpenMonthBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month);
       els.detailLightList.innerHTML = "";
@@ -1641,6 +1758,7 @@
           const current = getDayData(dateKey);
           current.feeling = current.feeling === feeling ? "" : feeling;
           current.lastUpdated = new Date().toISOString();
+          refreshGentleResponseForDate(dateKey);
           saveState(true);
           renderDetail();
           renderMonth();
@@ -1687,7 +1805,7 @@
         </div>
         <div class="summary-card">
           <div class="eyebrow">${copy.month.summaryLights}</div>
-          <div class="big">${lit} this month</div>
+          <div class="big">${lit} light${lit === 1 ? "" : "s"}</div>
         </div>
       `;
       els.monthSummaryGrid.classList.toggle("hidden", !state.settings.showMonthSummary);
@@ -1722,7 +1840,7 @@
               <span class="num">${dayNum}</span>
               <span class="weekday-inline">· ${weekdayShort}</span>
             </div>
-            <div class="small">${count}/5</div>
+            <div class="small">${count} light${count === 1 ? "" : "s"}</div>
           </div>
           <div class="mini-lights">${miniLights}</div>
           <div class="small">${future ? t(i18n.en.labels.futureLocked, i18n.ar.labels.futureLocked) : (count > 0 ? copy.month.prayerMarked : copy.month.quietDay)}</div>
@@ -1837,6 +1955,7 @@
       }
 
       day.lastUpdated = new Date().toISOString();
+      refreshGentleResponseForDate(dateKey);
       state.stats.lastVisitDate = todayKey();
       updateBestStreak();
       saveState(true);
