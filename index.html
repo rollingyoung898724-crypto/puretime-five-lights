@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PureTime Somebody’s Salah Space</title>
-  <meta name="description" content="Start with one light. A quiet salah space for the days when consistency feels hard." />
+  <meta name="description" content="Missed one? Missed all five? This is not a scorecard. Just a quiet place to return, one light at a time." />
   <style>
     :root {
       --bg: #0f1220;
@@ -915,7 +915,7 @@
         actions: {
           openToday: "Open Today",
           markPrayer: "Mark prayer",
-          marked: "Marked",
+          marked: "Lit",
           locked: "Locked"
         },
         labels: {
@@ -975,7 +975,7 @@
 
     const copy = {
       today: {
-        title: "Start with one light.",
+        title: "A quiet salah space for returning gently",
         progressLabel: "Today’s gentle return",
         reassurance: "No pressure. One light is still a return.",
         bottomQuotes: [
@@ -986,11 +986,7 @@
           "A soft beginning is still a beginning."
         ],
         subtitles: [
-          "A quiet salah space for the days when consistency feels hard.",
-          "Not a scorecard. Not a pressure tool. Just a gentle place to return.",
-          "For the days you start again, one light at a time.",
-          "A soft place to return when salah feels heavy.",
-          "Five lights, one quiet return at a time."
+          "Missed one? Missed all five? This is not a scorecard. Just a quiet place to return, one light at a time."
         ]
       },
       detail: {
@@ -1008,7 +1004,7 @@
           "Even after a missed prayer, this space stays gentle.",
           "You can return to any day with softness."
         ],
-        notOpened: "No light yet",
+        notOpened: "Still open",
         markedAt: "Lit at"
       },
       month: {
@@ -1066,39 +1062,19 @@
       ],
       gentleResponses: {
         zero: [
-          "Today is still held gently.",
-          "A quiet day still belongs here.",
-          "Nothing is ruined. You can begin again softly.",
-          "Even an unlit day can be carried with care.",
-          "You do not need a full day for this space to stay open."
+          "A quiet day still belongs here."
         ],
         low: [
-          "One small return still matters.",
-          "A little light is still light.",
-          "This day does not need to be complete to count.",
-          "Small steps can still soften a day.",
-          "You came back, and that matters."
+          "One light is still light."
         ],
         mid: [
-          "There is already light moving through this day.",
-          "A gentle rhythm is still a real rhythm.",
-          "This day is taking shape, one prayer at a time.",
-          "You are making room for light in quiet ways.",
-          "A steady return can be soft and simple."
+          "There is already light in this day."
         ],
         full: [
-          "All five lights are here today.",
-          "A full day can still feel quiet and gentle.",
-          "Today was held with all five lights.",
-          "This day carries a complete circle of return.",
-          "Five lights, softly gathered."
+          "All five lights are here today."
         ],
         returnAfterGap: [
-          "You can begin again from here.",
-          "Coming back gently is enough for today.",
-          "Nothing is lost by returning softly.",
-          "This space still knows how to welcome you back.",
-          "A return after distance still counts deeply."
+          "Returning after distance still counts."
         ]
       }
     };
@@ -1463,8 +1439,8 @@
     function responseBucketForDay(dateKey, dayData) {
       const count = completedCount(dayData);
       if (count === 5) return "full";
-      if (count >= 3) return "mid";
-      if (count >= 1) return "low";
+      if (count >= 2) return "mid";
+      if (count === 1) return "low";
       if (hasRecentReturnBefore(dateKey)) return "returnAfterGap";
       return "zero";
     }
