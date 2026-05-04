@@ -1632,7 +1632,15 @@
       els.todayTitle.textContent = copy.today.title;
       els.todaySubtitle.textContent = randomFrom(copy.today.subtitles);
       els.todayProgressLabel.textContent = copy.today.progressLabel;
-      els.todayProgressText.textContent = count === 0 ? "No lights yet today" : `${count} light${count === 1 ? "" : "s"} marked today`;
+      if (count === 0) {
+        els.todayProgressText.textContent = "Today is still open";
+      } else if (count === 1) {
+        els.todayProgressText.textContent = "One light is here today";
+      } else if (count === 5) {
+        els.todayProgressText.textContent = "All five lights are here today";
+      } else {
+        els.todayProgressText.textContent = `${count} lights are here today`;
+      }
       els.todayPrayerNames.textContent = "Fajr · Dhuhr · Asr · Maghrib · Isha";
       els.todayProgressFill.style.width = `${progressPercent(day)}%`;
       els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
@@ -1675,7 +1683,8 @@
       els.detailTitle.textContent = isToday ? copy.today.title : "Selected day";
       els.detailSubtitle.textContent = copy.detail.title;
       els.detailProgressLabel.textContent = copy.detail.progressLabel;
-      els.detailProgressText.textContent = count === 0 ? "No lights marked yet" : `${count} light${count === 1 ? "" : "s"} marked`;
+      els.detailProgressText.textContent = "";
+      els.detailProgressText.classList.add("hidden");
       els.detailSupport.textContent = isFuture
         ? "Future dates can be viewed, but not marked yet."
         : getGentleResponseForDate(dateKey);
