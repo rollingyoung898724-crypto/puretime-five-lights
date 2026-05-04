@@ -692,6 +692,24 @@
         <div class="small-note" id="todayReassurance"></div>
       </div>
 
+      <div class="card" id="shareSpaceCard">
+        <div class="card-header">
+          <div>
+            <div class="label" id="shareSpaceLabel">Share gently</div>
+            <h2 id="shareSpaceTitle">Know someone who may need a quiet space?</h2>
+          </div>
+        </div>
+        <p class="small-note" id="shareSpaceText">
+          Share the Five Lights link with someone who may be trying to return gently.
+        </p>
+        <div style="height:14px;"></div>
+        <div class="cta-row">
+          <button class="btn" id="shareSpaceBtn">Share this quiet space</button>
+        </div>
+        <div style="height:10px;"></div>
+        <div class="small-note" id="shareSpacePrivacy">This only shares the link — not your personal lights.</div>
+      </div>
+
       <div class="card" id="premiumSupportCard">
         <div class="card-header">
           <div>
@@ -1276,6 +1294,11 @@
       quickMonthBtn: document.getElementById("quickMonthBtn"),
       todayPositioning: document.getElementById("todayPositioning"),
       todayReassurance: document.getElementById("todayReassurance"),
+      shareSpaceLabel: document.getElementById("shareSpaceLabel"),
+      shareSpaceTitle: document.getElementById("shareSpaceTitle"),
+      shareSpaceText: document.getElementById("shareSpaceText"),
+      shareSpaceBtn: document.getElementById("shareSpaceBtn"),
+      shareSpacePrivacy: document.getElementById("shareSpacePrivacy"),
       streakLabel: document.getElementById("streakLabel"),
       streakValue: document.getElementById("streakValue"),
       selectedDateLabel: document.getElementById("selectedDateLabel"),
@@ -1663,6 +1686,17 @@
       els.selectedDateLabel.textContent = t(i18n.en.nav.selectedDate, i18n.ar.nav.selectedDate);
       els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
       els.reflectionTitle.textContent = t(i18n.en.labels.reflection, i18n.ar.labels.reflection);
+      els.shareSpaceLabel.textContent = t("Share gently", "شاركي بلطف");
+      els.shareSpaceTitle.textContent = t("Know someone who may need a quiet space?", "هل تعرفين من قد تحتاج إلى مساحة هادئة؟");
+      els.shareSpaceText.textContent = t(
+        "Share the Five Lights link with someone who may be trying to return gently.",
+        "شاركي رابط Five Lights مع من قد تحاول العودة بلطف."
+      );
+      els.shareSpaceBtn.textContent = t("Share this quiet space", "شاركي هذه المساحة الهادئة");
+      els.shareSpacePrivacy.textContent = t(
+        "This only shares the link — not your personal lights.",
+        "هذا يشارك الرابط فقط — وليس أضواءك الشخصية."
+      );
     }
 
     function renderToday() {
@@ -1999,6 +2033,34 @@
         state.ui.monthCursor = todayKey().slice(0, 7);
         saveState();
         showPage("month");
+      });
+
+      els.shareSpaceBtn.addEventListener("click", async () => {
+        const shareTitle = "Five Lights";
+        const shareText = "A quiet salah space for returning gently. No pressure. No judgment. Just five small lights for the day. Your records stay private.";
+        const shareUrl = window.location.href;
+        const originalText = els.shareSpaceBtn.textContent;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+          } catch (error) {
+            // The user may simply close the share sheet. No action needed.
+          }
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          els.shareSpaceBtn.textContent = t("Link copied", "تم نسخ الرابط");
+        } catch (error) {
+          const fallback = window.prompt("Copy this link", shareUrl);
+          els.shareSpaceBtn.textContent = fallback === null ? originalText : t("Link copied", "تم نسخ الرابط");
+        }
+
+        window.setTimeout(() => {
+          els.shareSpaceBtn.textContent = originalText;
+        }, 1800);
       });
 
       els.backToTodayBtn.addEventListener("click", () => showPage("today"));
