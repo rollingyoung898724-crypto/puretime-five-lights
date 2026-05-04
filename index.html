@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PureTime Somebody’s Salah Space</title>
+  <title>PureTime Your Salah Space</title>
   <meta name="description" content="Missed one? Missed all five? This is not a scorecard. Just a quiet place to return, one light at a time." />
   <style>
     :root {
@@ -166,6 +166,10 @@
       cursor: pointer;
       transition: transform var(--transition), background var(--transition), border-color var(--transition), opacity var(--transition);
       font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .btn:hover:not(:disabled) {
@@ -647,7 +651,7 @@
     <div class="topbar">
       <div class="brand">
         <div class="brand-title">PureTime</div>
-        <div class="brand-sub" id="brandSub">Somebody’s Salah Space</div>
+        <div class="brand-sub" id="brandSub">Your Salah Space</div>
       </div>
       <button class="btn" id="topSettingsBtn">Settings</button>
     </div>
@@ -686,6 +690,24 @@
         <div class="small-note" id="todayPositioning">Not a scorecard. Just a gentle place to return.</div>
         <div style="height:8px;"></div>
         <div class="small-note" id="todayReassurance"></div>
+      </div>
+
+      <div class="card" id="premiumSupportCard">
+        <div class="card-header">
+          <div>
+            <div class="label">Premium / Support PureTime</div>
+            <h2>Support a softer salah space</h2>
+          </div>
+        </div>
+        <p class="small-note">
+          Premium is an early support option for anyone who wants to help shape a softer salah space for Muslims — with private history, cloud sync, and gentle reflections planned next.
+        </p>
+        <div style="height:14px;"></div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://payhip.com/b/QCIr7" target="_blank" rel="noopener noreferrer">Support This Space</a>
+        </div>
+        <div style="height:10px;"></div>
+        <div class="small-note">After supporting, you’ll receive early supporter updates by email during this test phase.</div>
       </div>
 
       <div class="card">
@@ -820,7 +842,7 @@
           </div>
         </div>
 
-        <div class="setting-group">
+        <div class="setting-group hidden" id="remindersSettingGroup">
           <h3 id="remindersTitle"></h3>
           <p id="remindersSub"></p>
 
@@ -976,7 +998,7 @@
     const copy = {
       today: {
         title: "A quiet salah space for returning gently",
-        progressLabel: "Today’s gentle return",
+        progressLabel: "Your space today",
         reassurance: "No pressure. One light is still a return.",
         bottomQuotes: [
           "A small light can still change the tone of a day.",
@@ -1062,19 +1084,39 @@
       ],
       gentleResponses: {
         zero: [
-          "A quiet day still belongs here."
+          "A quiet day still belongs here.",
+          "This space is still here when you’re ready.",
+          "No need to force anything. You can return gently.",
+          "A quiet day does not close the door.",
+          "You are not outside this space."
         ],
         low: [
-          "One light is still light."
+          "One light is still light.",
+          "One small return still matters.",
+          "You came back for one moment. That counts.",
+          "A single light can soften the whole day.",
+          "This is not small. It is a return."
         ],
         mid: [
-          "There is already light in this day."
+          "There is already light in this day.",
+          "You made space for more than one return today.",
+          "A gentle rhythm is forming here.",
+          "This day carries light already.",
+          "You are returning in your own pace."
         ],
         full: [
-          "All five lights are here today."
+          "All five lights are here today.",
+          "A full day of lights, held softly.",
+          "Today has a complete rhythm of return.",
+          "All five are here. No pressure, only gratitude.",
+          "This day carries a quiet steadiness."
         ],
         returnAfterGap: [
-          "Returning after distance still counts."
+          "Returning after distance still counts.",
+          "Coming back after a gap is still a return.",
+          "Distance did not close the door.",
+          "You came back. That matters.",
+          "A return after silence can be very gentle."
         ]
       }
     };
@@ -1605,9 +1647,9 @@
 
     function formatSalahSpaceName(name) {
       const trimmed = (name || "").trim();
-      if (!trimmed) return "Somebody’s Salah Space";
+      if (!trimmed) return "Your Salah Space";
       const normalized = trimmed.replace(/['’]s\s*$/i, "").trim();
-      if (!normalized) return "Somebody’s Salah Space";
+      if (!normalized) return "Your Salah Space";
       return `${normalized}’s Salah Space`;
     }
 
