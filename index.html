@@ -619,6 +619,36 @@
       color: #fff2d0;
     }
 
+
+    .share-card {
+      margin-top: 18px;
+      border-color: rgba(231,201,138,0.18);
+    }
+
+    .share-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+    }
+
+    .share-copy-box {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(231,201,138,0.16);
+      background: rgba(231,201,138,0.06);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 0.94rem;
+      white-space: pre-line;
+    }
+
+    .share-status {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      min-height: 1.4em;
+    }
+
     .hidden { display: none !important; }
 
     @media (max-width: 960px) {
@@ -686,28 +716,22 @@
           <button class="btn" id="quickMonthBtn" style="opacity:0.82; padding: 12px 14px;">Month</button>
         </div>
 
+        <div class="card share-card" id="returnTogetherCard">
+          <div class="label" id="returnTogetherLabel">Return together</div>
+          <h2 id="returnTogetherTitle"></h2>
+          <p class="small-note" id="returnTogetherSub"></p>
+          <div class="share-copy-box" id="returnTogetherCopy"></div>
+          <div style="height:14px;"></div>
+          <div class="cta-row">
+            <button class="btn btn-primary" id="returnTogetherBtn">Return together</button>
+          </div>
+          <div class="share-status" id="returnTogetherStatus"></div>
+        </div>
+
         <div style="height:10px;"></div>
         <div class="small-note" id="todayPositioning">Not a scorecard. Just a gentle place to return.</div>
         <div style="height:8px;"></div>
         <div class="small-note" id="todayReassurance"></div>
-      </div>
-
-      <div class="card" id="shareSpaceCard">
-        <div class="card-header">
-          <div>
-            <div class="label" id="shareSpaceLabel">Share gently</div>
-            <h2 id="shareSpaceTitle">Know someone who may need a quiet space?</h2>
-          </div>
-        </div>
-        <p class="small-note" id="shareSpaceText">
-          Share the Five Lights link with someone who may be trying to return gently.
-        </p>
-        <div style="height:14px;"></div>
-        <div class="cta-row">
-          <button class="btn" id="shareSpaceBtn">Share this quiet space</button>
-        </div>
-        <div style="height:10px;"></div>
-        <div class="small-note" id="shareSpacePrivacy">This only shares the link — not your personal lights.</div>
       </div>
 
       <div class="card" id="premiumSupportCard">
@@ -1018,6 +1042,20 @@
         title: "A quiet salah space for returning gently",
         progressLabel: "Your space today",
         reassurance: "No pressure. One light is still a return.",
+        returnTogether: {
+          label: "Return together",
+          zeroTitle: "Need a quiet restart?",
+          lowTitle: "One small return can invite another.",
+          midTitle: "You’re still here. Someone else may need this too.",
+          fullTitle: "Share a gentle space, not a score.",
+          sub: "Share a quiet link, not your personal record. Nothing from your lights or reflection will be shared.",
+          copyZero: "Some days are hard. I opened a quiet salah space to return gently. You can open yours too.",
+          copyPartial: "I’m trying to return to salah gently. If you’re struggling too, open your own quiet space.",
+          copyFull: "Five Lights is a quiet salah space — not a scorecard, just a gentle place to return.",
+          button: "Return together",
+          copied: "Share text copied. Your personal record was not shared.",
+          shared: "Shared as a quiet link. Your personal record was not shared."
+        },
         bottomQuotes: [
           "A small light can still change the tone of a day.",
           "You are allowed to begin again today.",
@@ -1294,11 +1332,13 @@
       quickMonthBtn: document.getElementById("quickMonthBtn"),
       todayPositioning: document.getElementById("todayPositioning"),
       todayReassurance: document.getElementById("todayReassurance"),
-      shareSpaceLabel: document.getElementById("shareSpaceLabel"),
-      shareSpaceTitle: document.getElementById("shareSpaceTitle"),
-      shareSpaceText: document.getElementById("shareSpaceText"),
-      shareSpaceBtn: document.getElementById("shareSpaceBtn"),
-      shareSpacePrivacy: document.getElementById("shareSpacePrivacy"),
+      returnTogetherCard: document.getElementById("returnTogetherCard"),
+      returnTogetherLabel: document.getElementById("returnTogetherLabel"),
+      returnTogetherTitle: document.getElementById("returnTogetherTitle"),
+      returnTogetherSub: document.getElementById("returnTogetherSub"),
+      returnTogetherCopy: document.getElementById("returnTogetherCopy"),
+      returnTogetherBtn: document.getElementById("returnTogetherBtn"),
+      returnTogetherStatus: document.getElementById("returnTogetherStatus"),
       streakLabel: document.getElementById("streakLabel"),
       streakValue: document.getElementById("streakValue"),
       selectedDateLabel: document.getElementById("selectedDateLabel"),
@@ -1686,17 +1726,6 @@
       els.selectedDateLabel.textContent = t(i18n.en.nav.selectedDate, i18n.ar.nav.selectedDate);
       els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
       els.reflectionTitle.textContent = t(i18n.en.labels.reflection, i18n.ar.labels.reflection);
-      els.shareSpaceLabel.textContent = t("Share gently", "شاركي بلطف");
-      els.shareSpaceTitle.textContent = t("Know someone who may need a quiet space?", "هل تعرفين من قد تحتاج إلى مساحة هادئة؟");
-      els.shareSpaceText.textContent = t(
-        "Share the Five Lights link with someone who may be trying to return gently.",
-        "شاركي رابط Five Lights مع من قد تحاول العودة بلطف."
-      );
-      els.shareSpaceBtn.textContent = t("Share this quiet space", "شاركي هذه المساحة الهادئة");
-      els.shareSpacePrivacy.textContent = t(
-        "This only shares the link — not your personal lights.",
-        "هذا يشارك الرابط فقط — وليس أضواءك الشخصية."
-      );
     }
 
     function renderToday() {
@@ -1723,6 +1752,25 @@
       els.quickMonthBtn.textContent = "Month";
       els.todayPositioning.textContent = "Not a scorecard. Not a pressure tool. Just a gentle place to return.";
       els.todayReassurance.textContent = getGentleResponseForDate(today);
+
+      const shareCopy = copy.today.returnTogether;
+      els.returnTogetherLabel.textContent = shareCopy.label;
+      els.returnTogetherSub.textContent = shareCopy.sub;
+      els.returnTogetherBtn.textContent = shareCopy.button;
+      if (count === 0) {
+        els.returnTogetherTitle.textContent = shareCopy.zeroTitle;
+        els.returnTogetherCopy.textContent = shareCopy.copyZero;
+      } else if (count === 5) {
+        els.returnTogetherTitle.textContent = shareCopy.fullTitle;
+        els.returnTogetherCopy.textContent = shareCopy.copyFull;
+      } else if (count === 1) {
+        els.returnTogetherTitle.textContent = shareCopy.lowTitle;
+        els.returnTogetherCopy.textContent = shareCopy.copyPartial;
+      } else {
+        els.returnTogetherTitle.textContent = shareCopy.midTitle;
+        els.returnTogetherCopy.textContent = shareCopy.copyPartial;
+      }
+
       els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
       els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, today + "-quote");
 
@@ -2023,6 +2071,44 @@
       render();
     }
 
+
+    async function handleReturnTogetherShare() {
+      const shareText = els.returnTogetherCopy.textContent.trim();
+      const shareUrl = window.location.origin + window.location.pathname;
+      const payload = {
+        title: "PureTime Five Lights",
+        text: shareText,
+        url: shareUrl
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(payload);
+          els.returnTogetherStatus.textContent = copy.today.returnTogether.shared;
+          return;
+        }
+
+        const fallbackText = `${shareText}\n\n${shareUrl}`;
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(fallbackText);
+          els.returnTogetherStatus.textContent = copy.today.returnTogether.copied;
+          return;
+        }
+
+        const temp = document.createElement("textarea");
+        temp.value = fallbackText;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        els.returnTogetherStatus.textContent = copy.today.returnTogether.copied;
+      } catch (error) {
+        if (error && error.name === "AbortError") return;
+        console.error("Share failed:", error);
+        els.returnTogetherStatus.textContent = "Could not share here. You can copy the text above.";
+      }
+    }
+
     function bindEvents() {
       els.openTodayBtn.addEventListener("click", () => {
         selectDate(todayKey(), false);
@@ -2035,33 +2121,7 @@
         showPage("month");
       });
 
-      els.shareSpaceBtn.addEventListener("click", async () => {
-        const shareTitle = "Five Lights";
-        const shareText = "A quiet salah space for returning gently. No pressure. No judgment. Just five small lights for the day. Your records stay private.";
-        const shareUrl = window.location.href;
-        const originalText = els.shareSpaceBtn.textContent;
-
-        if (navigator.share) {
-          try {
-            await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
-          } catch (error) {
-            // The user may simply close the share sheet. No action needed.
-          }
-          return;
-        }
-
-        try {
-          await navigator.clipboard.writeText(shareUrl);
-          els.shareSpaceBtn.textContent = t("Link copied", "تم نسخ الرابط");
-        } catch (error) {
-          const fallback = window.prompt("Copy this link", shareUrl);
-          els.shareSpaceBtn.textContent = fallback === null ? originalText : t("Link copied", "تم نسخ الرابط");
-        }
-
-        window.setTimeout(() => {
-          els.shareSpaceBtn.textContent = originalText;
-        }, 1800);
-      });
+      els.returnTogetherBtn.addEventListener("click", handleReturnTogetherShare);
 
       els.backToTodayBtn.addEventListener("click", () => showPage("today"));
       els.detailOpenMonthBtn.addEventListener("click", () => showPage("month"));
