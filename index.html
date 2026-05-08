@@ -751,6 +751,22 @@
       .month-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
 
+    @media (max-width: 768px) {
+      .return-card-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .return-card-actions .btn {
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 0.88rem;
+        white-space: normal;
+        line-height: 1.25;
+      }
+    }
+
     @media (max-width: 640px) {
       body { padding: 16px 12px 40px; }
       .hero,
