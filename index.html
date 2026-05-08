@@ -201,6 +201,10 @@
       flex-wrap: wrap;
     }
 
+    .return-card-actions {
+      flex-wrap: nowrap;
+    }
+
     .progress-bar {
       width: 100%;
       height: 10px;
@@ -620,6 +624,63 @@
     }
 
 
+    .soft-action-card {
+      margin-top: 18px;
+      border-color: rgba(231,201,138,0.14);
+    }
+
+    .soft-action-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+
+    .reason-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .reason-btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 11px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 0.92rem;
+      text-align: center;
+    }
+
+    .reason-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    .reason-btn.active {
+      background: rgba(231,201,138,0.14);
+      border-color: rgba(231,201,138,0.34);
+      color: #fff3d7;
+    }
+
+    .still-care-feedback,
+    .reason-feedback {
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.94rem;
+    }
+
+    .emotion-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 18px 0;
+    }
+
+
     .share-card {
       margin-top: 18px;
       border-color: rgba(231,201,138,0.18);
@@ -631,14 +692,46 @@
     }
 
     .share-copy-box {
-      margin-top: 14px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(231,201,138,0.16);
-      background: rgba(231,201,138,0.06);
+      margin-top: 16px;
+      padding: 24px 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(231,201,138,0.24);
+      background:
+        radial-gradient(circle at top, rgba(231,201,138,0.14), transparent 44%),
+        linear-gradient(180deg, rgba(231,201,138,0.10), rgba(255,255,255,0.035));
       color: var(--text);
-      line-height: 1.6;
-      font-size: 0.94rem;
+      text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.035);
+    }
+
+    .share-date-line {
+      color: var(--gold);
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 14px;
+    }
+
+    .share-main-line {
+      white-space: pre-line;
+      font-size: clamp(1.55rem, 5vw, 2.55rem);
+      line-height: 1.12;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .share-sub-line {
+      max-width: 620px;
+      margin: 18px auto 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .share-brand-line {
+      margin-top: 18px;
+      color: #fff2d0;
+      font-size: 0.88rem;
+      line-height: 1.55;
       white-space: pre-line;
     }
 
@@ -716,14 +809,39 @@
           <button class="btn" id="quickMonthBtn" style="opacity:0.82; padding: 12px 14px;">Month</button>
         </div>
 
+        <div class="card soft-action-card" id="stillCareCard">
+          <div class="label">For the days with no light yet</div>
+          <h2>I still care</h2>
+          <p class="small-note">If today felt heavy, you can still mark that your heart has not walked away.</p>
+          <div style="height:14px;"></div>
+          <button class="btn" id="stillCareBtn">I still care</button>
+          <div class="still-care-feedback" id="stillCareFeedback"></div>
+        </div>
+
+        <div class="card soft-action-card" id="hardReasonCard">
+          <div class="label">Gentle reflection</div>
+          <h2>What made it hard today?</h2>
+          <p class="small-note">Choose one if it helps. This is private and only saved on this device.</p>
+          <div class="reason-grid" id="hardReasonButtons"></div>
+          <div class="reason-feedback" id="hardReasonFeedback"></div>
+        </div>
+
         <div class="card share-card" id="returnTogetherCard">
-          <div class="label" id="returnTogetherLabel">Return together</div>
+          <div class="label" id="returnTogetherLabel">Today’s return line</div>
           <h2 id="returnTogetherTitle"></h2>
           <p class="small-note" id="returnTogetherSub"></p>
-          <div class="share-copy-box" id="returnTogetherCopy"></div>
+          <div class="share-copy-box" id="returnTogetherCopy">
+            <div class="share-date-line" id="returnCardDateLine"></div>
+            <div class="share-main-line" id="returnCardMainLine"></div>
+            <div class="share-sub-line" id="returnCardSubLine"></div>
+            <div class="share-brand-line" id="returnCardBrandLine"></div>
+          </div>
           <div style="height:14px;"></div>
-          <div class="cta-row">
-            <button class="btn btn-primary" id="returnTogetherBtn">Return together</button>
+          <div class="cta-row return-card-actions">
+            <button class="btn" id="refreshReturnCardBtn">Find another light</button>
+            <button class="btn" id="copyReturnCardBtn">Copy text</button>
+            <button class="btn" id="shareReturnCardBtn">Share a light</button>
+            <button class="btn" id="saveReturnCardBtn">Save screenshot</button>
           </div>
           <div class="share-status" id="returnTogetherStatus"></div>
         </div>
@@ -1042,22 +1160,115 @@
 
     const copy = {
       today: {
-        title: "A quiet salah space for returning gently",
-        progressLabel: "Your space today",
-        reassurance: "No pressure. One light is still a return.",
+        title: "For the days you prayed, missed, delayed, or still cared.",
+        progressLabel: "Your quiet salah space",
+        reassurance: "No shame here. This space is still open.",
+        stillCare: {
+          active: "Caring still matters. Tomorrow does not have to begin with shame.",
+          inactive: "No shame here. This space is still open."
+        },
+        hardReasons: [
+          { key: "tired", label: "I was tired", feedback: "Being tired does not mean you stopped caring." },
+          { key: "delaying", label: "I kept delaying", feedback: "Delaying can turn heavy. You can still return one light at a time." },
+          { key: "work_school", label: "Work / school", feedback: "Life can crowd the day. This space is here when you come back." },
+          { key: "heavy", label: "Emotionally heavy", feedback: "Some days, the heart comes back slower. That is still a return." },
+          { key: "not_praying", label: "I was not praying today", feedback: "This day does not need to be counted as failure. Your rhythm is still held gently." },
+          { key: "unknown", label: "I don’t know", feedback: "You do not have to explain everything to begin again gently." }
+        ],
         returnTogether: {
-          label: "Return together",
-          zeroTitle: "Need a quiet restart?",
-          lowTitle: "One small return can invite another.",
-          midTitle: "You’re still here. Someone else may need this too.",
-          fullTitle: "Share a gentle space, not a score.",
-          sub: "Share a quiet link, not your personal record. Nothing from your lights or reflection will be shared.",
-          copyZero: "Some days are hard. I opened a quiet salah space to return gently. You can open yours too.",
-          copyPartial: "I’m trying to return to salah gently. If you’re struggling too, open your own quiet space.",
-          copyFull: "Five Lights is a quiet salah space — not a scorecard, just a gentle place to return.",
-          button: "Return together",
-          copied: "Share text copied. Your personal record was not shared.",
-          shared: "Shared as a quiet link. Your personal record was not shared."
+          label: "Today’s return line",
+          title: "Make a gentle return card",
+          sub: "Nothing private is shared. Just a soft line you can keep or send.",
+          context: "A quiet salah space for the days you prayed, missed, delayed, or still cared.",
+          brand: "Five Lights by PureTime\nfive lights, zero judgment",
+          createButton: "Create my card",
+          refreshButton: "Find another light",
+          copyButton: "Copy text",
+          shareButton: "Share a light",
+          saveButton: "Save screenshot",
+          refreshLimit: 3,
+          copied: "Card text copied. Your private record was not shared.",
+          shared: "Share sheet opened. Your private record was not shared.",
+          saved: "Card saved as an image file.",
+          ready: "Today’s card is ready.",
+          copyFailed: "Could not copy here. You can copy the card text manually.",
+          shareFailed: "Could not share here. The card text can still be copied.",
+          maxRefresh: "That’s today’s set of gentle lines. Come back tomorrow for a new card.",
+          refreshLeft: "gentle refresh left today.",
+          refreshLeftPlural: "gentle refreshes left today.",
+          baseLines: {
+            zero: "No light today.\nStill cared.",
+            low: "One light.\nStill returning.",
+            partial: "Not perfect.\nStill returning.",
+            full: "Five lights.\nHeld gently."
+          },
+          reasonLines: {
+            tired: "I was tired today.\nBut I still cared.",
+            delaying: "I kept delaying.\nBut I’m still returning.",
+            work_school: "Life got in the way.\nBut my heart still remembered.",
+            heavy: "Some days are heavy.\nThe door is still open.",
+            not_praying: "I missed today.\nI’m not leaving.",
+            unknown: "I’m trying again, quietly."
+          },
+          viralLines: [
+            "No light today.\nStill cared.",
+            "One light is still light.",
+            "Not perfect.\nStill returning.",
+            "I missed today.\nI’m not leaving.",
+            "Shame made it harder.\nI came back softly.",
+            "My heart still remembered.",
+            "I’m trying again, quietly.",
+            "Some days are heavy.\nThe door is still open.",
+            "I didn’t do all five.\nI didn’t stop caring.",
+            "Five lights, zero judgment."
+          ],
+          ar: {
+            label: "عبارة الرجوع اليوم",
+            title: "اصنعي بطاقة رجوع لطيفة",
+            sub: "لا تتم مشاركة أي شيء خاص. فقط عبارة هادئة يمكنك الاحتفاظ بها أو إرسالها.",
+            context: "مساحة هادئة للصلاة، للأيام التي صلّيتِ فيها، أو فاتتكِ، أو تأخرتِ، أو ما زلتِ تهتمين.",
+            brand: "Five Lights من PureTime\nخمس أضواء، بلا حُكم",
+            createButton: "اصنعي بطاقتي",
+            refreshButton: "ابحثي عن نور آخر",
+            copyButton: "نسخ النص",
+            shareButton: "شاركي نورًا",
+            saveButton: "حفظ الصورة",
+            copied: "تم نسخ نص البطاقة. لم تتم مشاركة سجلكِ الخاص.",
+            shared: "تم فتح نافذة المشاركة. لم تتم مشاركة سجلكِ الخاص.",
+            saved: "تم حفظ البطاقة كصورة.",
+            ready: "بطاقة اليوم جاهزة.",
+            copyFailed: "تعذر النسخ هنا. يمكنكِ نسخ نص البطاقة يدويًا.",
+            shareFailed: "تعذرت المشاركة هنا. ما زال بإمكانكِ نسخ نص البطاقة.",
+            maxRefresh: "هذه عبارات اليوم اللطيفة. عودي غدًا لبطاقة جديدة.",
+            refreshLeft: "تحديث لطيف متبقٍ اليوم.",
+            refreshLeftPlural: "تحديثات لطيفة متبقية اليوم.",
+            baseLines: {
+              zero: "لا نور اليوم.\nلكن الاهتمام باقٍ.",
+              low: "نور واحد.\nوما زلتُ أعود.",
+              partial: "ليس يومًا كاملًا.\nلكنني ما زلتُ أعود.",
+              full: "خمس أضواء.\nمحمولة بلطف."
+            },
+            reasonLines: {
+              tired: "كنتُ متعبة اليوم.\nلكنني ما زلتُ أهتم.",
+              delaying: "ظللتُ أؤجل.\nلكنني ما زلتُ أعود.",
+              work_school: "تزاحمت الحياة في طريقي.\nلكن قلبي ما زال يتذكر.",
+              heavy: "بعض الأيام ثقيلة.\nوالباب ما زال مفتوحًا.",
+              not_praying: "فاتني اليوم.\nلكنني لا أبتعد.",
+              unknown: "أحاول من جديد، بهدوء."
+            },
+            viralLines: [
+              "لا نور اليوم.\nلكن الاهتمام باقٍ.",
+              "نور واحد ما زال نورًا.",
+              "ليس يومًا كاملًا.\nلكنني ما زلتُ أعود.",
+              "فاتني اليوم.\nلكنني لا أبتعد.",
+              "الخجل جعل الرجوع أصعب.\nلكنني عدتُ بلطف.",
+              "قلبي ما زال يتذكر.",
+              "أحاول من جديد، بهدوء.",
+              "بعض الأيام ثقيلة.\nوالباب ما زال مفتوحًا.",
+              "لم أُكمل الخمس.\nلكنني لم أتوقف عن الاهتمام.",
+              "خمس أضواء، بلا حُكم."
+            ]
+          }
         },
         bottomQuotes: [
           "A small light can still change the tone of a day.",
@@ -1067,7 +1278,7 @@
           "A soft beginning is still a beginning."
         ],
         subtitles: [
-          "Missed one? Missed all five? This is not a scorecard. Just a quiet place to return, one light at a time."
+          "Your quiet salah space — private, gentle, and one light at a time."
         ]
       },
       detail: {
@@ -1143,9 +1354,9 @@
       ],
       gentleResponses: {
         zero: [
-          "A quiet day still belongs here.",
-          "This space is still here when you’re ready.",
-          "No need to force anything. You can return gently.",
+          "No light yet. No shame here.",
+          "Even if no light was lit today, this space is still yours.",
+          "Today may have been heavy. You can still return softly.",
           "A quiet day does not close the door.",
           "You are not outside this space."
         ],
@@ -1205,7 +1416,12 @@
         addedLater: createEmptyPrayerMap(false),
         reflection: "",
         feeling: "",
+        stillCare: false,
+        hardReason: "",
         gentleResponse: "",
+        returnCardLine: "",
+        returnCardLang: "",
+        returnCardRefreshes: 0,
         lastUpdated: new Date().toISOString()
       };
     }
@@ -1272,7 +1488,12 @@
 
       normalized.reflection = day.reflection || "";
       normalized.feeling = day.feeling || "";
+      normalized.stillCare = !!day.stillCare;
+      normalized.hardReason = day.hardReason || "";
       normalized.gentleResponse = day.gentleResponse || "";
+      normalized.returnCardLine = day.returnCardLine || "";
+      normalized.returnCardLang = day.returnCardLang || "";
+      normalized.returnCardRefreshes = Number.isFinite(day.returnCardRefreshes) ? day.returnCardRefreshes : 0;
       normalized.lastUpdated = day.lastUpdated || new Date().toISOString();
 
       return normalized;
@@ -1335,12 +1556,23 @@
       quickMonthBtn: document.getElementById("quickMonthBtn"),
       todayPositioning: document.getElementById("todayPositioning"),
       todayReassurance: document.getElementById("todayReassurance"),
+      stillCareBtn: document.getElementById("stillCareBtn"),
+      stillCareFeedback: document.getElementById("stillCareFeedback"),
+      hardReasonButtons: document.getElementById("hardReasonButtons"),
+      hardReasonFeedback: document.getElementById("hardReasonFeedback"),
       returnTogetherCard: document.getElementById("returnTogetherCard"),
       returnTogetherLabel: document.getElementById("returnTogetherLabel"),
       returnTogetherTitle: document.getElementById("returnTogetherTitle"),
       returnTogetherSub: document.getElementById("returnTogetherSub"),
       returnTogetherCopy: document.getElementById("returnTogetherCopy"),
-      returnTogetherBtn: document.getElementById("returnTogetherBtn"),
+      returnCardDateLine: document.getElementById("returnCardDateLine"),
+      returnCardMainLine: document.getElementById("returnCardMainLine"),
+      returnCardSubLine: document.getElementById("returnCardSubLine"),
+      returnCardBrandLine: document.getElementById("returnCardBrandLine"),
+      refreshReturnCardBtn: document.getElementById("refreshReturnCardBtn"),
+      copyReturnCardBtn: document.getElementById("copyReturnCardBtn"),
+      shareReturnCardBtn: document.getElementById("shareReturnCardBtn"),
+      saveReturnCardBtn: document.getElementById("saveReturnCardBtn"),
       returnTogetherStatus: document.getElementById("returnTogetherStatus"),
       streakLabel: document.getElementById("streakLabel"),
       streakValue: document.getElementById("streakValue"),
@@ -1731,6 +1963,77 @@
       els.reflectionTitle.textContent = t(i18n.en.labels.reflection, i18n.ar.labels.reflection);
     }
 
+
+    function combineReturnLines(enLine, arLine) {
+      return `${enLine}
+
+${arLine}`;
+    }
+
+    function getLocalizedReturnTogether() {
+      const base = copy.today.returnTogether;
+      const ar = base.ar || {};
+      const mode = langMode();
+
+      if (mode === "ar") {
+        return {
+          ...base,
+          ...ar,
+          refreshLimit: base.refreshLimit,
+          baseLines: ar.baseLines || base.baseLines,
+          reasonLines: ar.reasonLines || base.reasonLines,
+          viralLines: ar.viralLines || base.viralLines
+        };
+      }
+
+      if (mode === "both") {
+        const mergedBaseLines = {};
+        Object.keys(base.baseLines).forEach((key) => {
+          mergedBaseLines[key] = combineReturnLines(base.baseLines[key], ar.baseLines?.[key] || "");
+        });
+
+        const mergedReasonLines = {};
+        Object.keys(base.reasonLines).forEach((key) => {
+          mergedReasonLines[key] = combineReturnLines(base.reasonLines[key], ar.reasonLines?.[key] || "");
+        });
+
+        const mergedViralLines = base.viralLines.map((line, index) => {
+          const arLine = ar.viralLines?.[index] || "";
+          return arLine ? combineReturnLines(line, arLine) : line;
+        });
+
+        return {
+          ...base,
+          label: `${base.label} / ${ar.label}`,
+          title: `${base.title} / ${ar.title}`,
+          sub: `${base.sub} / ${ar.sub}`,
+          context: `${base.context}
+${ar.context}`,
+          brand: `${base.brand}
+${ar.brand}`,
+          createButton: `${base.createButton} / ${ar.createButton}`,
+          refreshButton: `${base.refreshButton} / ${ar.refreshButton}`,
+          copyButton: `${base.copyButton} / ${ar.copyButton}`,
+          shareButton: `${base.shareButton} / ${ar.shareButton}`,
+          saveButton: `${base.saveButton} / ${ar.saveButton}`,
+          copied: `${base.copied} / ${ar.copied}`,
+          shared: `${base.shared} / ${ar.shared}`,
+          saved: `${base.saved} / ${ar.saved}`,
+          ready: `${base.ready} / ${ar.ready}`,
+          copyFailed: `${base.copyFailed} / ${ar.copyFailed}`,
+          shareFailed: `${base.shareFailed} / ${ar.shareFailed}`,
+          maxRefresh: `${base.maxRefresh} / ${ar.maxRefresh}`,
+          refreshLeft: `${base.refreshLeft} / ${ar.refreshLeft}`,
+          refreshLeftPlural: `${base.refreshLeftPlural} / ${ar.refreshLeftPlural}`,
+          baseLines: mergedBaseLines,
+          reasonLines: mergedReasonLines,
+          viralLines: mergedViralLines
+        };
+      }
+
+      return base;
+    }
+
     function renderToday() {
       const today = todayKey();
       const day = getDayData(today);
@@ -1756,23 +2059,25 @@
       els.todayPositioning.textContent = "Not a scorecard. Not a pressure tool. Just a gentle place to return.";
       els.todayReassurance.textContent = getGentleResponseForDate(today);
 
-      const shareCopy = copy.today.returnTogether;
-      els.returnTogetherLabel.textContent = shareCopy.label;
-      els.returnTogetherSub.textContent = shareCopy.sub;
-      els.returnTogetherBtn.textContent = shareCopy.button;
-      if (count === 0) {
-        els.returnTogetherTitle.textContent = shareCopy.zeroTitle;
-        els.returnTogetherCopy.textContent = shareCopy.copyZero;
-      } else if (count === 5) {
-        els.returnTogetherTitle.textContent = shareCopy.fullTitle;
-        els.returnTogetherCopy.textContent = shareCopy.copyFull;
-      } else if (count === 1) {
-        els.returnTogetherTitle.textContent = shareCopy.lowTitle;
-        els.returnTogetherCopy.textContent = shareCopy.copyPartial;
-      } else {
-        els.returnTogetherTitle.textContent = shareCopy.midTitle;
-        els.returnTogetherCopy.textContent = shareCopy.copyPartial;
-      }
+      els.stillCareBtn.classList.toggle("btn-primary", !!day.stillCare);
+      els.stillCareBtn.textContent = day.stillCare ? "I still care ✓" : "I still care";
+      els.stillCareFeedback.textContent = day.stillCare
+        ? copy.today.stillCare.active
+        : (count === 0 ? copy.today.stillCare.inactive : "");
+
+      els.hardReasonButtons.innerHTML = "";
+      copy.today.hardReasons.forEach((reason) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `reason-btn ${day.hardReason === reason.key ? "active" : ""}`;
+        btn.textContent = reason.label;
+        btn.addEventListener("click", () => setHardReasonForToday(reason.key));
+        els.hardReasonButtons.appendChild(btn);
+      });
+      const activeReason = copy.today.hardReasons.find((reason) => reason.key === day.hardReason);
+      els.hardReasonFeedback.textContent = activeReason ? activeReason.feedback : "";
+
+      renderReturnCard(today, day, count);
 
       els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
       els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, today + "-quote");
@@ -2074,12 +2379,176 @@
       render();
     }
 
+    function toggleStillCareForToday() {
+      const day = getDayData(todayKey());
+      day.stillCare = !day.stillCare;
+      day.lastUpdated = new Date().toISOString();
+      refreshGentleResponseForDate(todayKey());
+      state.stats.lastVisitDate = todayKey();
+      saveState(true);
+      render();
+    }
 
-    async function handleReturnTogetherShare() {
-      const shareText = els.returnTogetherCopy.textContent.trim();
+    function setHardReasonForToday(reasonKey) {
+      const day = getDayData(todayKey());
+      day.hardReason = day.hardReason === reasonKey ? "" : reasonKey;
+      day.returnCardLine = "";
+      day.returnCardRefreshes = 0;
+      day.lastUpdated = new Date().toISOString();
+      refreshGentleResponseForDate(todayKey());
+      state.stats.lastVisitDate = todayKey();
+      saveState(true);
+      render();
+    }
+
+    function getReturnBucket(count) {
+      if (count === 0) return "zero";
+      if (count === 1) return "low";
+      if (count === 5) return "full";
+      return "partial";
+    }
+
+    function getTodayCardDateLabel(dateKey) {
+      const date = parseDateKey(dateKey);
+      const mode = langMode();
+      const enMonthDay = new Intl.DateTimeFormat("en-GB", {
+        month: "short",
+        day: "numeric"
+      }).format(date);
+      const arMonthDay = new Intl.DateTimeFormat("ar", {
+        month: "short",
+        day: "numeric"
+      }).format(date);
+
+      if (mode === "ar") return `بطاقة اليوم · ${arMonthDay}`;
+      if (mode === "both") return `Today’s card · ${enMonthDay} / بطاقة اليوم · ${arMonthDay}`;
+      return `Today’s card · ${enMonthDay}`;
+    }
+
+    function buildReturnCardPool(day, count) {
+      const shareCopy = getLocalizedReturnTogether();
+      const bucket = getReturnBucket(count);
+      const baseLine = shareCopy.baseLines[bucket];
+      const reasonLine = day.hardReason ? shareCopy.reasonLines[day.hardReason] : "";
+      const lines = [];
+
+      if (reasonLine) lines.push(reasonLine);
+      if (baseLine) lines.push(baseLine);
+      shareCopy.viralLines.forEach((line) => lines.push(line));
+
+      return Array.from(new Set(lines.filter(Boolean)));
+    }
+
+    function getReturnCardLine(dateKey, day, count) {
+      const currentLang = langMode();
+      if (day.returnCardLang !== currentLang) {
+        day.returnCardLine = "";
+        day.returnCardRefreshes = 0;
+        day.returnCardLang = currentLang;
+      }
+      if (day.returnCardLine) return day.returnCardLine;
+      const pool = buildReturnCardPool(day, count);
+      day.returnCardLine = pool[0] || getLocalizedReturnTogether().baseLines.zero;
+      day.returnCardLang = currentLang;
+      return day.returnCardLine;
+    }
+
+    function renderReturnCard(dateKey, day, count) {
+      const shareCopy = getLocalizedReturnTogether();
+      const line = getReturnCardLine(dateKey, day, count);
+      const remaining = Math.max(0, shareCopy.refreshLimit - (day.returnCardRefreshes || 0));
+
+      els.returnTogetherLabel.textContent = shareCopy.label;
+      els.returnTogetherTitle.textContent = shareCopy.title;
+      els.returnTogetherSub.textContent = shareCopy.sub;
+      els.returnCardDateLine.textContent = getTodayCardDateLabel(dateKey);
+      els.returnCardMainLine.textContent = line;
+      els.returnCardSubLine.textContent = shareCopy.context;
+      els.returnCardBrandLine.textContent = shareCopy.brand;
+      els.refreshReturnCardBtn.textContent = `${shareCopy.refreshButton} (${remaining})`;
+      els.copyReturnCardBtn.textContent = shareCopy.copyButton;
+      els.shareReturnCardBtn.textContent = shareCopy.shareButton;
+      els.saveReturnCardBtn.textContent = shareCopy.saveButton;
+      els.refreshReturnCardBtn.disabled = remaining <= 0;
+    }
+
+    function getReturnCardPlainText() {
+      const main = els.returnCardMainLine.textContent.trim();
+      const sub = els.returnCardSubLine.textContent.trim();
+      const brand = els.returnCardBrandLine.textContent.trim();
+      return `${main}\n\n${sub}\n\n${brand}`;
+    }
+
+    function createReturnCardForToday() {
+      const dateKey = todayKey();
+      const day = getDayData(dateKey);
+      day.returnCardLine = "";
+      day.returnCardLang = langMode();
+      day.returnCardRefreshes = 0;
+      day.lastUpdated = new Date().toISOString();
+      getReturnCardLine(dateKey, day, completedCount(day));
+      saveState();
+      renderToday();
+      els.returnTogetherStatus.textContent = getLocalizedReturnTogether().ready;
+    }
+
+    function refreshReturnCardForToday() {
+      const dateKey = todayKey();
+      const day = getDayData(dateKey);
+      const shareCopy = getLocalizedReturnTogether();
+      const used = day.returnCardRefreshes || 0;
+
+      if (used >= shareCopy.refreshLimit) {
+        els.returnTogetherStatus.textContent = shareCopy.maxRefresh;
+        return;
+      }
+
+      const count = completedCount(day);
+      const pool = buildReturnCardPool(day, count);
+      const current = day.returnCardLine;
+      const currentIndex = Math.max(0, pool.indexOf(current));
+      const nextLine = pool[(currentIndex + 1) % pool.length];
+
+      day.returnCardLine = nextLine;
+      day.returnCardLang = langMode();
+      day.returnCardRefreshes = used + 1;
+      day.lastUpdated = new Date().toISOString();
+      saveState();
+      renderToday();
+      const remaining = Math.max(0, shareCopy.refreshLimit - day.returnCardRefreshes);
+      els.returnTogetherStatus.textContent = remaining
+        ? `${remaining} ${remaining === 1 ? shareCopy.refreshLeft : shareCopy.refreshLeftPlural}`
+        : shareCopy.maxRefresh;
+    }
+
+    async function copyReturnCardText() {
+      const shareText = getReturnCardPlainText();
+      const shareUrl = window.location.origin + window.location.pathname;
+      const fallbackText = `${shareText}\n\n${shareUrl}`;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(fallbackText);
+        } else {
+          const temp = document.createElement("textarea");
+          temp.value = fallbackText;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+        }
+        els.returnTogetherStatus.textContent = getLocalizedReturnTogether().copied;
+      } catch (error) {
+        console.error("Copy failed:", error);
+        els.returnTogetherStatus.textContent = getLocalizedReturnTogether().copyFailed;
+      }
+    }
+
+    async function shareReturnCardLink() {
+      const shareText = getReturnCardPlainText();
       const shareUrl = window.location.origin + window.location.pathname;
       const payload = {
-        title: "PureTime Five Lights",
+        title: langMode() === "ar" ? "Five Lights من PureTime" : "Five Lights by PureTime",
         text: shareText,
         url: shareUrl
       };
@@ -2087,29 +2556,85 @@
       try {
         if (navigator.share) {
           await navigator.share(payload);
-          els.returnTogetherStatus.textContent = copy.today.returnTogether.shared;
+          els.returnTogetherStatus.textContent = getLocalizedReturnTogether().shared;
           return;
         }
-
-        const fallbackText = `${shareText}\n\n${shareUrl}`;
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(fallbackText);
-          els.returnTogetherStatus.textContent = copy.today.returnTogether.copied;
-          return;
-        }
-
-        const temp = document.createElement("textarea");
-        temp.value = fallbackText;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand("copy");
-        document.body.removeChild(temp);
-        els.returnTogetherStatus.textContent = copy.today.returnTogether.copied;
+        await copyReturnCardText();
       } catch (error) {
         if (error && error.name === "AbortError") return;
         console.error("Share failed:", error);
-        els.returnTogetherStatus.textContent = "Could not share here. You can copy the text above.";
+        els.returnTogetherStatus.textContent = getLocalizedReturnTogether().shareFailed;
       }
+    }
+
+    function svgEscape(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function svgLines(text, x, y, size, weight, fill, lineHeight) {
+      return String(text).split("\n").map((line, index) => (
+        `<text x="${x}" y="${y + index * lineHeight}" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${svgEscape(line)}</text>`
+      )).join("");
+    }
+
+    function wrapTextLines(text, maxChars = 44) {
+      const output = [];
+      String(text).split("\n").forEach((rawLine) => {
+        const words = rawLine.split(/\s+/).filter(Boolean);
+        if (!words.length) {
+          output.push("");
+          return;
+        }
+        let line = "";
+        words.forEach((word) => {
+          const next = line ? `${line} ${word}` : word;
+          if (next.length > maxChars && line) {
+            output.push(line);
+            line = word;
+          } else {
+            line = next;
+          }
+        });
+        if (line) output.push(line);
+      });
+      return output.join("\n");
+    }
+
+    function saveReturnCardImage() {
+      const main = els.returnCardMainLine.textContent.trim();
+      const sub = els.returnCardSubLine.textContent.trim();
+      const brand = els.returnCardBrandLine.textContent.trim();
+      const dateLine = els.returnCardDateLine.textContent.trim();
+      const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#e7c98a" stop-opacity="0.25"/>
+      <stop offset="55%" stop-color="#12172a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0f1220" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#glow)"/>
+  <rect x="70" y="70" width="940" height="1210" rx="54" fill="rgba(255,255,255,0.055)" stroke="rgba(231,201,138,0.32)"/>
+  <text x="540" y="190" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="600" fill="#e7c98a">${svgEscape(dateLine)}</text>
+  ${svgLines(main, 540, 515, 82, 800, "#f6f2ea", 96)}
+  ${svgLines(wrapTextLines(sub, 42), 540, 850, 32, 500, "#b8b4ad", 47)}
+  ${svgLines(brand, 540, 1110, 34, 600, "#fff2d0", 48)}
+</svg>`;
+      const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `five-lights-return-card-${todayKey()}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      els.returnTogetherStatus.textContent = getLocalizedReturnTogether().saved;
     }
 
     function bindEvents() {
@@ -2124,7 +2649,11 @@
         showPage("month");
       });
 
-      els.returnTogetherBtn.addEventListener("click", handleReturnTogetherShare);
+      els.refreshReturnCardBtn.addEventListener("click", refreshReturnCardForToday);
+      els.copyReturnCardBtn.addEventListener("click", copyReturnCardText);
+      els.shareReturnCardBtn.addEventListener("click", shareReturnCardLink);
+      els.saveReturnCardBtn.addEventListener("click", saveReturnCardImage);
+      els.stillCareBtn.addEventListener("click", toggleStillCareForToday);
 
       els.backToTodayBtn.addEventListener("click", () => showPage("today"));
       els.detailOpenMonthBtn.addEventListener("click", () => showPage("month"));
