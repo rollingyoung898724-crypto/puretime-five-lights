@@ -626,14 +626,16 @@
 
 
     .home-light-gate {
-      margin-top: 18px;
+      margin: 18px auto 0;
       padding: 26px 18px;
+      max-width: 680px;
       border-radius: var(--radius-xl);
       border: 1px solid rgba(231,201,138,0.16);
       background:
         radial-gradient(circle at 50% 42%, rgba(231,201,138,0.16), transparent 34%),
         rgba(255,255,255,0.025);
       text-align: center;
+      overflow: hidden;
     }
 
     .home-light-btn {
@@ -724,13 +726,14 @@
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 9px;
-      width: min(90vw, 372px);
+      width: min(88vw, 392px);
       margin: 16px auto 0;
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
       touch-action: manipulation;
       position: relative;
+      direction: ltr;
     }
 
     .space-block {
@@ -767,6 +770,7 @@
       font-size: 0.66rem;
       color: var(--muted);
       line-height: 1.1;
+      unicode-bidi: plaintext;
     }
 
     .space-block.kind-tired {
@@ -1058,11 +1062,55 @@
 
     .hidden { display: none !important; }
 
+    @media (min-width: 720px) and (max-width: 960px) {
+      .lights-preview { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .home-light-gate { padding: 28px 22px; }
+      .space-block { min-height: 72px; }
+      .space-block .block-label { font-size: 0.72rem; }
+    }
+
     @media (max-width: 960px) {
-      .lights-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .summary-grid,
       .field-grid { grid-template-columns: 1fr; }
       .month-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 719px) {
+      .lights-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 520px) {
+      .home-light-gate { padding: 20px 12px; }
+      .home-light-btn {
+        width: min(36vw, 132px);
+        height: min(36vw, 132px);
+        margin-bottom: 10px;
+      }
+      .light-match-board {
+        width: min(94vw, 352px);
+        gap: 7px;
+        margin-top: 14px;
+      }
+      .space-block {
+        min-height: 56px;
+        border-radius: 14px;
+        padding: 6px 4px;
+      }
+      .space-block .block-icon {
+        width: 17px;
+        height: 17px;
+        border-radius: 6px;
+      }
+      .space-block .block-label {
+        font-size: 0.58rem;
+        line-height: 1.05;
+      }
+      .space-progress-row {
+        width: min(94vw, 352px);
+        gap: 6px;
+      }
+      .home-light-title { font-size: 1rem; }
+      .home-light-status { font-size: 0.9rem; }
     }
 
     @media (max-width: 768px) {
@@ -1082,7 +1130,7 @@
     }
 
     @media (max-width: 640px) {
-      body { padding: 16px 12px 40px; }
+      body { padding: 14px 10px 40px; }
       .hero,
       .card,
       .light-card,
@@ -2404,14 +2452,14 @@ ${ar.brand}`,
       }
       els.todayPrayerNames.textContent = "Fajr · Dhuhr · Asr · Maghrib · Isha";
       els.todayProgressFill.style.width = `${progressPercent(day)}%`;
-      els.homeLightBtn.setAttribute("aria-label", t("Make a little space", "افتحي مساحة صغيرة"));
-      els.homeLightTitle.textContent = t("Guide Still care", "وجّهي الاهتمام");
-      els.homeLightSub.textContent = t("Slide blocks into the open space. Bring Still care to Salah.", "حرّكي الكتل إلى المساحة المفتوحة، وأوصلي الاهتمام إلى الصلاة.");
+      els.homeLightBtn.setAttribute("aria-label", t("Make a little space", "افسحي مساحة صغيرة"));
+      els.homeLightTitle.textContent = t("Guide Still care", "وجّهي ما زلتُ أهتم");
+      els.homeLightSub.textContent = t("Slide blocks into the open space. Bring Still care to Salah.", "حرّكي المربعات نحو المساحة الفارغة، وأوصلي «ما زلتُ أهتم» إلى الصلاة.");
       els.homeLightStatus.textContent = lightMatchCompleted
         ? t("A little path is open. Choose one light below.", "انفتح طريق صغير. اختاري نورًا واحدًا بالأسفل.")
-        : t("Move Still care to Salah.", "حرّكي الاهتمام إلى الصلاة.");
+        : t("Move Still care to Salah.", "حرّكي «ما زلتُ أهتم» إلى الصلاة.");
       els.quickMonthBtn.textContent = "Month";
-      els.todayReflectionBtn.textContent = t("Reflection & return line", "تأمل وعبارة رجوع");
+      els.todayReflectionBtn.textContent = t("Reflection & return line", "تأمل وعبارة عودة");
       els.todayPositioning.textContent = "Not a scorecard. Not a pressure tool. Just a gentle place to return.";
       els.todayReassurance.textContent = getGentleResponseForDate(today);
 
@@ -3016,11 +3064,11 @@ ${ar.brand}`,
       tired: { label: "Tired", ar: "تعب", className: "kind-tired" },
       busy: { label: "Busy", ar: "انشغال", className: "kind-busy" },
       delay: { label: "Delay", ar: "تأجيل", className: "kind-delay" },
-      shame: { label: "Shame", ar: "خجل", className: "kind-shame" },
-      heavy: { label: "Heavy", ar: "ثقل", className: "kind-heavy" },
-      quiet: { label: "Quiet", ar: "هدوء", className: "kind-quiet" },
-      light: { label: "Still care", ar: "ما زال الاهتمام", className: "kind-light" },
-      return: { label: "Return", ar: "رجوع", className: "kind-return" }
+      shame: { label: "Shame", ar: "ثقل الذنب", className: "kind-shame" },
+      heavy: { label: "Heavy", ar: "ثِقَل", className: "kind-heavy" },
+      quiet: { label: "Quiet", ar: "سكينة", className: "kind-quiet" },
+      light: { label: "Still care", ar: "ما زلتُ أهتم", className: "kind-light" },
+      return: { label: "Return", ar: "عودة", className: "kind-return" }
     };
     const LIGHT_MATCH_START = [
       "light", "tired", "busy", "delay",
@@ -3097,7 +3145,7 @@ ${ar.brand}`,
         btn.className = tile.type
           ? `space-block ${info.className} ${isTarget ? "target-space" : ""} ${tile.moved ? "moved" : ""} ${lightMatchSelected === index ? "moved" : ""}`
           : `space-block empty-space ${isTarget ? "target-space" : ""}`;
-        btn.setAttribute("aria-label", isTarget && !tile.type ? t("Salah target", "هدف الصلاة") : lightMatchLabel(tile.type));
+        btn.setAttribute("aria-label", isTarget && !tile.type ? t("Salah target", "موضع الصلاة") : lightMatchLabel(tile.type));
         btn.disabled = !tile.type || lightMatchCompleted;
         btn.innerHTML = `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${isTarget && !tile.type ? t("Salah", "الصلاة") : lightMatchLabel(tile.type)}</span>`;
         btn.addEventListener("click", () => slideSpaceBlock(index));
@@ -3128,7 +3176,7 @@ ${ar.brand}`,
       day.lastUpdated = new Date().toISOString();
       saveState();
       renderLightMatchBoard();
-      els.homeLightStatus.textContent = t("A little path is open. Choose one light below.", "انفتح طريق صغير. اختاري نورًا واحدًا بالأسفل.");
+      els.homeLightStatus.textContent = t("A little path is open. Choose one light below.", "انفتح طريق صغير. اختاري نورًا واحدًا في الأسفل.");
     }
 
     function slideSpaceBlock(index) {
@@ -3139,7 +3187,7 @@ ${ar.brand}`,
       if (!areAdjacent(index, emptyIndex)) {
         lightMatchSelected = index;
         renderLightMatchBoard();
-        els.homeLightStatus.textContent = t("Slide a block next to the open space.", "حرّكي كتلة بجانب المساحة المفتوحة.");
+        els.homeLightStatus.textContent = t("Slide a block next to the open space.", "حرّكي مربعًا ملاصقًا للمساحة الفارغة.");
         return;
       }
 
@@ -3157,9 +3205,9 @@ ${ar.brand}`,
       if (lightIndex === LIGHT_MATCH_TARGET_INDEX) {
         setTimeout(finishLightMatch, 220);
       } else if (movingTile.type === "light") {
-        els.homeLightStatus.textContent = t("Good. Guide Still care toward Salah.", "حسنًا. وجّهي الاهتمام نحو الصلاة.");
+        els.homeLightStatus.textContent = t("Good. Guide Still care toward Salah.", "جيد. وجّهي «ما زلتُ أهتم» نحو الصلاة.");
       } else {
-        els.homeLightStatus.textContent = t("Make room for Still care to move.", "افسحي مكانًا ليتحرك الاهتمام.");
+        els.homeLightStatus.textContent = t("Make room for Still care to move.", "افسحي طريقًا صغيرًا ليتحرك «ما زلتُ أهتم».");
       }
     }
 
@@ -3171,9 +3219,9 @@ ${ar.brand}`,
       els.homeLightBtn.classList.add("tapped");
       if (lightMatchCompleted) {
         resetLightMatchBoard();
-        els.homeLightStatus.textContent = t("Move Still care to Salah.", "حرّكي الاهتمام إلى الصلاة.");
+        els.homeLightStatus.textContent = t("Move Still care to Salah.", "حرّكي «ما زلتُ أهتم» إلى الصلاة.");
       } else {
-        els.homeLightStatus.textContent = t("Slide blocks into the open space. Guide Still care to Salah.", "حرّكي الكتل إلى المساحة المفتوحة. وجّهي الاهتمام إلى الصلاة.");
+        els.homeLightStatus.textContent = t("Slide blocks into the open space. Guide Still care to Salah.", "حرّكي المربعات نحو المساحة الفارغة، ووجّهي «ما زلتُ أهتم» إلى الصلاة.");
       }
     }
 
