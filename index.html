@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PureTime Your Salah Space</title>
-  <meta name="description" content="Missed salah today? Five Lights is a private reflection space to help you mark what you could, avoid shame spirals, and return gently to the next salah." />
+  <meta name="description" content="Missed one? Missed all five? This is not a scorecard. Just a quiet place to return, one light at a time." />
   <style>
     :root {
       --bg: #0f1220;
@@ -199,6 +199,10 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
+    }
+
+    .return-card-actions {
+      flex-wrap: nowrap;
     }
 
     .progress-bar {
@@ -620,6 +624,127 @@
     }
 
 
+    .home-light-gate {
+      margin-top: 18px;
+      padding: 26px 18px;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(231,201,138,0.16);
+      background:
+        radial-gradient(circle at 50% 42%, rgba(231,201,138,0.16), transparent 34%),
+        rgba(255,255,255,0.025);
+      text-align: center;
+    }
+
+    .home-light-btn {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      display: inline-grid;
+      place-items: center;
+      width: min(46vw, 168px);
+      height: min(46vw, 168px);
+      margin: 4px auto 12px;
+      padding: 0;
+      position: relative;
+      transition: transform 260ms ease, filter 260ms ease;
+      -webkit-tap-highlight-color: transparent;
+      --hold-progress: 0deg;
+    }
+
+    .home-light-btn::before {
+      content: "";
+      position: absolute;
+      inset: -13px;
+      border-radius: 999px;
+      background:
+        conic-gradient(rgba(231,201,138,0.86) var(--hold-progress), rgba(255,255,255,0.055) 0deg),
+        radial-gradient(circle, rgba(231,201,138,0.08), transparent 68%);
+      opacity: 0.82;
+      filter: blur(0.2px);
+      transition: opacity 220ms ease;
+    }
+
+    .home-light-btn::after {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(231,201,138,0.18);
+      opacity: 0;
+      transform: scale(0.72);
+      pointer-events: none;
+    }
+
+    .home-light-btn:hover,
+    .home-light-btn:focus-visible {
+      transform: translateY(-2px) scale(1.015);
+      outline: none;
+    }
+
+    .home-light-btn.holding {
+      transform: scale(0.98);
+      filter: drop-shadow(0 0 28px rgba(231,201,138,0.34));
+    }
+
+    .home-light-btn.tapped::after {
+      animation: lightRipple 620ms ease-out;
+    }
+
+    .home-light-btn.ready {
+      filter: drop-shadow(0 0 40px rgba(231,201,138,0.42));
+    }
+
+    .home-light-star {
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(50% 0%, 61% 29%, 92% 8%, 71% 39%, 100% 50%, 71% 61%, 92% 92%, 61% 71%, 50% 100%, 39% 71%, 8% 92%, 29% 61%, 0% 50%, 29% 39%, 8% 8%, 39% 29%);
+      background:
+        radial-gradient(circle at 33% 28%, rgba(255,249,232,0.92), rgba(231,201,138,0.55) 34%, rgba(231,201,138,0.18) 64%, rgba(255,255,255,0.04));
+      border: 1px solid rgba(231,201,138,0.34);
+      box-shadow: 0 0 36px rgba(231,201,138,0.18), inset 0 0 22px rgba(255,248,234,0.16);
+      animation: gentlePulse 3.2s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+      transition: transform 180ms ease, box-shadow 220ms ease, filter 220ms ease;
+    }
+
+    .home-light-btn.holding .home-light-star,
+    .home-light-btn.ready .home-light-star {
+      animation: none;
+      transform: scale(1.045);
+      filter: brightness(1.12);
+      box-shadow: 0 0 58px rgba(231,201,138,0.42), inset 0 0 34px rgba(255,248,234,0.28);
+    }
+
+    .home-light-title {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff2d0;
+    }
+
+    .home-light-status {
+      min-height: 1.5em;
+      margin-top: 8px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    .preview-light { cursor: pointer; }
+
+    @keyframes gentlePulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(231,201,138,0.14)); }
+      50% { transform: scale(1.035); filter: drop-shadow(0 0 24px rgba(231,201,138,0.28)); }
+    }
+
+    @keyframes lightRipple {
+      0% { opacity: 0.5; transform: scale(0.72); }
+      100% { opacity: 0; transform: scale(1.42); }
+    }
+
+
     .soft-action-card {
       margin-top: 18px;
       border-color: rgba(231,201,138,0.14);
@@ -747,6 +872,22 @@
       .month-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
 
+    @media (max-width: 768px) {
+      .return-card-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .return-card-actions .btn {
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 0.88rem;
+        white-space: normal;
+        line-height: 1.25;
+      }
+    }
+
     @media (max-width: 640px) {
       body { padding: 16px 12px 40px; }
       .hero,
@@ -796,80 +937,103 @@
           <div class="progress-fill" id="todayProgressFill"></div>
         </div>
 
+        <div class="home-light-gate">
+          <button class="home-light-btn" id="homeLightBtn" type="button" aria-label="Hold the light gently">
+            <span class="home-light-star" aria-hidden="true"></span>
+          </button>
+          <div class="home-light-title" id="homeLightTitle">Hold the light gently</div>
+          <div class="small-note" id="homeLightSub">Breathe gently. Then return one light at a time.</div>
+          <div class="home-light-status" id="homeLightStatus"></div>
+        </div>
+
         <div style="height:18px;"></div>
         <div class="lights-preview" id="todayLightsPreview"></div>
 
         <div style="height:18px;"></div>
         <div class="cta-row">
-          <button class="btn btn-primary" id="openTodayBtn"></button>
-          <button class="btn" id="mainStillCareBtn">I still care today</button>
+          <button class="btn btn-primary" id="todayReflectionBtn" style="padding: 12px 14px;">Reflection & return line</button>
           <button class="btn" id="quickMonthBtn" style="opacity:0.82; padding: 12px 14px;">Month</button>
         </div>
 
         <div class="card soft-action-card" id="stillCareCard">
-          <div class="label" id="stillCareLabel">No light yet today?</div>
-          <h2 id="stillCareTitle">I still care</h2>
-          <p class="small-note" id="stillCareSub">If today felt heavy, you can still mark that your heart has not walked away. When the next salah comes, begin there.</p>
+          <div class="label">For the days with no light yet</div>
+          <h2>I still care</h2>
+          <p class="small-note">If today felt heavy, you can still mark that your heart has not walked away.</p>
           <div style="height:14px;"></div>
-          <button class="btn" id="stillCareBtn">I still care today</button>
+          <button class="btn" id="stillCareBtn">I still care</button>
           <div class="still-care-feedback" id="stillCareFeedback"></div>
         </div>
 
         <div class="card soft-action-card" id="hardReasonCard">
-          <div class="label" id="hardReasonLabel">Gentle reflection</div>
-          <h2 id="hardReasonTitle">What made it hard today?</h2>
-          <p class="small-note" id="hardReasonSub">Choose one if it helps. This is private and only saved on this device.</p>
+          <div class="label">Gentle reflection</div>
+          <h2>What made it hard today?</h2>
+          <p class="small-note">Choose one if it helps. This is private and only saved on this device.</p>
           <div class="reason-grid" id="hardReasonButtons"></div>
           <div class="reason-feedback" id="hardReasonFeedback"></div>
         </div>
 
-        <div class="card share-card" id="returnTogetherCard">
-          <div class="label" id="returnTogetherLabel">Today’s gentle return line</div>
-          <h2 id="returnTogetherTitle"></h2>
-          <p class="small-note" id="returnTogetherSub"></p>
-          <div class="share-copy-box" id="returnTogetherCopy">
-            <div class="share-date-line" id="returnCardDateLine"></div>
-            <div class="share-main-line" id="returnCardMainLine"></div>
-            <div class="share-sub-line" id="returnCardSubLine"></div>
-            <div class="share-brand-line" id="returnCardBrandLine"></div>
-          </div>
-          <div style="height:14px;"></div>
-          <div class="cta-row return-card-actions">
-            <button class="btn" id="refreshReturnCardBtn">Find another gentle line</button>
-            <button class="btn" id="copyReturnCardBtn">Copy card text</button>
-            <button class="btn" id="shareReturnCardBtn">Share this space</button>
-            <button class="btn" id="saveReturnCardBtn">Save card</button>
-          </div>
-          <div class="share-status" id="returnTogetherStatus"></div>
-        </div>
-
         <div style="height:10px;"></div>
-        <div class="small-note" id="todayPositioning">Not a scorecard. Not a pressure tool. Just a gentle place to return.</div>
-        <div style="height:8px;"></div>
-        <div class="small-note" id="religiousBoundaryNote">Five Lights does not replace salah. It is only a private reflection space to help you notice, reflect, and return.</div>
+        <div class="small-note" id="todayPositioning">Not a scorecard. Just a gentle place to return.</div>
         <div style="height:8px;"></div>
         <div class="small-note" id="todayReassurance"></div>
+      </div>
+
+      <div class="section-block" id="todayReflectionReturnSection">
+            <div class="card section-block" id="reflectionCard">
+              <h2 class="section-title" id="reflectionTitle"></h2>
+              <p class="section-sub" id="reflectionHelper"></p>
+              <textarea id="reflectionInput"></textarea>
+
+              <div class="section-block">
+                <h2 class="section-title" id="feelingTitle"></h2>
+                <div class="feelings" id="feelingButtons"></div>
+              </div>
+
+              <div class="save-status" id="saveStatusText"></div>
+            </div>
+
+            <div class="card share-card" id="returnTogetherCard">
+              <div class="label" id="returnTogetherLabel">Today’s return line</div>
+              <h2 id="returnTogetherTitle"></h2>
+              <p class="small-note" id="returnTogetherSub"></p>
+              <div class="share-copy-box" id="returnTogetherCopy">
+              <div class="share-date-line" id="returnCardDateLine"></div>
+              <div class="share-main-line" id="returnCardMainLine"></div>
+              <div class="share-sub-line" id="returnCardSubLine"></div>
+              <div class="share-brand-line" id="returnCardBrandLine"></div>
+              </div>
+              <div style="height:14px;"></div>
+              <div class="cta-row return-card-actions">
+                <button class="btn" id="refreshReturnCardBtn">Find another light</button>
+                <button class="btn" id="copyReturnCardBtn">Copy text</button>
+                <button class="btn" id="shareReturnCardBtn">Share a light</button>
+                <button class="btn" id="saveReturnCardBtn">Save screenshot</button>
+              </div>
+              <div class="share-status" id="returnTogetherStatus"></div>
+            </div>
+
+
       </div>
 
       <div class="card" id="premiumSupportCard">
         <div class="card-header">
           <div>
-            <div class="label" id="supportLabel">Support Five Lights</div>
-            <h2 id="supportTitle">Help keep this quiet salah space free for Muslims trying to return</h2>
+            <div class="label">Founding Supporter Access</div>
+            <h2>Help keep this gentle salah space alive</h2>
           </div>
         </div>
-        <p class="small-note" id="supportBodyOne">
-          Five Lights is free to use for Muslims who are trying to return to salah gently.
+        <p class="small-note">
+          Five Lights is for the days when you still care about salah, but life, tiredness, guilt, or shame make it hard to come back.
         </p>
-        <p class="small-note" id="supportBodyTwo">
-          If this space helped you, your support helps us keep it available and build more private, gentle tools for Muslims returning to salah.
+        <p class="small-note">
+          Your support helps us keep the free version available and build a more private, gentle space for Muslims who are trying to return without feeling judged.
         </p>
         <div style="height:14px;"></div>
         <div class="cta-row">
-          <a class="btn btn-primary" id="supportButton" href="https://payhip.com/b/IhBCq" target="_blank" rel="noopener noreferrer">Support Five Lights</a>
+          <a class="btn btn-primary" href="https://payhip.com/b/IhBCq" target="_blank" rel="noopener noreferrer">Become a Founding Supporter</a>
         </div>
         <div style="height:10px;"></div>
-        <div class="small-note" id="supportKitNote">Your support includes early access to the upcoming 30-Day Gentle Return Reflection Kit.</div>
+        <div class="small-note">Your support includes early access to the upcoming 30-Day Gentle Return Reflection Kit.</div>
       </div>
 
       <div class="card">
@@ -912,19 +1076,6 @@
       </div>
 
       <div class="light-list" id="detailLightList"></div>
-
-      <div class="card section-block" id="reflectionCard">
-        <h2 class="section-title" id="reflectionTitle"></h2>
-        <p class="section-sub" id="reflectionHelper"></p>
-        <textarea id="reflectionInput"></textarea>
-
-        <div class="section-block">
-          <h2 class="section-title" id="feelingTitle"></h2>
-          <div class="feelings" id="feelingButtons"></div>
-        </div>
-
-        <div class="save-status" id="saveStatusText"></div>
-      </div>
 
       <div class="card">
         <div class="small-note" id="detailClosingLine"></div>
@@ -1159,32 +1310,32 @@
 
     const copy = {
       today: {
-        title: "Missed salah today?",
+        title: "For the days you prayed, missed, delayed, or still cared.",
         progressLabel: "Your quiet salah space",
-        reassurance: "A missed salah does not have to become a missed week. Come back to the next one you can.",
+        reassurance: "No shame here. This space is still open.",
         stillCare: {
-          active: "Caring still matters. When the next salah comes, begin there.",
+          active: "Caring still matters. Tomorrow does not have to begin with shame.",
           inactive: "No shame here. This space is still open."
         },
         hardReasons: [
-          { key: "tired", label: "I was tired", arLabel: "كنتُ متعبة", feedback: "Being tired does not mean you stopped caring.", arFeedback: "التعب لا يعني أنكِ توقفتِ عن الاهتمام." },
-          { key: "delaying", label: "I kept delaying", arLabel: "ظللتُ أؤجل", feedback: "Delaying can turn heavy. You can still return one light at a time.", arFeedback: "التأجيل قد يصبح ثقيلًا. يمكنكِ الرجوع نورًا واحدًا في كل مرة." },
-          { key: "work_school", label: "Work / school", arLabel: "العمل / الدراسة", feedback: "Life can crowd the day. This space is here when you come back.", arFeedback: "قد تزاحم الحياة يومكِ. هذه المساحة موجودة عندما تعودين." },
-          { key: "heavy", label: "Emotionally heavy", arLabel: "يوم ثقيل عاطفيًا", feedback: "Some days, the heart comes back slower. That is still a return.", arFeedback: "في بعض الأيام يعود القلب ببطء. وهذا ما زال رجوعًا." },
-          { key: "not_praying", label: "I couldn’t begin today", arLabel: "لم أستطع أن أبدأ اليوم", feedback: "This day does not need to become distance. When the next salah comes, begin there.", arFeedback: "لا يجب أن يتحول هذا اليوم إلى بُعد. عندما تأتي الصلاة التالية، ابدئي من هناك." },
-          { key: "unknown", label: "I don’t know", arLabel: "لا أعرف", feedback: "You do not have to explain everything to begin again gently.", arFeedback: "لا تحتاجين إلى شرح كل شيء لتبدئي من جديد بلطف." }
+          { key: "tired", label: "I was tired", feedback: "Being tired does not mean you stopped caring." },
+          { key: "delaying", label: "I kept delaying", feedback: "Delaying can turn heavy. You can still return one light at a time." },
+          { key: "work_school", label: "Work / school", feedback: "Life can crowd the day. This space is here when you come back." },
+          { key: "heavy", label: "Emotionally heavy", feedback: "Some days, the heart comes back slower. That is still a return." },
+          { key: "not_praying", label: "I was not praying today", feedback: "This day does not need to be counted as failure. Your rhythm is still held gently." },
+          { key: "unknown", label: "I don’t know", feedback: "You do not have to explain everything to begin again gently." }
         ],
         returnTogether: {
-          label: "Today’s gentle return line",
+          label: "Today’s return line",
           title: "Make a gentle return card",
-          sub: "Your prayer records are never shared. Only this gentle line can be copied or sent.",
+          sub: "Nothing private is shared. Just a soft line you can keep or send.",
           context: "A quiet salah space for the days you prayed, missed, delayed, or still cared.",
-          brand: "Five Lights by PureTime\nfive lights, gentle return",
-          createButton: "Make my return card",
-          refreshButton: "Find another gentle line",
-          copyButton: "Copy card text",
-          shareButton: "Share this space",
-          saveButton: "Save card",
+          brand: "Five Lights by PureTime\nfive lights, zero judgment",
+          createButton: "Create my card",
+          refreshButton: "Find another light",
+          copyButton: "Copy text",
+          shareButton: "Share a light",
+          saveButton: "Save screenshot",
           refreshLimit: 3,
           copied: "Card text copied. Your private record was not shared.",
           shared: "Share sheet opened. Your private record was not shared.",
@@ -1206,7 +1357,7 @@
             delaying: "I kept delaying.\nBut I’m still returning.",
             work_school: "Life got in the way.\nBut my heart still remembered.",
             heavy: "Some days are heavy.\nThe door is still open.",
-            not_praying: "I couldn’t begin today.\nI’m still trying to return.",
+            not_praying: "I missed today.\nI’m not leaving.",
             unknown: "I’m trying again, quietly."
           },
           viralLines: [
@@ -1219,19 +1370,19 @@
             "I’m trying again, quietly.",
             "Some days are heavy.\nThe door is still open.",
             "I didn’t do all five.\nI didn’t stop caring.",
-            "Five lights, gentle return."
+            "Five lights, zero judgment."
           ],
           ar: {
             label: "عبارة الرجوع اليوم",
             title: "اصنعي بطاقة رجوع لطيفة",
-            sub: "لا تتم مشاركة سجلات صلاتك أبدًا. فقط هذه العبارة اللطيفة يمكن نسخها أو إرسالها.",
+            sub: "لا تتم مشاركة أي شيء خاص. فقط عبارة هادئة يمكنك الاحتفاظ بها أو إرسالها.",
             context: "مساحة هادئة للصلاة، للأيام التي صلّيتِ فيها، أو فاتتكِ، أو تأخرتِ، أو ما زلتِ تهتمين.",
-            brand: "Five Lights من PureTime\nخمس أضواء، عودة لطيفة",
-            createButton: "اصنعي بطاقة الرجوع",
-            refreshButton: "أعطني عبارة لطيفة أخرى",
-            copyButton: "نسخ نص البطاقة",
-            shareButton: "مشاركة هذه المساحة",
-            saveButton: "حفظ البطاقة",
+            brand: "Five Lights من PureTime\nخمس أضواء، بلا حُكم",
+            createButton: "اصنعي بطاقتي",
+            refreshButton: "ابحثي عن نور آخر",
+            copyButton: "نسخ النص",
+            shareButton: "شاركي نورًا",
+            saveButton: "حفظ الصورة",
             copied: "تم نسخ نص البطاقة. لم تتم مشاركة سجلكِ الخاص.",
             shared: "تم فتح نافذة المشاركة. لم تتم مشاركة سجلكِ الخاص.",
             saved: "تم حفظ البطاقة كصورة.",
@@ -1252,7 +1403,7 @@
               delaying: "ظللتُ أؤجل.\nلكنني ما زلتُ أعود.",
               work_school: "تزاحمت الحياة في طريقي.\nلكن قلبي ما زال يتذكر.",
               heavy: "بعض الأيام ثقيلة.\nوالباب ما زال مفتوحًا.",
-              not_praying: "لم أستطع أن أبدأ اليوم.\nلكنني ما زلت أحاول الرجوع.",
+              not_praying: "فاتني اليوم.\nلكنني لا أبتعد.",
               unknown: "أحاول من جديد، بهدوء."
             },
             viralLines: [
@@ -1265,7 +1416,7 @@
               "أحاول من جديد، بهدوء.",
               "بعض الأيام ثقيلة.\nوالباب ما زال مفتوحًا.",
               "لم أُكمل الخمس.\nلكنني لم أتوقف عن الاهتمام.",
-              "خمس أضواء، عودة لطيفة."
+              "خمس أضواء، بلا حُكم."
             ]
           }
         },
@@ -1277,8 +1428,7 @@
           "A soft beginning is still a beginning."
         ],
         subtitles: [
-          "Light what you could. Return gently, without letting guilt turn into distance.",
-          "A private salah reflection space for the days you prayed, missed, delayed, or still cared."
+          "Your quiet salah space — private, gentle, and one light at a time."
         ]
       },
       detail: {
@@ -1552,22 +1702,12 @@
       todayProgressFill: document.getElementById("todayProgressFill"),
       todayPrayerNames: document.getElementById("todayPrayerNames"),
       todayLightsPreview: document.getElementById("todayLightsPreview"),
-      openTodayBtn: document.getElementById("openTodayBtn"),
+      homeLightBtn: document.getElementById("homeLightBtn"),
+      homeLightTitle: document.getElementById("homeLightTitle"),
+      homeLightSub: document.getElementById("homeLightSub"),
+      homeLightStatus: document.getElementById("homeLightStatus"),
       quickMonthBtn: document.getElementById("quickMonthBtn"),
-      mainStillCareBtn: document.getElementById("mainStillCareBtn"),
-      stillCareLabel: document.getElementById("stillCareLabel"),
-      stillCareTitle: document.getElementById("stillCareTitle"),
-      stillCareSub: document.getElementById("stillCareSub"),
-      hardReasonLabel: document.getElementById("hardReasonLabel"),
-      hardReasonTitle: document.getElementById("hardReasonTitle"),
-      hardReasonSub: document.getElementById("hardReasonSub"),
-      supportLabel: document.getElementById("supportLabel"),
-      supportTitle: document.getElementById("supportTitle"),
-      supportBodyOne: document.getElementById("supportBodyOne"),
-      supportBodyTwo: document.getElementById("supportBodyTwo"),
-      supportButton: document.getElementById("supportButton"),
-      supportKitNote: document.getElementById("supportKitNote"),
-      religiousBoundaryNote: document.getElementById("religiousBoundaryNote"),
+      todayReflectionBtn: document.getElementById("todayReflectionBtn"),
       todayPositioning: document.getElementById("todayPositioning"),
       todayReassurance: document.getElementById("todayReassurance"),
       stillCareBtn: document.getElementById("stillCareBtn"),
@@ -1956,28 +2096,6 @@
       return t(i18n.en.prayers[prayerKey], i18n.ar.prayers[prayerKey]);
     }
 
-    function localizedPair(enText, arText) {
-      return t(enText, arText);
-    }
-
-    function localizedTodaySubtitle() {
-      const en = randomFrom(copy.today.subtitles);
-      const arSubtitles = [
-        "أضيئي ما استطعتِ. عودي بلطف، دون أن يتحول الذنب إلى بُعد.",
-        "مساحة خاصة للتأمل في الصلاة، للأيام التي صلّيتِ فيها، أو فاتتكِ، أو تأخرتِ، أو ما زلتِ تهتمين."
-      ];
-      const ar = randomFrom(arSubtitles);
-      return t(en, ar);
-    }
-
-    function localizedReasonLabel(reason) {
-      return t(reason.label, reason.arLabel || reason.label);
-    }
-
-    function localizedReasonFeedback(reason) {
-      return t(reason.feedback, reason.arFeedback || reason.feedback);
-    }
-
 
     function formatSalahSpaceName(name) {
       const trimmed = (name || "").trim();
@@ -1991,7 +2109,6 @@
       els.brandSub.textContent = formatSalahSpaceName(state?.profile?.name);
       document.title = `PureTime ${formatSalahSpaceName(state?.profile?.name)}`;
       els.topSettingsBtn.textContent = t(i18n.en.nav.settings, i18n.ar.nav.settings);
-      els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
       els.backToTodayBtn.textContent = t(i18n.en.nav.backToToday, i18n.ar.nav.backToToday);
       els.detailOpenMonthBtn.textContent = t(i18n.en.nav.month, i18n.ar.nav.month);
       els.selectedDateLabel.textContent = t(i18n.en.nav.selectedDate, i18n.ar.nav.selectedDate);
@@ -2076,80 +2193,46 @@ ${ar.brand}`,
       const count = completedCount(day);
 
       els.todayDateLine.textContent = formatLongDate(parseDateKey(today));
-      els.todayTitle.textContent = t(copy.today.title, "هل فاتتك الصلاة اليوم؟");
-      els.todaySubtitle.textContent = localizedTodaySubtitle();
-      els.todayProgressLabel.textContent = t(copy.today.progressLabel, "مساحتك الهادئة للصلاة");
+      els.todayTitle.textContent = copy.today.title;
+      els.todaySubtitle.textContent = randomFrom(copy.today.subtitles);
+      els.todayProgressLabel.textContent = copy.today.progressLabel;
       if (count === 0) {
-        els.todayProgressText.textContent = t("Today is still open", "ما زال اليوم مفتوحًا");
+        els.todayProgressText.textContent = "Today is still open";
       } else if (count === 1) {
-        els.todayProgressText.textContent = t("One light is here today", "نور واحد موجود اليوم");
+        els.todayProgressText.textContent = "One light is here today";
       } else if (count === 5) {
-        els.todayProgressText.textContent = t("All five lights are here today", "الأضواء الخمسة موجودة اليوم");
+        els.todayProgressText.textContent = "All five lights are here today";
       } else {
-        els.todayProgressText.textContent = t(`${count} lights are here today`, `${count} أضواء موجودة اليوم`);
+        els.todayProgressText.textContent = `${count} lights are here today`;
       }
-      els.todayPrayerNames.textContent = PRAYER_KEYS.map(localizedPrayerName).join(" · ");
+      els.todayPrayerNames.textContent = "Fajr · Dhuhr · Asr · Maghrib · Isha";
       els.todayProgressFill.style.width = `${progressPercent(day)}%`;
-      els.openTodayBtn.textContent = t(i18n.en.actions.openToday, i18n.ar.actions.openToday);
-      els.quickMonthBtn.textContent = t("Month", "الشهر");
-      els.mainStillCareBtn.textContent = day.stillCare ? t("I still care today ✓", "ما زلت أهتم اليوم ✓") : t("I still care today", "ما زلت أهتم اليوم");
-      els.mainStillCareBtn.classList.toggle("btn-primary", !!day.stillCare);
-      els.todayPositioning.textContent = t("Not a scorecard. Not a pressure tool. Just a gentle place to return.", "ليست بطاقة تقييم. وليست أداة ضغط. فقط مكان لطيف للرجوع.");
-      els.religiousBoundaryNote.textContent = t(
-        "Five Lights does not replace salah. It is only a private reflection space to help you notice, reflect, and return.",
-        "لا يحل Five Lights محل الصلاة. إنه فقط مساحة خاصة للتأمل تساعدكِ على الملاحظة والتفكر والرجوع."
-      );
-      els.stillCareLabel.textContent = t("No light yet today?", "لا نور بعد اليوم؟");
-      els.stillCareTitle.textContent = t("I still care", "ما زلت أهتم");
-      els.stillCareSub.textContent = t(
-        "If today felt heavy, you can still mark that your heart has not walked away. When the next salah comes, begin there.",
-        "إذا كان اليوم ثقيلًا، يمكنكِ أن تسجلي أن قلبكِ لم يبتعد. عندما تأتي الصلاة التالية، ابدئي من هناك."
-      );
-      els.hardReasonLabel.textContent = t("Gentle reflection", "تأمل لطيف");
-      els.hardReasonTitle.textContent = t("What made it hard today?", "ما الذي جعل اليوم صعبًا؟");
-      els.hardReasonSub.textContent = t(
-        "Choose one if it helps. This is private and only saved on this device.",
-        "اختاري سببًا واحدًا إن ساعدكِ ذلك. هذا خاص ولا يُحفظ إلا على هذا الجهاز."
-      );
-      els.supportLabel.textContent = t("Support Five Lights", "ادعمي Five Lights");
-      els.supportTitle.textContent = t(
-        "Help keep this quiet salah space free for Muslims trying to return",
-        "ساعدي في إبقاء هذه المساحة الهادئة للصلاة مجانية للمسلمين الذين يحاولون الرجوع"
-      );
-      els.supportBodyOne.textContent = t(
-        "Five Lights is free to use for Muslims who are trying to return to salah gently.",
-        "Five Lights مجاني للمسلمين الذين يحاولون الرجوع إلى الصلاة بلطف."
-      );
-      els.supportBodyTwo.textContent = t(
-        "If this space helped you, your support helps us keep it available and build more private, gentle tools for Muslims returning to salah.",
-        "إذا ساعدتكِ هذه المساحة، فإن دعمكِ يساعدنا على إبقائها متاحة وبناء أدوات أكثر خصوصية ولطفًا للمسلمين العائدين إلى الصلاة."
-      );
-      els.supportButton.textContent = t("Support Five Lights", "ادعمي Five Lights");
-      els.supportKitNote.textContent = t(
-        "Your support includes early access to the upcoming 30-Day Gentle Return Reflection Kit.",
-        "يشمل دعمكِ وصولًا مبكرًا إلى مجموعة التأمل القادمة: الرجوع اللطيف خلال 30 يومًا."
-      );
+      els.homeLightBtn.setAttribute("aria-label", t("Hold the light gently", "أمسكي النور بلطف"));
+      els.homeLightTitle.textContent = t("Hold the light gently", "أمسكي النور بلطف");
+      els.homeLightSub.textContent = t("Breathe gently. Then tap any prayer light below.", "تنفسي بلطف، ثم المسِي أي نور صلاة بالأسفل.");
+      els.homeLightStatus.textContent = t("Tap the star to calm. Tap a prayer below to light it.", "المسي النجمة للهدوء. المسِي صلاة بالأسفل لإضاءتها.");
+      els.quickMonthBtn.textContent = "Month";
+      els.todayReflectionBtn.textContent = t("Reflection & return line", "تأمل وعبارة رجوع");
+      els.todayPositioning.textContent = "Not a scorecard. Not a pressure tool. Just a gentle place to return.";
       els.todayReassurance.textContent = getGentleResponseForDate(today);
 
       els.stillCareBtn.classList.toggle("btn-primary", !!day.stillCare);
-      els.stillCareBtn.textContent = day.stillCare ? t("I still care today ✓", "ما زلت أهتم اليوم ✓") : t("I still care today", "ما زلت أهتم اليوم");
+      els.stillCareBtn.textContent = day.stillCare ? "I still care ✓" : "I still care";
       els.stillCareFeedback.textContent = day.stillCare
-        ? t(copy.today.stillCare.active, "ما زال الاهتمام مهمًا. عندما تأتي الصلاة التالية، ابدئي من هناك.")
-        : (count === 0 ? t(copy.today.stillCare.inactive, "لا خجل هنا. هذه المساحة ما زالت مفتوحة.") : "");
+        ? copy.today.stillCare.active
+        : (count === 0 ? copy.today.stillCare.inactive : "");
 
       els.hardReasonButtons.innerHTML = "";
       copy.today.hardReasons.forEach((reason) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = `reason-btn ${day.hardReason === reason.key ? "active" : ""}`;
-        btn.textContent = localizedReasonLabel(reason);
+        btn.textContent = reason.label;
         btn.addEventListener("click", () => setHardReasonForToday(reason.key));
         els.hardReasonButtons.appendChild(btn);
       });
       const activeReason = copy.today.hardReasons.find((reason) => reason.key === day.hardReason);
-      els.hardReasonFeedback.textContent = activeReason ? localizedReasonFeedback(activeReason) : "";
-
-      renderReturnCard(today, day, count);
+      els.hardReasonFeedback.textContent = activeReason ? activeReason.feedback : "";
 
       els.streakLabel.textContent = t(i18n.en.labels.currentGentleStreak, i18n.ar.labels.currentGentleStreak);
       els.todayBottomQuote.textContent = randomFrom(copy.today.bottomQuotes, today + "-quote");
@@ -2164,19 +2247,27 @@ ${ar.brand}`,
       els.todayLightsPreview.innerHTML = "";
       copy.lights.forEach((light) => {
         const lit = !!day.completed[light.key];
-        const item = document.createElement("div");
+        const item = document.createElement("button");
+        item.type = "button";
         item.className = `preview-light ${lit ? "lit" : ""}`;
+        item.setAttribute("aria-label", `${localizedPrayerName(light.key)} - ${lit ? "mark as still open" : "light this prayer"}`);
+        item.addEventListener("click", () => {
+          toggleLightForDate(today, light.key);
+          els.homeLightStatus.textContent = day.completed[light.key]
+            ? t(`${localizedPrayerName(light.key)} is lit.`, `${localizedPrayerName(light.key)} مضاء.`)
+            : t(`${localizedPrayerName(light.key)} is open again.`, `${localizedPrayerName(light.key)} مفتوح من جديد.`);
+        });
         item.innerHTML = `
           <div class="preview-orb"></div>
           <div class="preview-name">${localizedPrayerName(light.key)}</div>
-          <div class="preview-desc">${light.desc}</div>
+          <div class="preview-desc">${lit ? "Tap again to unlight." : "Tap to light."}</div>
         `;
         els.todayLightsPreview.appendChild(item);
       });
     }
 
     function renderDetail() {
-      const dateKey = selectedDateKey();
+      const dateKey = currentPage === "today" ? todayKey() : selectedDateKey();
       const day = getDayData(dateKey);
       const count = completedCount(day);
       const isToday = dateKey === todayKey();
@@ -2256,6 +2347,7 @@ ${ar.brand}`,
       });
 
       els.saveStatusText.textContent = isFuture ? "Future dates cannot be edited." : copy.detail.saveSaved;
+      renderReturnCard(dateKey, day, count);
       els.detailClosingLine.textContent = randomFrom(copy.detail.closingLines, dateKey + "-closing");
 
       Array.from(els.detailLightList.querySelectorAll("[data-light-key]")).forEach(btn => {
@@ -2273,7 +2365,7 @@ ${ar.brand}`,
       const date = new Date(year, month - 1, 1);
       const selected = selectedDateKey();
 
-      els.monthBackBtn.textContent = langMode() === "ar" ? "العودة إلى الصفحة السابقة" : "Back to detail";
+      els.monthBackBtn.textContent = langMode() === "ar" ? "العودة إلى اليوم" : "Back to today";
       els.monthDateLine.textContent = formatMonthYear(date);
       els.monthTitle.textContent = copy.month.title;
       els.monthSubtitle.textContent = copy.month.subtitle;
@@ -2329,7 +2421,7 @@ ${ar.brand}`,
               <span class="num">${dayNum}</span>
               <span class="weekday-inline">· ${weekdayShort}</span>
             </div>
-            <div class="small">${count > 0 ? `${count} light${count === 1 ? "" : "s"}` : ""}</div>
+            <div class="small">${count} light${count === 1 ? "" : "s"}</div>
           </div>
           <div class="mini-lights">${miniLights}</div>
           <div class="small">${future ? t(i18n.en.labels.futureLocked, i18n.ar.labels.futureLocked) : (count > 0 ? copy.month.prayerMarked : copy.month.quietDay)}</div>
@@ -2337,7 +2429,8 @@ ${ar.brand}`,
 
         cell.addEventListener("click", () => {
           if (future) return;
-          selectDate(key, true);
+          selectDate(key, false);
+          showPage("today");
         });
 
         els.monthGrid.appendChild(cell);
@@ -2560,7 +2653,7 @@ ${ar.brand}`,
       day.lastUpdated = new Date().toISOString();
       getReturnCardLine(dateKey, day, completedCount(day));
       saveState();
-      renderToday();
+      render();
       els.returnTogetherStatus.textContent = getLocalizedReturnTogether().ready;
     }
 
@@ -2586,7 +2679,7 @@ ${ar.brand}`,
       day.returnCardRefreshes = used + 1;
       day.lastUpdated = new Date().toISOString();
       saveState();
-      renderToday();
+      render();
       const remaining = Math.max(0, shareCopy.refreshLimit - day.returnCardRefreshes);
       els.returnTogetherStatus.textContent = remaining
         ? `${remaining} ${remaining === 1 ? shareCopy.refreshLeft : shareCopy.refreshLeftPlural}`
@@ -2709,18 +2802,101 @@ ${ar.brand}`,
       els.returnTogetherStatus.textContent = getLocalizedReturnTogether().saved;
     }
 
-    function bindEvents() {
-      els.openTodayBtn.addEventListener("click", () => {
-        selectDate(todayKey(), false);
-        showPage("detail");
-      });
+    function openTodayFromHome() {
+      selectDate(todayKey(), false);
+      showPage("today");
+      const target = document.getElementById("todayReflectionReturnSection");
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
 
-      els.mainStillCareBtn.addEventListener("click", toggleStillCareForToday);
+    let homeLightHoldTimer = null;
+    let homeLightProgressTimer = null;
+    let homeLightPointerDownAt = 0;
+    let homeLightHoldCompleted = false;
+    const HOME_LIGHT_HOLD_MS = 1250;
+
+    function setHomeLightProgress(value) {
+      if (!els.homeLightBtn) return;
+      const clamped = Math.max(0, Math.min(1, value));
+      els.homeLightBtn.style.setProperty("--hold-progress", `${Math.round(clamped * 360)}deg`);
+    }
+
+    function finishHomeLightInteraction() {
+      if (!els.homeLightBtn || homeLightHoldCompleted) return;
+      homeLightHoldCompleted = true;
+      clearTimeout(homeLightHoldTimer);
+      clearInterval(homeLightProgressTimer);
+      setHomeLightProgress(1);
+      els.homeLightBtn.classList.add("ready");
+      const day = getDayData(todayKey());
+      day.stillCare = true;
+      day.lastUpdated = new Date().toISOString();
+      saveState();
+      renderToday();
+      els.homeLightStatus.textContent = t("You still cared. You can light one prayer below.", "ما زال الاهتمام باقيًا. يمكنكِ إضاءة صلاة بالأسفل.");
+    }
+
+    function startHomeLightHold() {
+      if (!els.homeLightBtn) return;
+      homeLightPointerDownAt = Date.now();
+      homeLightHoldCompleted = false;
+      els.homeLightBtn.classList.add("holding");
+      els.homeLightBtn.classList.remove("ready");
+      els.homeLightStatus.textContent = t("Hold gently. Breathe in…", "أمسكي بلطف. شهيق…");
+      setHomeLightProgress(0.04);
+      clearTimeout(homeLightHoldTimer);
+      clearInterval(homeLightProgressTimer);
+      homeLightProgressTimer = setInterval(() => {
+        const elapsed = Date.now() - homeLightPointerDownAt;
+        const progress = elapsed / HOME_LIGHT_HOLD_MS;
+        if (progress > 0.42 && progress < 0.78) {
+          els.homeLightStatus.textContent = t("Breathe out… no shame here.", "زفير… لا حُكم هنا.");
+        }
+        setHomeLightProgress(progress);
+      }, 32);
+      homeLightHoldTimer = setTimeout(finishHomeLightInteraction, HOME_LIGHT_HOLD_MS);
+    }
+
+    function endHomeLightHold() {
+      if (!els.homeLightBtn) return;
+      els.homeLightBtn.classList.remove("holding");
+      if (!homeLightHoldCompleted) {
+        clearTimeout(homeLightHoldTimer);
+        clearInterval(homeLightProgressTimer);
+        setHomeLightProgress(0);
+        els.homeLightStatus.textContent = t("Tap once, or hold until the light softens.", "المسي مرة، أو أمسكي حتى يلين النور.");
+      }
+    }
+
+    function tapHomeLight() {
+      if (!els.homeLightBtn || homeLightHoldCompleted) return;
+      els.homeLightBtn.classList.remove("tapped");
+      void els.homeLightBtn.offsetWidth;
+      els.homeLightBtn.classList.add("tapped", "ready");
+      setHomeLightProgress(1);
+      els.homeLightStatus.textContent = t("You came back. Light one prayer below when you are ready.", "لقد عدتِ. أضيئي صلاة بالأسفل عندما تكونين جاهزة.");
+      setTimeout(() => {
+        els.homeLightBtn.classList.remove("ready");
+        setHomeLightProgress(0);
+      }, 900);
+    }
+
+    function bindEvents() {
+      els.homeLightBtn.addEventListener("click", tapHomeLight);
+      els.homeLightBtn.addEventListener("pointerdown", startHomeLightHold);
+      els.homeLightBtn.addEventListener("pointerup", endHomeLightHold);
+      els.homeLightBtn.addEventListener("pointerleave", endHomeLightHold);
+      els.homeLightBtn.addEventListener("pointercancel", endHomeLightHold);
 
       els.quickMonthBtn.addEventListener("click", () => {
         state.ui.monthCursor = todayKey().slice(0, 7);
         saveState();
         showPage("month");
+      });
+
+      els.todayReflectionBtn.addEventListener("click", () => {
+        const target = document.getElementById("todayReflectionReturnSection");
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
 
       els.refreshReturnCardBtn.addEventListener("click", refreshReturnCardForToday);
@@ -2731,7 +2907,7 @@ ${ar.brand}`,
 
       els.backToTodayBtn.addEventListener("click", () => showPage("today"));
       els.detailOpenMonthBtn.addEventListener("click", () => showPage("month"));
-      els.monthBackBtn.addEventListener("click", () => showPage("detail"));
+      els.monthBackBtn.addEventListener("click", () => showPage("today"));
 
       els.prevMonthBtn.addEventListener("click", () => {
         setMonthCursor(shiftMonth(monthCursorKey(), -1));
@@ -2760,7 +2936,7 @@ ${ar.brand}`,
       });
 
       els.reflectionInput.addEventListener("input", (event) => {
-        const key = selectedDateKey();
+        const key = currentPage === "today" ? todayKey() : selectedDateKey();
         if (isFutureDate(key)) return;
 
         const day = getDayData(key);
