@@ -274,6 +274,7 @@
       font-size: 0.92rem;
       font-weight: 600;
       margin-bottom: 4px;
+      color: var(--gold);
     }
 
     .preview-desc {
@@ -649,7 +650,12 @@
       position: relative;
       transition: transform 260ms ease, filter 260ms ease;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: none;
       --hold-progress: 0deg;
+      --mist-opacity: 0.72;
     }
 
     .home-light-btn::before {
@@ -698,6 +704,10 @@
     .home-light-star {
       width: 100%;
       height: 100%;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+      pointer-events: none;
       clip-path: polygon(50% 0%, 61% 29%, 92% 8%, 71% 39%, 100% 50%, 71% 61%, 92% 92%, 61% 71%, 50% 100%, 39% 71%, 8% 92%, 29% 61%, 0% 50%, 29% 39%, 8% 8%, 39% 29%);
       background:
         radial-gradient(circle at 33% 28%, rgba(255,249,232,0.92), rgba(231,201,138,0.55) 34%, rgba(231,201,138,0.18) 64%, rgba(255,255,255,0.04));
@@ -709,8 +719,180 @@
       transition: transform 180ms ease, box-shadow 220ms ease, filter 220ms ease;
     }
 
+
+    .light-match-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+      width: min(90vw, 372px);
+      margin: 16px auto 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: manipulation;
+      position: relative;
+    }
+
+    .space-block {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      min-height: 66px;
+      padding: 8px 6px;
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.045);
+      transition: transform 180ms ease, opacity 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+      -webkit-tap-highlight-color: transparent;
+      font: inherit;
+    }
+
+    .space-block:hover:not(:disabled) {
+      transform: translateY(-1px) scale(1.02);
+      border-color: rgba(231,201,138,0.28);
+    }
+
+    .space-block .block-icon {
+      width: 21px;
+      height: 21px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.10);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .space-block .block-label {
+      font-size: 0.66rem;
+      color: var(--muted);
+      line-height: 1.1;
+    }
+
+    .space-block.kind-tired {
+      border-color: rgba(156,190,214,0.30);
+      background: radial-gradient(circle at 30% 25%, rgba(156,190,214,0.24), rgba(156,190,214,0.10) 46%, rgba(255,255,255,0.035));
+    }
+
+    .space-block.kind-busy {
+      border-color: rgba(207,168,112,0.32);
+      background: radial-gradient(circle at 30% 25%, rgba(207,168,112,0.24), rgba(207,168,112,0.10) 46%, rgba(255,255,255,0.035));
+    }
+
+    .space-block.kind-delay {
+      border-color: rgba(177,151,218,0.32);
+      background: radial-gradient(circle at 30% 25%, rgba(177,151,218,0.24), rgba(177,151,218,0.10) 46%, rgba(255,255,255,0.035));
+    }
+
+    .space-block.kind-shame {
+      border-color: rgba(216,140,140,0.34);
+      background: radial-gradient(circle at 30% 25%, rgba(216,140,140,0.23), rgba(216,140,140,0.09) 46%, rgba(255,255,255,0.035));
+    }
+
+    .space-block.kind-heavy {
+      border-color: rgba(145,151,166,0.34);
+      background: radial-gradient(circle at 30% 25%, rgba(145,151,166,0.24), rgba(145,151,166,0.10) 46%, rgba(255,255,255,0.035));
+    }
+
+    .space-block.kind-quiet {
+      border-color: rgba(157,199,170,0.34);
+      background: radial-gradient(circle at 30% 25%, rgba(157,199,170,0.24), rgba(157,199,170,0.10) 46%, rgba(255,255,255,0.035));
+    }
+
+    .space-block.kind-return {
+      border-color: rgba(231,201,138,0.34);
+      background: radial-gradient(circle at 30% 25%, rgba(231,201,138,0.24), rgba(231,201,138,0.11) 46%, rgba(255,255,255,0.035));
+    }
+
+    .space-block.kind-light {
+      border-color: rgba(255,226,155,0.64);
+      background: radial-gradient(circle at 30% 25%, rgba(255,246,220,0.38), rgba(231,201,138,0.20) 48%, rgba(255,255,255,0.045));
+      box-shadow: 0 0 24px rgba(231,201,138,0.16), inset 0 0 0 1px rgba(231,201,138,0.12);
+    }
+
+    .space-block.kind-tired .block-icon { background: rgba(156,190,214,0.82); box-shadow: 0 0 14px rgba(156,190,214,0.24); }
+    .space-block.kind-busy .block-icon { background: rgba(207,168,112,0.84); box-shadow: 0 0 14px rgba(207,168,112,0.24); }
+    .space-block.kind-delay .block-icon { background: rgba(177,151,218,0.84); box-shadow: 0 0 14px rgba(177,151,218,0.24); }
+    .space-block.kind-shame .block-icon { background: rgba(216,140,140,0.84); box-shadow: 0 0 14px rgba(216,140,140,0.24); }
+    .space-block.kind-heavy .block-icon { background: rgba(145,151,166,0.86); box-shadow: 0 0 14px rgba(145,151,166,0.22); }
+    .space-block.kind-quiet .block-icon { background: rgba(157,199,170,0.84); box-shadow: 0 0 14px rgba(157,199,170,0.24); }
+
+    .space-block.kind-light .block-icon,
+    .space-block.kind-return .block-icon {
+      clip-path: polygon(50% 0%, 61% 29%, 92% 8%, 71% 39%, 100% 50%, 71% 61%, 92% 92%, 61% 71%, 50% 100%, 39% 71%, 8% 92%, 29% 61%, 0% 50%, 29% 39%, 8% 8%, 39% 29%);
+      background: rgba(231,201,138,0.82);
+      box-shadow: 0 0 18px rgba(231,201,138,0.30);
+    }
+
+    .space-block.kind-light .block-label {
+      color: #fff2d0;
+      font-weight: 700;
+    }
+
+    .space-block.moved {
+      border-color: rgba(231,201,138,0.56);
+      box-shadow: 0 0 0 1px rgba(231,201,138,0.16), 0 0 22px rgba(231,201,138,0.16);
+      transform: scale(1.035);
+    }
+
+    .space-block.empty-space {
+      cursor: default;
+      border-style: dashed;
+      border-color: rgba(231,201,138,0.18);
+      background:
+        radial-gradient(circle at 50% 42%, rgba(231,201,138,0.18), transparent 52%),
+        rgba(255,255,255,0.02);
+      color: #fff2d0;
+      opacity: 0.9;
+    }
+
+    .space-block.target-space {
+      border-color: rgba(231,201,138,0.58);
+      box-shadow: inset 0 0 0 1px rgba(231,201,138,0.18), 0 0 18px rgba(231,201,138,0.12);
+      background:
+        radial-gradient(circle at 50% 45%, rgba(231,201,138,0.22), transparent 56%),
+        rgba(255,255,255,0.035);
+    }
+
+    .space-block.kind-light.target-space {
+      background:
+        radial-gradient(circle at 50% 45%, rgba(255,246,220,0.32), rgba(231,201,138,0.18) 48%, rgba(255,255,255,0.04));
+      box-shadow: 0 0 28px rgba(231,201,138,0.28), inset 0 0 0 1px rgba(231,201,138,0.22);
+    }
+
+    .space-block.empty-space .block-icon {
+      clip-path: polygon(50% 0%, 61% 29%, 92% 8%, 71% 39%, 100% 50%, 71% 61%, 92% 92%, 61% 71%, 50% 100%, 39% 71%, 8% 92%, 29% 61%, 0% 50%, 29% 39%, 8% 8%, 39% 29%);
+      background: rgba(231,201,138,0.36);
+      box-shadow: 0 0 18px rgba(231,201,138,0.18);
+    }
+
+    .space-progress-row {
+      width: min(90vw, 372px);
+      margin: 12px auto 0;
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .space-progress-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 180ms ease;
+    }
+
+    .space-progress-dot.done {
+      background: rgba(231,201,138,0.95);
+      border-color: rgba(231,201,138,0.4);
+      box-shadow: 0 0 14px rgba(231,201,138,0.32);
+    }
+
     .home-light-btn.holding .home-light-star,
-    .home-light-btn.ready .home-light-star {
+    .home-light-btn.ready .home-light-star,
+    .home-light-btn.cleared .home-light-star,
+    .home-light-btn.matched .home-light-star {
       animation: none;
       transform: scale(1.045);
       filter: brightness(1.12);
@@ -734,6 +916,11 @@
 
     .preview-light { cursor: pointer; }
 
+    @keyframes sparkFade {
+      0% { opacity: 0.95; transform: scale(0.7); }
+      100% { opacity: 0; transform: scale(2.6) translateY(-10px); }
+    }
+
     @keyframes gentlePulse {
       0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(231,201,138,0.14)); }
       50% { transform: scale(1.035); filter: drop-shadow(0 0 24px rgba(231,201,138,0.28)); }
@@ -742,6 +929,12 @@
     @keyframes lightRipple {
       0% { opacity: 0.5; transform: scale(0.72); }
       100% { opacity: 0; transform: scale(1.42); }
+    }
+
+    @keyframes tilePop {
+      0% { transform: scale(1); opacity: 1; }
+      55% { transform: scale(1.16); opacity: 1; }
+      100% { transform: scale(0.72); opacity: 0.18; }
     }
 
 
@@ -938,12 +1131,14 @@
         </div>
 
         <div class="home-light-gate">
-          <button class="home-light-btn" id="homeLightBtn" type="button" aria-label="Hold the light gently">
+          <button class="home-light-btn" id="homeLightBtn" type="button" aria-label="Guide Still care">
             <span class="home-light-star" aria-hidden="true"></span>
           </button>
-          <div class="home-light-title" id="homeLightTitle">Hold the light gently</div>
-          <div class="small-note" id="homeLightSub">Breathe gently. Then return one light at a time.</div>
+          <div class="home-light-title" id="homeLightTitle">Guide Still care</div>
+          <div class="small-note" id="homeLightSub">Slide blocks into the open space. Bring Still care to Salah.</div>
           <div class="home-light-status" id="homeLightStatus"></div>
+          <div class="light-match-board" id="lightMatchBoard" aria-label="Make a little space board"></div>
+          <div class="space-progress-row" id="lightMatchProgress" aria-hidden="true"></div>
         </div>
 
         <div style="height:18px;"></div>
@@ -1706,6 +1901,8 @@
       homeLightTitle: document.getElementById("homeLightTitle"),
       homeLightSub: document.getElementById("homeLightSub"),
       homeLightStatus: document.getElementById("homeLightStatus"),
+      lightMatchBoard: document.getElementById("lightMatchBoard"),
+      lightMatchProgress: document.getElementById("lightMatchProgress"),
       quickMonthBtn: document.getElementById("quickMonthBtn"),
       todayReflectionBtn: document.getElementById("todayReflectionBtn"),
       todayPositioning: document.getElementById("todayPositioning"),
@@ -2207,10 +2404,12 @@ ${ar.brand}`,
       }
       els.todayPrayerNames.textContent = "Fajr · Dhuhr · Asr · Maghrib · Isha";
       els.todayProgressFill.style.width = `${progressPercent(day)}%`;
-      els.homeLightBtn.setAttribute("aria-label", t("Hold the light gently", "أمسكي النور بلطف"));
-      els.homeLightTitle.textContent = t("Hold the light gently", "أمسكي النور بلطف");
-      els.homeLightSub.textContent = t("Breathe gently. Then tap any prayer light below.", "تنفسي بلطف، ثم المسِي أي نور صلاة بالأسفل.");
-      els.homeLightStatus.textContent = t("Tap the star to calm. Tap a prayer below to light it.", "المسي النجمة للهدوء. المسِي صلاة بالأسفل لإضاءتها.");
+      els.homeLightBtn.setAttribute("aria-label", t("Make a little space", "افتحي مساحة صغيرة"));
+      els.homeLightTitle.textContent = t("Guide Still care", "وجّهي الاهتمام");
+      els.homeLightSub.textContent = t("Slide blocks into the open space. Bring Still care to Salah.", "حرّكي الكتل إلى المساحة المفتوحة، وأوصلي الاهتمام إلى الصلاة.");
+      els.homeLightStatus.textContent = lightMatchCompleted
+        ? t("A little path is open. Choose one light below.", "انفتح طريق صغير. اختاري نورًا واحدًا بالأسفل.")
+        : t("Move Still care to Salah.", "حرّكي الاهتمام إلى الصلاة.");
       els.quickMonthBtn.textContent = "Month";
       els.todayReflectionBtn.textContent = t("Reflection & return line", "تأمل وعبارة رجوع");
       els.todayPositioning.textContent = "Not a scorecard. Not a pressure tool. Just a gentle place to return.";
@@ -2809,11 +3008,42 @@ ${ar.brand}`,
       if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    let homeLightHoldTimer = null;
-    let homeLightProgressTimer = null;
-    let homeLightPointerDownAt = 0;
-    let homeLightHoldCompleted = false;
-    const HOME_LIGHT_HOLD_MS = 1250;
+    const LIGHT_MATCH_COLUMNS = 4;
+    const LIGHT_MATCH_TARGET_INDEX = 15;
+    const LIGHT_MATCH_START_LIGHT_INDEX = 0;
+    const LIGHT_MATCH_START_DISTANCE = 6;
+    const LIGHT_MATCH_TYPES = {
+      tired: { label: "Tired", ar: "تعب", className: "kind-tired" },
+      busy: { label: "Busy", ar: "انشغال", className: "kind-busy" },
+      delay: { label: "Delay", ar: "تأجيل", className: "kind-delay" },
+      shame: { label: "Shame", ar: "خجل", className: "kind-shame" },
+      heavy: { label: "Heavy", ar: "ثقل", className: "kind-heavy" },
+      quiet: { label: "Quiet", ar: "هدوء", className: "kind-quiet" },
+      light: { label: "Still care", ar: "ما زال الاهتمام", className: "kind-light" },
+      return: { label: "Return", ar: "رجوع", className: "kind-return" }
+    };
+    const LIGHT_MATCH_START = [
+      "light", "tired", "busy", "delay",
+      "heavy", "shame", "quiet", "return",
+      "busy", "delay", "heavy", "tired",
+      "shame", "quiet", null, "return"
+    ];
+    let lightMatchTiles = LIGHT_MATCH_START.map((type, index) => ({ id: index, type, moved: false }));
+    let lightMatchMoves = 0;
+    let lightMatchSelected = null;
+    let lightMatchCompleted = false;
+
+    function resetLightMatchBoard() {
+      lightMatchTiles = LIGHT_MATCH_START.map((type, index) => ({ id: index, type, moved: false }));
+      lightMatchMoves = 0;
+      lightMatchSelected = null;
+      lightMatchCompleted = false;
+      if (els.homeLightBtn) {
+        els.homeLightBtn.classList.remove("ready", "cleared", "matched", "tapped");
+        setHomeLightProgress(0);
+      }
+      renderLightMatchBoard();
+    }
 
     function setHomeLightProgress(value) {
       if (!els.homeLightBtn) return;
@@ -2821,72 +3051,135 @@ ${ar.brand}`,
       els.homeLightBtn.style.setProperty("--hold-progress", `${Math.round(clamped * 360)}deg`);
     }
 
-    function finishHomeLightInteraction() {
-      if (!els.homeLightBtn || homeLightHoldCompleted) return;
-      homeLightHoldCompleted = true;
-      clearTimeout(homeLightHoldTimer);
-      clearInterval(homeLightProgressTimer);
+    function lightMatchLabel(type) {
+      if (!type) return t("Space", "مساحة");
+      const info = LIGHT_MATCH_TYPES[type] || LIGHT_MATCH_TYPES.light;
+      const mode = langMode();
+      if (mode === "ar") return info.ar;
+      if (mode === "both") return `${info.label} / ${info.ar}`;
+      return info.label;
+    }
+
+    function manhattanDistance(a, b) {
+      const ar = Math.floor(a / LIGHT_MATCH_COLUMNS);
+      const ac = a % LIGHT_MATCH_COLUMNS;
+      const br = Math.floor(b / LIGHT_MATCH_COLUMNS);
+      const bc = b % LIGHT_MATCH_COLUMNS;
+      return Math.abs(ar - br) + Math.abs(ac - bc);
+    }
+
+    function lightTileIndex() {
+      return lightMatchTiles.findIndex((tile) => tile.type === "light");
+    }
+
+    function renderLightMatchProgress() {
+      if (!els.lightMatchProgress) return;
+      els.lightMatchProgress.innerHTML = "";
+      els.lightMatchProgress.className = "space-progress-row";
+      const lightIndex = lightTileIndex();
+      const distance = lightIndex >= 0 ? manhattanDistance(lightIndex, LIGHT_MATCH_TARGET_INDEX) : LIGHT_MATCH_START_DISTANCE;
+      const progress = Math.max(0, LIGHT_MATCH_START_DISTANCE - distance);
+      for (let i = 0; i < LIGHT_MATCH_START_DISTANCE; i += 1) {
+        const dot = document.createElement("span");
+        dot.className = `space-progress-dot ${i < progress ? "done" : ""}`;
+        els.lightMatchProgress.appendChild(dot);
+      }
+    }
+
+    function renderLightMatchBoard() {
+      if (!els.lightMatchBoard) return;
+      els.lightMatchBoard.innerHTML = "";
+      lightMatchTiles.forEach((tile, index) => {
+        const info = tile.type ? (LIGHT_MATCH_TYPES[tile.type] || LIGHT_MATCH_TYPES.light) : null;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        const isTarget = index === LIGHT_MATCH_TARGET_INDEX;
+        btn.className = tile.type
+          ? `space-block ${info.className} ${isTarget ? "target-space" : ""} ${tile.moved ? "moved" : ""} ${lightMatchSelected === index ? "moved" : ""}`
+          : `space-block empty-space ${isTarget ? "target-space" : ""}`;
+        btn.setAttribute("aria-label", isTarget && !tile.type ? t("Salah target", "هدف الصلاة") : lightMatchLabel(tile.type));
+        btn.disabled = !tile.type || lightMatchCompleted;
+        btn.innerHTML = `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${isTarget && !tile.type ? t("Salah", "الصلاة") : lightMatchLabel(tile.type)}</span>`;
+        btn.addEventListener("click", () => slideSpaceBlock(index));
+        els.lightMatchBoard.appendChild(btn);
+      });
+      renderLightMatchProgress();
+    }
+
+    function emptySpaceIndex() {
+      return lightMatchTiles.findIndex((tile) => !tile.type);
+    }
+
+    function areAdjacent(a, b) {
+      const ar = Math.floor(a / LIGHT_MATCH_COLUMNS);
+      const ac = a % LIGHT_MATCH_COLUMNS;
+      const br = Math.floor(b / LIGHT_MATCH_COLUMNS);
+      const bc = b % LIGHT_MATCH_COLUMNS;
+      return Math.abs(ar - br) + Math.abs(ac - bc) === 1;
+    }
+
+    function finishLightMatch() {
+      lightMatchCompleted = true;
+      lightMatchSelected = null;
       setHomeLightProgress(1);
-      els.homeLightBtn.classList.add("ready");
+      els.homeLightBtn.classList.add("ready", "cleared", "matched", "tapped");
       const day = getDayData(todayKey());
       day.stillCare = true;
       day.lastUpdated = new Date().toISOString();
       saveState();
-      renderToday();
-      els.homeLightStatus.textContent = t("You still cared. You can light one prayer below.", "ما زال الاهتمام باقيًا. يمكنكِ إضاءة صلاة بالأسفل.");
+      renderLightMatchBoard();
+      els.homeLightStatus.textContent = t("A little path is open. Choose one light below.", "انفتح طريق صغير. اختاري نورًا واحدًا بالأسفل.");
     }
 
-    function startHomeLightHold() {
-      if (!els.homeLightBtn) return;
-      homeLightPointerDownAt = Date.now();
-      homeLightHoldCompleted = false;
-      els.homeLightBtn.classList.add("holding");
-      els.homeLightBtn.classList.remove("ready");
-      els.homeLightStatus.textContent = t("Hold gently. Breathe in…", "أمسكي بلطف. شهيق…");
-      setHomeLightProgress(0.04);
-      clearTimeout(homeLightHoldTimer);
-      clearInterval(homeLightProgressTimer);
-      homeLightProgressTimer = setInterval(() => {
-        const elapsed = Date.now() - homeLightPointerDownAt;
-        const progress = elapsed / HOME_LIGHT_HOLD_MS;
-        if (progress > 0.42 && progress < 0.78) {
-          els.homeLightStatus.textContent = t("Breathe out… no shame here.", "زفير… لا حُكم هنا.");
-        }
-        setHomeLightProgress(progress);
-      }, 32);
-      homeLightHoldTimer = setTimeout(finishHomeLightInteraction, HOME_LIGHT_HOLD_MS);
-    }
+    function slideSpaceBlock(index) {
+      if (lightMatchCompleted) return;
+      const emptyIndex = emptySpaceIndex();
+      if (emptyIndex < 0 || !lightMatchTiles[index]?.type) return;
 
-    function endHomeLightHold() {
-      if (!els.homeLightBtn) return;
-      els.homeLightBtn.classList.remove("holding");
-      if (!homeLightHoldCompleted) {
-        clearTimeout(homeLightHoldTimer);
-        clearInterval(homeLightProgressTimer);
-        setHomeLightProgress(0);
-        els.homeLightStatus.textContent = t("Tap once, or hold until the light softens.", "المسي مرة، أو أمسكي حتى يلين النور.");
+      if (!areAdjacent(index, emptyIndex)) {
+        lightMatchSelected = index;
+        renderLightMatchBoard();
+        els.homeLightStatus.textContent = t("Slide a block next to the open space.", "حرّكي كتلة بجانب المساحة المفتوحة.");
+        return;
+      }
+
+      const movingTile = { ...lightMatchTiles[index], moved: true };
+      lightMatchTiles[emptyIndex] = movingTile;
+      lightMatchTiles[index] = { id: index, type: null, moved: false };
+      lightMatchSelected = emptyIndex;
+      lightMatchMoves += 1;
+      const lightIndex = lightTileIndex();
+      const distance = lightIndex >= 0 ? manhattanDistance(lightIndex, LIGHT_MATCH_TARGET_INDEX) : LIGHT_MATCH_START_DISTANCE;
+      const progress = Math.max(0, LIGHT_MATCH_START_DISTANCE - distance) / LIGHT_MATCH_START_DISTANCE;
+      setHomeLightProgress(progress);
+      renderLightMatchBoard();
+
+      if (lightIndex === LIGHT_MATCH_TARGET_INDEX) {
+        setTimeout(finishLightMatch, 220);
+      } else if (movingTile.type === "light") {
+        els.homeLightStatus.textContent = t("Good. Guide Still care toward Salah.", "حسنًا. وجّهي الاهتمام نحو الصلاة.");
+      } else {
+        els.homeLightStatus.textContent = t("Make room for Still care to move.", "افسحي مكانًا ليتحرك الاهتمام.");
       }
     }
 
-    function tapHomeLight() {
-      if (!els.homeLightBtn || homeLightHoldCompleted) return;
+    function tapHomeLight(event) {
+      if (event) event.preventDefault();
+      if (!els.homeLightBtn) return;
       els.homeLightBtn.classList.remove("tapped");
       void els.homeLightBtn.offsetWidth;
-      els.homeLightBtn.classList.add("tapped", "ready");
-      setHomeLightProgress(1);
-      els.homeLightStatus.textContent = t("You came back. Light one prayer below when you are ready.", "لقد عدتِ. أضيئي صلاة بالأسفل عندما تكونين جاهزة.");
-      setTimeout(() => {
-        els.homeLightBtn.classList.remove("ready");
-        setHomeLightProgress(0);
-      }, 900);
+      els.homeLightBtn.classList.add("tapped");
+      if (lightMatchCompleted) {
+        resetLightMatchBoard();
+        els.homeLightStatus.textContent = t("Move Still care to Salah.", "حرّكي الاهتمام إلى الصلاة.");
+      } else {
+        els.homeLightStatus.textContent = t("Slide blocks into the open space. Guide Still care to Salah.", "حرّكي الكتل إلى المساحة المفتوحة. وجّهي الاهتمام إلى الصلاة.");
+      }
     }
 
     function bindEvents() {
+      els.homeLightBtn.addEventListener("contextmenu", (event) => event.preventDefault());
       els.homeLightBtn.addEventListener("click", tapHomeLight);
-      els.homeLightBtn.addEventListener("pointerdown", startHomeLightHold);
-      els.homeLightBtn.addEventListener("pointerup", endHomeLightHold);
-      els.homeLightBtn.addEventListener("pointerleave", endHomeLightHold);
-      els.homeLightBtn.addEventListener("pointercancel", endHomeLightHold);
 
       els.quickMonthBtn.addEventListener("click", () => {
         state.ui.monthCursor = todayKey().slice(0, 7);
@@ -3042,6 +3335,7 @@ ${ar.brand}`,
       applyLanguageDirection();
       applyLocalizedStaticText();
       renderToday();
+      renderLightMatchBoard();
       renderDetail();
       renderMonth();
       renderSettings();
