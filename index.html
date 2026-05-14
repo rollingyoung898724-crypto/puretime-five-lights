@@ -1087,14 +1087,22 @@
         margin-bottom: 10px;
       }
       .light-match-board {
-        width: min(94vw, 352px);
-        gap: 7px;
-        margin-top: 14px;
+        width: 100%;
+        max-width: 312px;
+        gap: 6px;
+        margin: 14px auto 0;
+      }
+      .home-light-gate .small-note {
+        max-width: 310px;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 0.92rem;
+        line-height: 1.5;
       }
       .space-block {
-        min-height: 56px;
+        min-height: 52px;
         border-radius: 14px;
-        padding: 6px 4px;
+        padding: 6px 3px;
       }
       .space-block .block-icon {
         width: 17px;
@@ -1106,11 +1114,22 @@
         line-height: 1.05;
       }
       .space-progress-row {
-        width: min(94vw, 352px);
+        width: 100%;
+        max-width: 312px;
         gap: 6px;
       }
       .home-light-title { font-size: 1rem; }
       .home-light-status { font-size: 0.9rem; }
+    }
+
+
+    @media (max-width: 380px) {
+      .home-light-gate { padding: 18px 8px; }
+      .light-match-board { max-width: 286px; gap: 5px; }
+      .space-block { min-height: 48px; border-radius: 12px; }
+      .space-block .block-icon { width: 15px; height: 15px; }
+      .space-block .block-label { font-size: 0.52rem; }
+      .home-light-gate .small-note { font-size: 0.86rem; }
     }
 
     @media (max-width: 768px) {
