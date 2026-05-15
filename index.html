@@ -736,6 +736,39 @@
       direction: ltr;
     }
 
+
+
+    .sound-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .sound-toggle {
+      appearance: none;
+      border: 1px solid rgba(231,201,138,0.20);
+      background: rgba(255,255,255,0.035);
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sound-toggle:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .sound-toggle.active {
+      color: #fff2d0;
+      border-color: rgba(231,201,138,0.38);
+      background: rgba(231,201,138,0.12);
+    }
+
     .space-block {
       appearance: none;
       border: 1px solid rgba(255,255,255,0.09);
@@ -748,6 +781,8 @@
       place-items: center;
       gap: 4px;
       background: rgba(255,255,255,0.045);
+      position: relative;
+      overflow: hidden;
       transition: transform 180ms ease, opacity 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
       -webkit-tap-highlight-color: transparent;
       font: inherit;
@@ -798,14 +833,19 @@
       background: radial-gradient(circle at 30% 25%, rgba(145,151,166,0.24), rgba(145,151,166,0.10) 46%, rgba(255,255,255,0.035));
     }
 
-    .space-block.kind-quiet {
-      border-color: rgba(157,199,170,0.34);
-      background: radial-gradient(circle at 30% 25%, rgba(157,199,170,0.24), rgba(157,199,170,0.10) 46%, rgba(255,255,255,0.035));
+    .space-block.kind-distracted {
+      border-color: rgba(121,173,190,0.34);
+      background: radial-gradient(circle at 30% 25%, rgba(121,173,190,0.24), rgba(121,173,190,0.10) 46%, rgba(255,255,255,0.035));
     }
 
-    .space-block.kind-return {
-      border-color: rgba(231,201,138,0.34);
-      background: radial-gradient(circle at 30% 25%, rgba(231,201,138,0.24), rgba(231,201,138,0.11) 46%, rgba(255,255,255,0.035));
+    .space-block.kind-sleep {
+      border-color: rgba(128,137,178,0.34);
+      background: radial-gradient(circle at 30% 25%, rgba(128,137,178,0.24), rgba(128,137,178,0.10) 46%, rgba(255,255,255,0.035));
+    }
+
+    .space-block.kind-work {
+      border-color: rgba(188,148,104,0.36);
+      background: radial-gradient(circle at 30% 25%, rgba(188,148,104,0.24), rgba(188,148,104,0.10) 46%, rgba(255,255,255,0.035));
     }
 
     .space-block.kind-light {
@@ -819,10 +859,11 @@
     .space-block.kind-delay .block-icon { background: rgba(177,151,218,0.84); box-shadow: 0 0 14px rgba(177,151,218,0.24); }
     .space-block.kind-shame .block-icon { background: rgba(216,140,140,0.84); box-shadow: 0 0 14px rgba(216,140,140,0.24); }
     .space-block.kind-heavy .block-icon { background: rgba(145,151,166,0.86); box-shadow: 0 0 14px rgba(145,151,166,0.22); }
-    .space-block.kind-quiet .block-icon { background: rgba(157,199,170,0.84); box-shadow: 0 0 14px rgba(157,199,170,0.24); }
+    .space-block.kind-distracted .block-icon { background: rgba(121,173,190,0.84); box-shadow: 0 0 14px rgba(121,173,190,0.24); }
+    .space-block.kind-sleep .block-icon { background: rgba(128,137,178,0.84); box-shadow: 0 0 14px rgba(128,137,178,0.24); }
+    .space-block.kind-work .block-icon { background: rgba(188,148,104,0.84); box-shadow: 0 0 14px rgba(188,148,104,0.24); }
 
-    .space-block.kind-light .block-icon,
-    .space-block.kind-return .block-icon {
+    .space-block.kind-light .block-icon {
       clip-path: polygon(50% 0%, 61% 29%, 92% 8%, 71% 39%, 100% 50%, 71% 61%, 92% 92%, 61% 71%, 50% 100%, 39% 71%, 8% 92%, 29% 61%, 0% 50%, 29% 39%, 8% 8%, 39% 29%);
       background: rgba(231,201,138,0.82);
       box-shadow: 0 0 18px rgba(231,201,138,0.30);
@@ -851,17 +892,47 @@
     }
 
     .space-block.target-space {
-      border-color: rgba(231,201,138,0.58);
-      box-shadow: inset 0 0 0 1px rgba(231,201,138,0.18), 0 0 18px rgba(231,201,138,0.12);
+      border-color: rgba(231,201,138,0.86);
+      border-width: 2px;
+      box-shadow:
+        inset 0 0 0 1px rgba(231,201,138,0.26),
+        0 0 24px rgba(231,201,138,0.20);
       background:
-        radial-gradient(circle at 50% 45%, rgba(231,201,138,0.22), transparent 56%),
-        rgba(255,255,255,0.035);
+        radial-gradient(circle at 50% 35%, rgba(255,246,220,0.26), transparent 36%),
+        radial-gradient(circle at 50% 62%, rgba(231,201,138,0.26), transparent 58%),
+        rgba(255,255,255,0.038);
+    }
+
+    .space-block.target-space .block-label {
+      color: #fff2d0;
+      font-weight: 800;
+    }
+
+    .space-block.target-space::after {
+      content: attr(data-target-label);
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 5px;
+      color: rgba(255,242,208,0.92);
+      font-size: 0.56rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-align: center;
+      pointer-events: none;
     }
 
     .space-block.kind-light.target-space {
       background:
-        radial-gradient(circle at 50% 45%, rgba(255,246,220,0.32), rgba(231,201,138,0.18) 48%, rgba(255,255,255,0.04));
-      box-shadow: 0 0 28px rgba(231,201,138,0.28), inset 0 0 0 1px rgba(231,201,138,0.22);
+        radial-gradient(circle at 50% 35%, rgba(255,250,232,0.48), rgba(231,201,138,0.24) 48%, rgba(255,255,255,0.05));
+      box-shadow: 0 0 34px rgba(231,201,138,0.42), inset 0 0 0 1px rgba(231,201,138,0.30);
+      animation: targetGlow 900ms ease both;
+    }
+
+    @keyframes targetGlow {
+      0% { transform: scale(1); filter: brightness(1); }
+      45% { transform: scale(1.045); filter: brightness(1.18); }
+      100% { transform: scale(1.02); filter: brightness(1.08); }
     }
 
     .space-block.empty-space .block-icon {
@@ -1198,14 +1269,17 @@
         </div>
 
         <div class="home-light-gate">
-          <button class="home-light-btn" id="homeLightBtn" type="button" aria-label="Guide Still care">
+          <button class="home-light-btn" id="homeLightBtn" type="button" aria-label="Make a Little Path Back">
             <span class="home-light-star" aria-hidden="true"></span>
           </button>
-          <div class="home-light-title" id="homeLightTitle">Guide Still care</div>
-          <div class="small-note" id="homeLightSub">Slide blocks into the open space. Bring Still care to Salah.</div>
+          <div class="home-light-title" id="homeLightTitle">Make a Little Path Back</div>
+          <div class="small-note" id="homeLightSub">Slide the blocks. Guide “Still care” back to Salah.</div>
           <div class="home-light-status" id="homeLightStatus"></div>
           <div class="light-match-board" id="lightMatchBoard" aria-label="Make a little space board"></div>
           <div class="space-progress-row" id="lightMatchProgress" aria-hidden="true"></div>
+          <div class="sound-row">
+            <button class="sound-toggle" id="quietSoundToggle" type="button">Quiet sound: Off</button>
+          </div>
         </div>
 
         <div style="height:18px;"></div>
@@ -1970,6 +2044,7 @@
       homeLightStatus: document.getElementById("homeLightStatus"),
       lightMatchBoard: document.getElementById("lightMatchBoard"),
       lightMatchProgress: document.getElementById("lightMatchProgress"),
+      quietSoundToggle: document.getElementById("quietSoundToggle"),
       quickMonthBtn: document.getElementById("quickMonthBtn"),
       todayReflectionBtn: document.getElementById("todayReflectionBtn"),
       todayPositioning: document.getElementById("todayPositioning"),
@@ -2471,12 +2546,13 @@ ${ar.brand}`,
       }
       els.todayPrayerNames.textContent = "Fajr · Dhuhr · Asr · Maghrib · Isha";
       els.todayProgressFill.style.width = `${progressPercent(day)}%`;
-      els.homeLightBtn.setAttribute("aria-label", t("Make a little space", "افسحي مساحة صغيرة"));
-      els.homeLightTitle.textContent = t("Guide Still care", "وجّهي ما زلتُ أهتم");
-      els.homeLightSub.textContent = t("Slide blocks into the open space. Bring Still care to Salah.", "حرّكي المربعات نحو المساحة الفارغة، وأوصلي «ما زلتُ أهتم» إلى الصلاة.");
+      els.homeLightBtn.setAttribute("aria-label", t("Make a Little Path Back", "افسحي طريقًا صغيرًا للعودة"));
+      els.homeLightTitle.textContent = t("Make a Little Path Back", "افسحي طريقًا صغيرًا للعودة");
+      els.homeLightSub.textContent = t("Slide the blocks. Guide “Still care” back to Salah.", "حرّكي المربعات. وجّهي «ما زلتُ أهتم» نحو الصلاة.");
       els.homeLightStatus.textContent = lightMatchCompleted
-        ? t("A little path is open. Choose one light below.", "انفتح طريق صغير. اختاري نورًا واحدًا بالأسفل.")
+        ? t("You made a little path back. Now choose one light — no pressure.", "لقد فتحتِ طريقًا صغيرًا للعودة. اختاري نورًا واحدًا الآن — بلا ضغط.")
         : t("Move Still care to Salah.", "حرّكي «ما زلتُ أهتم» إلى الصلاة.");
+      renderQuietSoundToggle();
       els.quickMonthBtn.textContent = "Month";
       els.todayReflectionBtn.textContent = t("Reflection & return line", "تأمل وعبارة عودة");
       els.todayPositioning.textContent = "Not a scorecard. Not a pressure tool. Just a gentle place to return.";
@@ -3075,6 +3151,73 @@ ${ar.brand}`,
       if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
+
+    let quietSoundEnabled = false;
+    let quietAudioContext = null;
+
+    function getQuietAudioContext() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return null;
+      if (!quietAudioContext) quietAudioContext = new AudioContextClass();
+      if (quietAudioContext.state === "suspended") quietAudioContext.resume().catch(() => {});
+      return quietAudioContext;
+    }
+
+    function playSoftTone(type = "tap") {
+      if (!quietSoundEnabled) return;
+      const ctx = getQuietAudioContext();
+      if (!ctx) return;
+
+      const now = ctx.currentTime;
+      const gain = ctx.createGain();
+      const osc = ctx.createOscillator();
+      const secondGain = ctx.createGain();
+      const secondOsc = ctx.createOscillator();
+
+      const settings = {
+        tap: { f1: 420, f2: 630, peak: 0.035, length: 0.16 },
+        nudge: { f1: 260, f2: 390, peak: 0.025, length: 0.13 },
+        complete: { f1: 520, f2: 780, peak: 0.045, length: 0.42 }
+      }[type] || { f1: 420, f2: 630, peak: 0.03, length: 0.15 };
+
+      osc.type = "sine";
+      secondOsc.type = "sine";
+      osc.frequency.setValueAtTime(settings.f1, now);
+      secondOsc.frequency.setValueAtTime(settings.f2, now + 0.035);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(settings.peak, now + 0.035);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + settings.length);
+
+      secondGain.gain.setValueAtTime(0.0001, now + 0.035);
+      secondGain.gain.exponentialRampToValueAtTime(settings.peak * 0.72, now + 0.075);
+      secondGain.gain.exponentialRampToValueAtTime(0.0001, now + settings.length + 0.05);
+
+      osc.connect(gain).connect(ctx.destination);
+      secondOsc.connect(secondGain).connect(ctx.destination);
+      osc.start(now);
+      secondOsc.start(now + 0.035);
+      osc.stop(now + settings.length + 0.08);
+      secondOsc.stop(now + settings.length + 0.12);
+    }
+
+    function renderQuietSoundToggle() {
+      if (!els.quietSoundToggle) return;
+      els.quietSoundToggle.classList.toggle("active", quietSoundEnabled);
+      els.quietSoundToggle.textContent = quietSoundEnabled
+        ? t("Quiet sound: On", "الصوت الهادئ: يعمل")
+        : t("Quiet sound: Off", "الصوت الهادئ: متوقف");
+    }
+
+    function toggleQuietSound() {
+      quietSoundEnabled = !quietSoundEnabled;
+      if (quietSoundEnabled) {
+        getQuietAudioContext();
+        playSoftTone("tap");
+      }
+      renderQuietSoundToggle();
+    }
+
     const LIGHT_MATCH_COLUMNS = 4;
     const LIGHT_MATCH_TARGET_INDEX = 15;
     const LIGHT_MATCH_START_LIGHT_INDEX = 0;
@@ -3085,15 +3228,16 @@ ${ar.brand}`,
       delay: { label: "Delay", ar: "تأجيل", className: "kind-delay" },
       shame: { label: "Shame", ar: "ثقل الذنب", className: "kind-shame" },
       heavy: { label: "Heavy", ar: "ثِقَل", className: "kind-heavy" },
-      quiet: { label: "Quiet", ar: "سكينة", className: "kind-quiet" },
-      light: { label: "Still care", ar: "ما زلتُ أهتم", className: "kind-light" },
-      return: { label: "Return", ar: "عودة", className: "kind-return" }
+      distracted: { label: "Distracted", ar: "تشتّت", className: "kind-distracted" },
+      sleep: { label: "Sleep", ar: "نوم", className: "kind-sleep" },
+      work: { label: "Work", ar: "عمل", className: "kind-work" },
+      light: { label: "Still care", ar: "ما زلتُ أهتم", className: "kind-light" }
     };
     const LIGHT_MATCH_START = [
       "light", "tired", "busy", "delay",
-      "heavy", "shame", "quiet", "return",
-      "busy", "delay", "heavy", "tired",
-      "shame", "quiet", null, "return"
+      "heavy", "shame", "distracted", "work",
+      "busy", "sleep", "heavy", "tired",
+      "shame", "delay", "work", null
     ];
     let lightMatchTiles = LIGHT_MATCH_START.map((type, index) => ({ id: index, type, moved: false }));
     let lightMatchMoves = 0;
@@ -3165,8 +3309,10 @@ ${ar.brand}`,
           ? `space-block ${info.className} ${isTarget ? "target-space" : ""} ${tile.moved ? "moved" : ""} ${lightMatchSelected === index ? "moved" : ""}`
           : `space-block empty-space ${isTarget ? "target-space" : ""}`;
         btn.setAttribute("aria-label", isTarget && !tile.type ? t("Salah target", "موضع الصلاة") : lightMatchLabel(tile.type));
+        if (isTarget) btn.setAttribute("data-target-label", t("Salah", "الصلاة"));
         btn.disabled = !tile.type || lightMatchCompleted;
-        btn.innerHTML = `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${isTarget && !tile.type ? t("Salah", "الصلاة") : lightMatchLabel(tile.type)}</span>`;
+        const visibleLabel = isTarget && !tile.type ? "" : lightMatchLabel(tile.type);
+        btn.innerHTML = `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${visibleLabel}</span>`;
         btn.addEventListener("click", () => slideSpaceBlock(index));
         els.lightMatchBoard.appendChild(btn);
       });
@@ -3195,7 +3341,8 @@ ${ar.brand}`,
       day.lastUpdated = new Date().toISOString();
       saveState();
       renderLightMatchBoard();
-      els.homeLightStatus.textContent = t("A little path is open. Choose one light below.", "انفتح طريق صغير. اختاري نورًا واحدًا في الأسفل.");
+      playSoftTone("complete");
+      els.homeLightStatus.textContent = t("You made a little path back. Now choose one light — no pressure.", "لقد فتحتِ طريقًا صغيرًا للعودة. اختاري نورًا واحدًا الآن — بلا ضغط.");
     }
 
     function slideSpaceBlock(index) {
@@ -3207,6 +3354,7 @@ ${ar.brand}`,
         lightMatchSelected = index;
         renderLightMatchBoard();
         els.homeLightStatus.textContent = t("Slide a block next to the open space.", "حرّكي مربعًا ملاصقًا للمساحة الفارغة.");
+        playSoftTone("nudge");
         return;
       }
 
@@ -3215,6 +3363,7 @@ ${ar.brand}`,
       lightMatchTiles[index] = { id: index, type: null, moved: false };
       lightMatchSelected = emptyIndex;
       lightMatchMoves += 1;
+      playSoftTone("tap");
       const lightIndex = lightTileIndex();
       const distance = lightIndex >= 0 ? manhattanDistance(lightIndex, LIGHT_MATCH_TARGET_INDEX) : LIGHT_MATCH_START_DISTANCE;
       const progress = Math.max(0, LIGHT_MATCH_START_DISTANCE - distance) / LIGHT_MATCH_START_DISTANCE;
@@ -3224,9 +3373,9 @@ ${ar.brand}`,
       if (lightIndex === LIGHT_MATCH_TARGET_INDEX) {
         setTimeout(finishLightMatch, 220);
       } else if (movingTile.type === "light") {
-        els.homeLightStatus.textContent = t("Good. Guide Still care toward Salah.", "جيد. وجّهي «ما زلتُ أهتم» نحو الصلاة.");
+        els.homeLightStatus.textContent = t("Good. Keep guiding Still care back to Salah.", "جيد. واصلي توجيه «ما زلتُ أهتم» نحو الصلاة.");
       } else {
-        els.homeLightStatus.textContent = t("Make room for Still care to move.", "افسحي طريقًا صغيرًا ليتحرك «ما زلتُ أهتم».");
+        els.homeLightStatus.textContent = t("Make room for Still care to move.", "افسحي مساحة ليتحرك «ما زلتُ أهتم».");
       }
     }
 
@@ -3240,13 +3389,16 @@ ${ar.brand}`,
         resetLightMatchBoard();
         els.homeLightStatus.textContent = t("Move Still care to Salah.", "حرّكي «ما زلتُ أهتم» إلى الصلاة.");
       } else {
-        els.homeLightStatus.textContent = t("Slide blocks into the open space. Guide Still care to Salah.", "حرّكي المربعات نحو المساحة الفارغة، ووجّهي «ما زلتُ أهتم» إلى الصلاة.");
+        els.homeLightStatus.textContent = t("Slide the blocks. Guide “Still care” back to Salah.", "حرّكي المربعات. وجّهي «ما زلتُ أهتم» نحو الصلاة.");
       }
     }
 
     function bindEvents() {
       els.homeLightBtn.addEventListener("contextmenu", (event) => event.preventDefault());
       els.homeLightBtn.addEventListener("click", tapHomeLight);
+      if (els.quietSoundToggle) {
+        els.quietSoundToggle.addEventListener("click", toggleQuietSound);
+      }
 
       els.quickMonthBtn.addEventListener("click", () => {
         state.ui.monthCursor = todayKey().slice(0, 7);
