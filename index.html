@@ -737,6 +737,87 @@
     }
 
 
+    .light-match-board.success-collapse {
+      pointer-events: none;
+      min-height: inherit;
+    }
+
+    .light-match-board.success-collapse .space-block:not(.kind-light):not(.fixed-target-space) {
+      animation: blockFallAway 720ms cubic-bezier(.32,.02,.32,1) forwards;
+    }
+
+    .light-match-board.success-collapse .space-block.kind-light {
+      z-index: 2;
+      animation: stillCareBloom 900ms ease forwards;
+    }
+
+    .path-back-success-words {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 4;
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+      animation: successWordsIn 780ms ease 560ms forwards;
+    }
+
+    .path-back-success-words-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 18px 16px;
+      border-radius: 24px;
+      border: 1px solid rgba(231,201,138,0.42);
+      background:
+        radial-gradient(circle at 50% 25%, rgba(255,248,226,0.20), transparent 54%),
+        rgba(15,18,32,0.82);
+      box-shadow: 0 0 42px rgba(231,201,138,0.24), inset 0 0 0 1px rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .path-back-success-word {
+      color: #f6d891;
+      font-size: clamp(1.45rem, 6vw, 2.55rem);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      text-shadow: 0 0 18px rgba(231,201,138,0.32);
+      white-space: nowrap;
+    }
+
+    .path-back-success-spark {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      clip-path: polygon(50% 0%, 61% 29%, 92% 8%, 71% 39%, 100% 50%, 71% 61%, 92% 92%, 61% 71%, 50% 100%, 39% 71%, 8% 92%, 29% 61%, 0% 50%, 29% 39%, 8% 8%, 39% 29%);
+      background: rgba(231,201,138,0.95);
+      box-shadow: 0 0 18px rgba(231,201,138,0.46);
+    }
+
+    @keyframes blockFallAway {
+      0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); filter: blur(0); }
+      35% { opacity: 0.72; transform: translateY(10px) rotate(2deg) scale(0.98); }
+      100% { opacity: 0; transform: translateY(118px) rotate(8deg) scale(0.72); filter: blur(2px); }
+    }
+
+    @keyframes stillCareBloom {
+      0% { transform: scale(1); opacity: 1; }
+      44% { transform: scale(1.08); opacity: 1; filter: brightness(1.18); }
+      100% { transform: scale(0.86); opacity: 0; filter: brightness(1.28); }
+    }
+
+    @keyframes successWordsIn {
+      0% { opacity: 0; transform: translateY(8px) scale(0.96); }
+      70% { opacity: 1; transform: translateY(0) scale(1.03); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+
 
     .sound-row {
       display: flex;
@@ -909,17 +990,14 @@
     }
 
     .space-block.target-space::after {
-      content: attr(data-target-label);
-      position: absolute;
-      left: 6px;
-      right: 6px;
-      bottom: 5px;
-      color: rgba(255,242,208,0.92);
-      font-size: 0.56rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      text-align: center;
-      pointer-events: none;
+      content: none;
+    }
+
+    .space-block.target-space .block-icon {
+      clip-path: polygon(50% 0%, 61% 29%, 92% 8%, 71% 39%, 100% 50%, 71% 61%, 92% 92%, 61% 71%, 50% 100%, 39% 71%, 8% 92%, 29% 61%, 0% 50%, 29% 39%, 8% 8%, 39% 29%);
+      border-radius: 0;
+      background: rgba(231,201,138,0.82);
+      box-shadow: 0 0 20px rgba(231,201,138,0.34);
     }
 
     .space-block.kind-light.target-space {
@@ -935,10 +1013,9 @@
       100% { transform: scale(1.02); filter: brightness(1.08); }
     }
 
-    .space-block.empty-space .block-icon {
-      clip-path: polygon(50% 0%, 61% 29%, 92% 8%, 71% 39%, 100% 50%, 71% 61%, 92% 92%, 61% 71%, 50% 100%, 39% 71%, 8% 92%, 29% 61%, 0% 50%, 29% 39%, 8% 8%, 39% 29%);
-      background: rgba(231,201,138,0.36);
-      box-shadow: 0 0 18px rgba(231,201,138,0.18);
+    .space-block.empty-space .block-icon,
+    .space-block.empty-space .block-label {
+      display: none;
     }
 
     .space-progress-row {
@@ -990,6 +1067,36 @@
     }
 
     .preview-light { cursor: pointer; }
+
+
+    .still-care-on-salah {
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255,248,225,0.72), rgba(231,201,138,0.26) 42%, rgba(255,255,255,0.04) 74%),
+        linear-gradient(180deg, rgba(231,201,138,0.34), rgba(231,201,138,0.12));
+      border-color: rgba(231,201,138,0.74) !important;
+      box-shadow: 0 0 32px rgba(231,201,138,0.34), inset 0 0 20px rgba(255,248,225,0.24);
+      color: #fff5de;
+      animation: salahArrivalGlow 760ms ease-out both;
+    }
+
+    .still-care-on-salah .block-label {
+      font-size: 0.84rem;
+      color: #fff7df;
+    }
+
+    .still-care-on-salah .target-inline-label {
+      display: block;
+      margin-top: 3px;
+      font-size: 0.68rem;
+      color: var(--gold);
+      letter-spacing: 0.03em;
+    }
+
+    @keyframes salahArrivalGlow {
+      0% { transform: scale(0.94); filter: brightness(1); }
+      55% { transform: scale(1.05); filter: brightness(1.18); }
+      100% { transform: scale(1); filter: brightness(1.08); }
+    }
 
     @keyframes sparkFade {
       0% { opacity: 0.95; transform: scale(0.7); }
@@ -3221,7 +3328,8 @@ ${ar.brand}`,
     const LIGHT_MATCH_COLUMNS = 4;
     const LIGHT_MATCH_TARGET_INDEX = 15;
     const LIGHT_MATCH_START_LIGHT_INDEX = 0;
-    const LIGHT_MATCH_START_DISTANCE = 6;
+    const LIGHT_MATCH_START_EMPTY_INDEX = 1;
+    const LIGHT_MATCH_START_DISTANCE = 5;
     const LIGHT_MATCH_TYPES = {
       tired: { label: "Tired", ar: "تعب", className: "kind-tired" },
       busy: { label: "Busy", ar: "انشغال", className: "kind-busy" },
@@ -3234,10 +3342,10 @@ ${ar.brand}`,
       light: { label: "Still care", ar: "ما زلتُ أهتم", className: "kind-light" }
     };
     const LIGHT_MATCH_START = [
-      "light", "tired", "busy", "delay",
-      "heavy", "shame", "distracted", "work",
-      "busy", "sleep", "heavy", "tired",
-      "shame", "delay", "work", null
+      "light", null, "tired", "busy",
+      "delay", "heavy", "shame", "distracted",
+      "work", "busy", "sleep", "heavy",
+      "tired", "shame", "work", "target"
     ];
     let lightMatchTiles = LIGHT_MATCH_START.map((type, index) => ({ id: index, type, moved: false }));
     let lightMatchMoves = 0;
@@ -3288,7 +3396,8 @@ ${ar.brand}`,
       els.lightMatchProgress.innerHTML = "";
       els.lightMatchProgress.className = "space-progress-row";
       const lightIndex = lightTileIndex();
-      const distance = lightIndex >= 0 ? manhattanDistance(lightIndex, LIGHT_MATCH_TARGET_INDEX) : LIGHT_MATCH_START_DISTANCE;
+      const rawDistance = lightIndex >= 0 ? manhattanDistance(lightIndex, LIGHT_MATCH_TARGET_INDEX) : LIGHT_MATCH_START_DISTANCE + 1;
+      const distance = Math.max(0, rawDistance - 1);
       const progress = Math.max(0, LIGHT_MATCH_START_DISTANCE - distance);
       for (let i = 0; i < LIGHT_MATCH_START_DISTANCE; i += 1) {
         const dot = document.createElement("span");
@@ -3300,22 +3409,64 @@ ${ar.brand}`,
     function renderLightMatchBoard() {
       if (!els.lightMatchBoard) return;
       els.lightMatchBoard.innerHTML = "";
+      els.lightMatchBoard.className = `light-match-board ${lightMatchCompleted ? "success-collapse" : ""}`;
       lightMatchTiles.forEach((tile, index) => {
-        const info = tile.type ? (LIGHT_MATCH_TYPES[tile.type] || LIGHT_MATCH_TYPES.light) : null;
+        const isTarget = index === LIGHT_MATCH_TARGET_INDEX;
+        const isFixedTarget = isTarget || tile.type === "target";
+        const info = tile.type && tile.type !== "target" ? (LIGHT_MATCH_TYPES[tile.type] || LIGHT_MATCH_TYPES.light) : null;
         const btn = document.createElement("button");
         btn.type = "button";
-        const isTarget = index === LIGHT_MATCH_TARGET_INDEX;
+
+        if (isTarget) {
+          const isStillCareOnSalah = tile.type === "light";
+          btn.className = isStillCareOnSalah
+            ? "space-block fixed-target-space target-space still-care-on-salah"
+            : "space-block fixed-target-space target-space";
+          btn.setAttribute("aria-label", isStillCareOnSalah ? t("Still care reached Salah", "وصلت ما زلتُ أهتم إلى الصلاة") : t("Salah target", "موضع الصلاة"));
+          btn.setAttribute("data-target-label", t("Salah", "الصلاة"));
+          btn.disabled = true;
+          btn.innerHTML = isStillCareOnSalah
+            ? `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${lightMatchLabel("light")}</span>`
+            : `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${t("Salah", "الصلاة")}</span>`;
+          els.lightMatchBoard.appendChild(btn);
+          return;
+        }
+
+        if (tile.type === "target") {
+          btn.className = "space-block fixed-target-space target-space";
+          btn.setAttribute("aria-label", t("Salah target", "موضع الصلاة"));
+          btn.setAttribute("data-target-label", t("Salah", "الصلاة"));
+          btn.disabled = true;
+          btn.innerHTML = `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${t("Salah", "الصلاة")}</span>`;
+          els.lightMatchBoard.appendChild(btn);
+          return;
+        }
+
         btn.className = tile.type
-          ? `space-block ${info.className} ${isTarget ? "target-space" : ""} ${tile.moved ? "moved" : ""} ${lightMatchSelected === index ? "moved" : ""}`
-          : `space-block empty-space ${isTarget ? "target-space" : ""}`;
-        btn.setAttribute("aria-label", isTarget && !tile.type ? t("Salah target", "موضع الصلاة") : lightMatchLabel(tile.type));
-        if (isTarget) btn.setAttribute("data-target-label", t("Salah", "الصلاة"));
+          ? `space-block ${info.className} ${tile.moved ? "moved" : ""} ${lightMatchSelected === index ? "moved" : ""}`
+          : "space-block empty-space";
+        if (lightMatchCompleted && tile.type && tile.type !== "light") {
+          btn.style.animationDelay = `${(index % LIGHT_MATCH_COLUMNS) * 42 + Math.floor(index / LIGHT_MATCH_COLUMNS) * 28}ms`;
+        }
+        btn.setAttribute("aria-label", tile.type ? lightMatchLabel(tile.type) : t("Open space", "المساحة الفارغة"));
         btn.disabled = !tile.type || lightMatchCompleted;
-        const visibleLabel = isTarget && !tile.type ? "" : lightMatchLabel(tile.type);
-        btn.innerHTML = `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${visibleLabel}</span>`;
+        const visibleLabel = tile.type ? lightMatchLabel(tile.type) : "";
+        btn.innerHTML = tile.type
+          ? `<span class="block-icon" aria-hidden="true"></span><span class="block-label">${visibleLabel}</span>`
+          : "";
         btn.addEventListener("click", () => slideSpaceBlock(index));
         els.lightMatchBoard.appendChild(btn);
       });
+
+      if (lightMatchCompleted) {
+        const successWords = document.createElement("div");
+        successWords.className = "path-back-success-words";
+        successWords.innerHTML = langMode() === "ar"
+          ? `<div class="path-back-success-words-inner"><span class="path-back-success-word">ما زلتُ</span><span class="path-back-success-word">أهتم</span><span class="path-back-success-spark" aria-hidden="true"></span><span class="path-back-success-word">الصلاة</span></div>`
+          : `<div class="path-back-success-words-inner"><span class="path-back-success-word">Still</span><span class="path-back-success-word">care</span><span class="path-back-success-spark" aria-hidden="true"></span><span class="path-back-success-word">Salah</span></div>`;
+        els.lightMatchBoard.appendChild(successWords);
+      }
+
       renderLightMatchProgress();
     }
 
@@ -3329,6 +3480,10 @@ ${ar.brand}`,
       const br = Math.floor(b / LIGHT_MATCH_COLUMNS);
       const bc = b % LIGHT_MATCH_COLUMNS;
       return Math.abs(ar - br) + Math.abs(ac - bc) === 1;
+    }
+
+    function canStillCareReachSalah(index) {
+      return index >= 0 && areAdjacent(index, LIGHT_MATCH_TARGET_INDEX);
     }
 
     function finishLightMatch() {
@@ -3348,7 +3503,17 @@ ${ar.brand}`,
     function slideSpaceBlock(index) {
       if (lightMatchCompleted) return;
       const emptyIndex = emptySpaceIndex();
-      if (emptyIndex < 0 || !lightMatchTiles[index]?.type) return;
+      if (emptyIndex < 0 || !lightMatchTiles[index]?.type || lightMatchTiles[index]?.type === "target") return;
+
+      if (lightMatchTiles[index].type === "light" && canStillCareReachSalah(index)) {
+        lightMatchTiles[LIGHT_MATCH_TARGET_INDEX] = { ...lightMatchTiles[index], moved: true };
+        lightMatchTiles[index] = { id: index, type: null, moved: false };
+        lightMatchSelected = LIGHT_MATCH_TARGET_INDEX;
+        playSoftTone("tap");
+        renderLightMatchBoard();
+        setTimeout(finishLightMatch, 180);
+        return;
+      }
 
       if (!areAdjacent(index, emptyIndex)) {
         lightMatchSelected = index;
@@ -3365,13 +3530,14 @@ ${ar.brand}`,
       lightMatchMoves += 1;
       playSoftTone("tap");
       const lightIndex = lightTileIndex();
-      const distance = lightIndex >= 0 ? manhattanDistance(lightIndex, LIGHT_MATCH_TARGET_INDEX) : LIGHT_MATCH_START_DISTANCE;
+      const rawDistance = lightIndex >= 0 ? manhattanDistance(lightIndex, LIGHT_MATCH_TARGET_INDEX) : LIGHT_MATCH_START_DISTANCE + 1;
+      const distance = Math.max(0, rawDistance - 1);
       const progress = Math.max(0, LIGHT_MATCH_START_DISTANCE - distance) / LIGHT_MATCH_START_DISTANCE;
       setHomeLightProgress(progress);
       renderLightMatchBoard();
 
-      if (lightIndex === LIGHT_MATCH_TARGET_INDEX) {
-        setTimeout(finishLightMatch, 220);
+      if (movingTile.type === "light" && canStillCareReachSalah(lightIndex)) {
+        els.homeLightStatus.textContent = t("Still care is beside Salah. Tap it into Salah.", "أصبحت «ما زلتُ أهتم» بجانب الصلاة. المسِيها لتصل إلى الصلاة.");
       } else if (movingTile.type === "light") {
         els.homeLightStatus.textContent = t("Good. Keep guiding Still care back to Salah.", "جيد. واصلي توجيه «ما زلتُ أهتم» نحو الصلاة.");
       } else {
