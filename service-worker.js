@@ -1,22 +1,20 @@
 const CACHE_PREFIX = 'return-system-';
-const CACHE_NAME = `${CACHE_PREFIX}v2`;
+const CACHE_NAME = `${CACHE_PREFIX}v3`;
 const APP_SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/service-worker.js',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png'
 ];
-const APP_SHELL_URLS = APP_SHELL.map(
-  path => new URL(path, self.registration.scope).href
-);
-const OFFLINE_PAGE_URL = new URL('./index.html', self.registration.scope).href;
+const OFFLINE_PAGE_URL = '/index.html';
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(
-        APP_SHELL_URLS.map(url => new Request(url, { cache: 'reload' }))
+        APP_SHELL.map(url => new Request(url, { cache: 'reload' }))
       ))
       .then(() => self.skipWaiting())
   );
@@ -43,33 +41,35 @@ self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
   if (requestUrl.origin !== self.location.origin) return;
 
-  if (event.request.mode === 'navigate') {
-    event.respondWith(networkFirstPage(event.request));
-    return;
-  }
-
-  event.respondWith(cacheFirst(event.request));
+  const updatePromise = fetchAndUpdate(event.request);
+  event.waitUntil(updatePromise.catch(() => undefined));
+  event.respondWith(cacheFirstWithBackgroundUpdate(event.request, updatePromise));
 });
 
-async function networkFirstPage(request) {
+async function cacheFirstWithBackgroundUpdate(request, updatePromise) {
+  const cached = await caches.match(request, {
+    ignoreSearch: request.mode === 'navigate'
+  });
+
+  if (cached) return cached;
+
+  if (request.mode === 'navigate') {
+    const offlinePage = await caches.match(OFFLINE_PAGE_URL);
+    if (offlinePage) return offlinePage;
+  }
+
   try {
-    const response = await fetch(request);
-    if (response && response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      await cache.put(request, response.clone());
-    }
-    return response;
-  } catch (error) {
-    return (await caches.match(request, { ignoreSearch: true }))
-      || (await caches.match(OFFLINE_PAGE_URL));
+    return await updatePromise;
+  } catch {
+    return new Response('Offline', {
+      status: 503,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    });
   }
 }
 
-async function cacheFirst(request) {
-  const cached = await caches.match(request, { ignoreSearch: true });
-  if (cached) return cached;
-
-  const response = await fetch(request);
+async function fetchAndUpdate(request) {
+  const response = await fetch(request, { cache: 'no-cache' });
   if (response && response.ok) {
     const cache = await caches.open(CACHE_NAME);
     await cache.put(request, response.clone());
