@@ -1,0 +1,20 @@
+{
+  "name": "return-system-pwa",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "npx --yes vercel@latest dev",
+    "test": "node --test",
+    "check": "node scripts/check.mjs",
+    "check:deploy": "node scripts/predeploy-check.mjs"
+  },
+  "dependencies": {
+    "@google/genai": "^2.15.0",
+    "@supabase/supabase-js": "^2.111.0",
+    "zod": "^4.4.3"
+  }
+}

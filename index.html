@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Return System</title>
+  <meta name="description" content="A gentle recovery system for Muslims who missed salah and want to return, one small step at a time." />
+  <meta name="theme-color" content="#172b28" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Return" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <style>
+    :root{
+      --bg1:#fbf4e6;
+      --bg2:#d9c7a5;
+      --ink:#272116;
+      --muted:#756b5e;
+      --gold:#d8af50;
+      --gold-deep:#7a5a1f;
+      --green:#315c54;
+      --teal:#174c46;
+      --star-on:#ffd76a;
+      --star-off:#615844;
+      --danger:#9b5d51;
+      --card:rgba(255,255,255,.64);
+    }
+    *{box-sizing:border-box}
+    html{background:#172b28}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,.92), transparent 38%),
+        radial-gradient(circle at 14% 18%, rgba(216,175,80,.18), transparent 20%),
+        radial-gradient(circle at 85% 10%, rgba(49,92,84,.16), transparent 24%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      display:flex;
+      justify-content:center;
+      padding:24px 14px 42px;
+    }
+    .system-start{
+      position:fixed;
+      inset:0;
+      z-index:100;
+      display:grid;
+      place-items:center;
+      padding:28px;
+      color:#fff8df;
+      background:
+        radial-gradient(circle at 50% 35%,rgba(216,175,80,.16),transparent 26%),
+        linear-gradient(160deg,#0e211f,#172f2b 62%,#213a34);
+    }
+    .system-start.is-leaving{animation:pwaSplashExit .25s cubic-bezier(.4,0,.2,1) forwards}
+    .system-start[hidden]{display:none}
+    .system-start-inner{text-align:center;max-width:360px;animation:pwaSplashEnter .42s ease both}
+    .system-mark{
+      width:58px;
+      height:58px;
+      margin:0 auto 22px;
+      background:radial-gradient(circle at 35% 30%,#fff2bd,#d8af50 48%,#9d7226);
+      clip-path:polygon(50% 0%,61% 29%,92% 8%,71% 39%,100% 50%,71% 61%,92% 92%,61% 71%,50% 100%,39% 71%,8% 92%,29% 61%,0% 50%,29% 39%,8% 8%,39% 29%);
+      filter:drop-shadow(0 0 18px rgba(216,175,80,.42));
+      animation:pwaStarBreathe 1.15s .42s ease-in-out infinite;
+    }
+    .system-message{
+      min-height:39px;
+      display:grid;
+      place-items:center;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:25px;
+      line-height:1.35;
+      letter-spacing:.045em;
+      color:#fff3c9;
+      transition:opacity .08s ease,transform .08s ease;
+    }
+    .system-message.is-switching{opacity:0;transform:translateY(4px)}
+    @keyframes pwaSplashExit{
+      0%{opacity:1;visibility:visible}
+      100%{opacity:0;visibility:hidden;pointer-events:none}
+    }
+    @keyframes pwaSplashEnter{
+      0%{opacity:0;transform:translateY(5px) scale(.98)}
+      100%{opacity:1;transform:none}
+    }
+    @keyframes pwaStarBreathe{50%{filter:drop-shadow(0 0 28px rgba(216,175,80,.58));transform:scale(1.04)}}
+    body.first-return-open{overflow:hidden}
+    .first-return{
+      position:fixed;
+      inset:0;
+      z-index:90;
+      min-height:100vh;
+      min-height:100dvh;
+      display:grid;
+      place-items:center;
+      overflow-y:auto;
+      overscroll-behavior:none;
+      padding:max(28px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left));
+      color:#fff8df;
+      background:
+        radial-gradient(circle at 50% 30%,rgba(216,175,80,.13),transparent 25%),
+        radial-gradient(circle at 50% 86%,rgba(49,92,84,.28),transparent 32%),
+        linear-gradient(160deg,#0b1c1a,#142c29 58%,#1d3732);
+    }
+    .first-return[hidden]{display:none}
+    .first-return.is-leaving{animation:firstReturnExit .32s ease forwards}
+    .first-return-inner{width:min(100%,390px);text-align:center}
+    .first-return-star{
+      width:52px;
+      height:52px;
+      margin:0 auto 30px;
+      background:radial-gradient(circle at 35% 30%,#fff2bd,#d8af50 48%,#9d7226);
+      clip-path:polygon(50% 0%,61% 29%,92% 8%,71% 39%,100% 50%,71% 61%,92% 92%,61% 71%,50% 100%,39% 71%,8% 92%,29% 61%,0% 50%,29% 39%,8% 8%,39% 29%);
+      filter:drop-shadow(0 0 22px rgba(216,175,80,.42));
+    }
+    .first-return-step{display:none}
+    .first-return-step.is-active{display:block;animation:firstReturnStepIn .42s ease both}
+    .first-return h2{
+      margin:0;
+      color:#fff3c9;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:clamp(28px,8vw,38px);
+      line-height:1.18;
+      font-weight:500;
+      letter-spacing:.02em;
+    }
+    .first-return h2 span{color:var(--gold)}
+    .first-return-copy{margin:18px auto 0;max-width:320px;color:#d9d3c3;font-size:16px;line-height:1.65}
+    .first-return-actions{margin-top:34px}
+    .first-return .return-primary{
+      width:100%;
+      min-height:52px;
+      color:#172b28;
+      background:linear-gradient(180deg,#e6c56d,#c99b3d);
+      box-shadow:0 12px 30px rgba(0,0,0,.18);
+    }
+    .first-return .return-skip{
+      margin-top:13px;
+      padding:9px;
+      color:#bdb7a6;
+      background:transparent;
+      font-size:12px;
+      font-weight:600;
+    }
+    .return-options{display:grid;gap:10px;margin-top:28px}
+    .first-return .return-option{
+      width:100%;
+      min-height:48px;
+      padding:12px 16px;
+      color:#f5ecd4;
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(216,175,80,.22);
+      text-align:left;
+      font-size:14px;
+      font-weight:650;
+    }
+    .first-return .return-option:focus-visible,.first-return .return-option:hover{outline:0;border-color:rgba(230,197,109,.72);background:rgba(216,175,80,.11)}
+    .return-response{margin-top:20px}
+    .return-response p{margin:7px 0;color:#ddd6c4;font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.55}
+    @keyframes firstReturnStepIn{
+      0%{opacity:0;transform:translateY(10px)}
+      100%{opacity:1;transform:none}
+    }
+    @keyframes firstReturnExit{
+      to{opacity:0;visibility:hidden;pointer-events:none}
+    }
+    .app{width:min(100%,440px)}
+    .eyebrow{text-align:center;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-top:4px}
+    h1{text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:31px;line-height:1.05;margin:10px 0 8px;font-weight:600}
+    .sub{text-align:center;color:var(--muted);font-size:14px;line-height:1.5;margin:0 auto 12px;max-width:370px}
+    .owner-line{display:flex;align-items:center;justify-content:center;gap:7px;margin:0 auto 12px;max-width:370px;font-family:Georgia,"Times New Roman",serif;font-size:20px;color:var(--ink)}
+    .owner-input{width:150px;max-width:48vw;border:0;border-bottom:1.5px solid rgba(122,90,31,.45);background:transparent;padding:4px 5px 3px;text-align:center;font:inherit;color:var(--gold-deep);outline:none;border-radius:0}
+    .owner-input:focus{border-bottom-color:var(--gold-deep)}
+    .owner-input::placeholder{color:#9a8a6e;opacity:.8}
+    .today-date{text-align:center;font-size:13px;color:var(--gold-deep);font-weight:700;margin-bottom:18px}
+    .panel,.calendar-panel{
+      background:var(--card);
+      border:1px solid rgba(128,97,37,.18);
+      border-radius:28px;
+      padding:20px 18px 22px;
+      box-shadow:0 22px 60px rgba(76,57,28,.14);
+      backdrop-filter:blur(8px);
+    }
+    .status-card{
+      margin-bottom:16px;
+      padding:16px;
+      color:#f8f1dd;
+      background:linear-gradient(145deg,rgba(23,76,70,.97),rgba(28,51,47,.97));
+      border:1px solid rgba(216,175,80,.35);
+      border-radius:22px;
+      box-shadow:0 16px 34px rgba(23,50,46,.2);
+    }
+    .status-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#e5c777;font-weight:800}
+    .status-title{margin:4px 0 11px;font-family:Georgia,"Times New Roman",serif;font-size:18px}
+    .status-list{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+    .status-prayer{
+      display:flex;
+      min-width:0;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:9px 3px 8px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;
+      background:rgba(255,255,255,.06);
+      color:#d8d3c4;
+      font-size:10px;
+      font-weight:700;
+    }
+    .status-prayer .status-symbol{display:block;margin-bottom:3px;font-size:18px;color:#9c9a8e;line-height:1}
+    .status-prayer .status-name{display:block;line-height:1.15}
+    .status-prayer .status-caption{display:block;min-height:10px;margin-top:3px;color:#aaa493;font-size:7px;line-height:1;letter-spacing:.04em;font-weight:600}
+    .status-prayer.complete{color:#fff7dd;background:rgba(216,175,80,.11);border-color:rgba(216,175,80,.25)}
+    .status-prayer.complete .status-symbol{color:#ffd76a;text-shadow:0 0 12px rgba(255,215,106,.65)}
+    .status-prayer.complete .status-caption{color:#ddc780}
+    .status-prayer.missed{color:#e4d9bf;background:rgba(177,133,62,.055);border-color:rgba(221,178,91,.48);box-shadow:inset 0 0 0 1px rgba(221,178,91,.08)}
+    .status-prayer.missed .status-symbol{color:#d2ac62;text-shadow:0 0 8px rgba(210,172,98,.18)}
+    .status-prayer.missed .status-caption{color:#c9aa70}
+    .status-message{margin-top:11px;padding-top:11px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:#dfd8c5;text-align:center}
+    .calendar-panel{margin-top:16px}
+    .topstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+    .stat{background:rgba(255,250,240,.82);border:1px solid rgba(185,144,67,.18);border-radius:16px;padding:11px 8px;text-align:center}
+    .stat b{display:block;font-size:19px;font-variant-numeric:tabular-nums}
+    .stat span{font-size:11px;color:var(--muted)}
+    .jar-stage{position:relative;height:390px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;border-radius:22px;background:linear-gradient(rgba(185,144,67,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(185,144,67,.055) 1px,transparent 1px);background-size:24px 24px}
+    .arch{position:absolute;inset:18px 24px 34px;border:1px solid rgba(185,144,67,.18);border-radius:140px 140px 28px 28px;pointer-events:none}
+    .arch:before{content:"۞";position:absolute;top:22px;left:50%;transform:translateX(-50%);color:rgba(185,144,67,.55);font-size:20px}
+    .jar-wrap{position:relative;width:264px;height:330px;z-index:2}
+    .lid{position:absolute;top:20px;left:50%;width:156px;height:34px;transform:translateX(-50%);border:3px solid var(--gold-deep);border-radius:18px 18px 8px 8px;background:linear-gradient(#d7bb79,#ae8435);box-shadow:0 8px 16px rgba(85,59,13,.18);z-index:5}
+    .slot{position:absolute;top:10px;left:50%;width:78px;height:7px;transform:translateX(-50%);background:#5f461a;border-radius:999px;box-shadow:inset 0 2px 4px rgba(0,0,0,.35)}
+    .neck{position:absolute;top:49px;left:50%;width:128px;height:36px;transform:translateX(-50%);border-left:3px solid var(--gold-deep);border-right:3px solid var(--gold-deep);background:rgba(255,255,255,.33);z-index:3}
+    .jar{position:absolute;bottom:0;left:50%;width:244px;height:270px;transform:translateX(-50%);border:4px solid var(--gold-deep);border-radius:38px 38px 72px 72px;background:linear-gradient(105deg,rgba(255,255,255,.72),rgba(255,255,255,.22) 35%,rgba(255,249,229,.44) 65%,rgba(255,255,255,.62));box-shadow:inset 16px 0 24px rgba(255,255,255,.5),inset -18px 0 28px rgba(145,104,30,.08),0 20px 28px rgba(80,58,22,.17);overflow:hidden}
+    .jar:after{content:"";position:absolute;inset:15px;border:1px solid rgba(255,255,255,.6);border-radius:28px 28px 58px 58px;pointer-events:none}
+    .fill{position:absolute;inset:auto 0 0;height:0;background:linear-gradient(180deg,rgba(219,178,83,.55),rgba(176,125,31,.74));transition:height .45s ease;z-index:0}
+    .wheat-area{position:absolute;inset:0;z-index:2;overflow:hidden}
+    .bag{position:absolute;width:54px;height:42px;background:linear-gradient(145deg,#e4c57d,#c8963d);border:2px solid #8e6728;border-radius:10px 10px 15px 15px;box-shadow:0 5px 10px rgba(70,47,10,.18);display:flex;align-items:center;justify-content:center;color:#6e4d17;font-weight:700;font-size:11px;transform:rotate(var(--rot))}
+    .bag:before{content:"";position:absolute;top:-6px;width:42px;height:11px;background:#d5ae59;border:2px solid #8e6728;border-radius:50%}
+    .bag:after{content:"🌾";font-size:18px;filter:saturate(.65)}
+    .falling{position:absolute;width:54px;height:42px;left:50%;top:-56px;transform:translateX(-50%);background:linear-gradient(145deg,#e4c57d,#c8963d);border:2px solid #8e6728;border-radius:10px 10px 15px 15px;z-index:9;animation:drop .78s cubic-bezier(.18,.72,.32,1) forwards;box-shadow:0 6px 14px rgba(70,47,10,.2)}
+    .falling:after{content:"🌾";position:absolute;inset:0;display:grid;place-items:center;font-size:18px}
+    @keyframes drop{0%{top:-56px;transform:translateX(-50%) rotate(-9deg)}65%{top:132px;transform:translateX(-50%) rotate(5deg)}100%{top:240px;transform:translateX(-50%) rotate(-3deg);opacity:.2}}
+    .jar-label{position:absolute;z-index:4;left:50%;top:128px;transform:translateX(-50%);width:166px;text-align:center;background:rgba(255,250,240,.88);border:1px solid rgba(128,97,37,.35);border-radius:18px;padding:12px 10px 10px;box-shadow:0 8px 18px rgba(78,56,18,.1)}
+    .jar-label small{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+    .jar-label strong{display:block;font-size:28px;margin-top:2px;font-variant-numeric:tabular-nums}
+    .jar-label span{font-size:12px;color:var(--gold-deep)}
+
+    .jar-stage:before,
+    .jar-stage:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.32}
+    .jar-stage:before{background:
+      radial-gradient(circle at 50% 24px, transparent 10px, rgba(122,90,31,.18) 11px, transparent 12px) 0 0/44px 44px,
+      radial-gradient(circle at 50% 20px, transparent 8px, rgba(49,92,84,.13) 9px, transparent 10px) 22px 22px/44px 44px;}
+    .jar-stage:after{inset:26px 34px 44px;border-radius:120px 120px 24px 24px;border:1px solid rgba(216,175,80,.28);box-shadow:inset 0 0 0 10px rgba(255,255,255,.08)}
+    .mosque-crown{position:absolute;top:0;left:50%;width:210px;height:86px;transform:translateX(-50%);z-index:1;pointer-events:none}
+    .mosque-crown:before{content:"";position:absolute;left:50%;bottom:0;width:146px;height:72px;transform:translateX(-50%);border-radius:90px 90px 12px 12px;background:linear-gradient(180deg,rgba(216,175,80,.24),rgba(216,175,80,.05));border:1px solid rgba(122,90,31,.18)}
+    .mosque-crown:after{content:"☾";position:absolute;left:50%;top:-8px;transform:translateX(-50%);font-size:28px;color:rgba(122,90,31,.72)}
+    .jar-prayers{position:absolute;z-index:5;left:50%;top:50px;transform:translateX(-50%);width:216px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center}
+    .prayer-light{display:flex;flex-direction:column;align-items:center;gap:5px;transition:opacity .25s ease, transform .25s ease}
+    .octa{
+      position:relative;
+      width:24px;
+      height:24px;
+      clip-path:polygon(50% 0%,61% 29%,92% 8%,71% 39%,100% 50%,71% 61%,92% 92%,61% 71%,50% 100%,39% 71%,8% 92%,29% 61%,0% 50%,29% 39%,8% 8%,39% 29%);
+      background:radial-gradient(circle at 30% 30%,rgba(255,248,224,.98),rgba(231,201,138,.78) 42%,rgba(185,144,67,.78) 100%);
+      filter:drop-shadow(0 0 9px rgba(255,215,106,.82));
+      transition:filter .25s ease,opacity .25s ease,background .25s ease;
+    }
+    .octa:after{
+      content:"";
+      position:absolute;
+      inset:6px;
+      clip-path:polygon(50% 0%,61% 29%,92% 8%,71% 39%,100% 50%,71% 61%,92% 92%,61% 71%,50% 100%,39% 71%,8% 92%,29% 61%,0% 50%,29% 39%,8% 8%,39% 29%);
+      background:rgba(255,250,232,.92);
+      transition:background .25s ease;
+    }
+    .prayer-light span{font-size:9px;font-weight:800;letter-spacing:.02em;color:#6f531f;text-shadow:0 1px 0 rgba(255,255,255,.55)}
+    .prayer-light.off{opacity:.48;transform:translateY(1px)}
+    .prayer-light.off .octa{
+      filter:none;
+      background:rgba(86,80,67,.72);
+    }
+    .prayer-light.off .octa:after{background:rgba(124,116,96,.62)}
+    .prayer-light.off span{color:#6d6555}
+    .prayer-light.off.missed{opacity:.72}
+    .prayer-light.off.missed .octa{background:rgba(181,137,67,.82);filter:drop-shadow(0 0 5px rgba(196,151,77,.26))}
+    .prayer-light.off.missed .octa:after{background:rgba(44,57,51,.92)}
+    .prayer-light.off.missed span{color:#92703a}
+    .jar-title-ribbon{position:absolute;left:50%;top:96px;transform:translateX(-50%);z-index:5;min-width:176px;padding:5px 11px;border-radius:999px;background:rgba(49,92,84,.92);color:#fff9e8;font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;text-align:center;box-shadow:0 8px 18px rgba(49,92,84,.18)}
+
+
+    .hedge-card{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hedge-side{border-radius:18px;padding:13px 11px;text-align:center;border:1px solid rgba(185,144,67,.18);background:rgba(255,250,240,.78)}
+    .hedge-side.left{background:rgba(245,238,224,.78)}
+    .hedge-side.right{background:linear-gradient(180deg,rgba(255,242,190,.88),rgba(255,250,240,.82))}
+    .hedge-side small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:800}
+    .hedge-side strong{display:block;margin-top:4px;font-size:20px;font-variant-numeric:tabular-nums}
+    .hedge-line{margin-top:10px;text-align:center;font-family:Georgia,"Times New Roman",serif;color:var(--gold-deep);font-size:15px;line-height:1.35}
+    .boundary-note{margin-top:9px;border-radius:14px;background:rgba(49,92,84,.08);border:1px solid rgba(49,92,84,.12);padding:9px 10px;font-size:11px;line-height:1.45;color:#4d473b;text-align:center}
+    .monthly-impact{margin-bottom:13px;border-radius:18px;background:linear-gradient(180deg,rgba(255,242,190,.82),rgba(255,250,240,.78));border:1px solid rgba(185,144,67,.22);padding:13px 12px;text-align:center}
+    .monthly-impact b{display:block;font-family:Georgia,"Times New Roman",serif;font-size:18px;margin-bottom:3px}
+    .monthly-impact span{font-size:12px;color:var(--muted);line-height:1.4}
+
+    .action-card{margin-top:18px;background:rgba(255,250,240,.88);border:1px solid rgba(185,144,67,.18);border-radius:20px;padding:15px}
+    .action-title{font-weight:700;margin-bottom:4px}.action-copy{font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:12px}
+    .btn-row{display:grid;grid-template-columns:1fr auto;gap:10px}
+    button{border:0;border-radius:14px;padding:13px 14px;font-weight:750;cursor:pointer;transition:transform .12s ease,opacity .12s ease}
+    button:active{transform:scale(.98)}
+    .primary{background:var(--green);color:white}.secondary{background:#eee4d0;color:var(--ink);min-width:94px}
+    .action-choices{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px;max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,opacity .25s ease}
+    .action-choices.open{max-height:190px;opacity:1}
+    .choice-btn{min-height:54px;padding:10px;background:#f0e4ca;color:var(--ink);border:1px solid rgba(128,97,37,.16);font-size:12px;line-height:1.25}
+    .choice-btn:hover,.choice-btn:focus-visible{background:#e7d3a7;outline:2px solid rgba(49,92,84,.25);outline-offset:1px}
+    .settings{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    label{font-size:11px;color:var(--muted);display:block;margin-bottom:5px}
+    select,input{width:100%;padding:11px 10px;border-radius:12px;border:1px solid rgba(128,97,37,.24);background:white;color:var(--ink);font:inherit}
+    .note{margin-top:12px;text-align:center;font-size:11px;line-height:1.45;color:var(--muted)}
+    .reset-link{background:none;color:var(--danger);padding:6px 0 0;width:100%;font-size:12px;font-weight:650}
+    .system-toast{
+      position:fixed;
+      z-index:80;
+      left:50%;
+      bottom:24px;
+      width:min(calc(100% - 28px),412px);
+      transform:translate(-50%,20px);
+      padding:13px 16px;
+      border:1px solid rgba(216,175,80,.4);
+      border-radius:16px;
+      color:#fff6d7;
+      background:rgba(20,48,44,.96);
+      box-shadow:0 18px 45px rgba(19,43,40,.3);
+      text-align:center;
+      font-family:Georgia,"Times New Roman",serif;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease,transform .25s ease;
+    }
+    .system-toast.show{opacity:1;transform:translate(-50%,0)}
+
+    .return-window{
+      margin:0 0 14px;
+      padding:15px;
+      border:1px solid rgba(216,175,80,.32);
+      border-radius:18px;
+      color:#fff5d8;
+      background:linear-gradient(145deg,rgba(23,76,70,.96),rgba(24,45,42,.98));
+      box-shadow:0 14px 34px rgba(23,50,46,.18);
+      animation:returnWindowIn .38s ease both;
+    }
+    .return-window[hidden]{display:none}
+    .return-window-kicker{font-size:10px;letter-spacing:.16em;color:#e4c469;font-weight:800}
+    .return-window p{margin:6px 0 13px;font-family:Georgia,"Times New Roman",serif;font-size:17px;line-height:1.42}
+    .return-window-actions{display:grid;grid-template-columns:1fr auto;gap:9px}
+    .return-window .turn-moment{color:#17302c;background:#e0bd5f}
+    .return-window .not-now{color:#e1dbca;background:rgba(255,255,255,.08)}
+    .box-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:0 0 14px;padding:4px;border-radius:16px;background:rgba(49,92,84,.09)}
+    .box-tab{padding:10px 7px;border-radius:12px;color:var(--muted);background:transparent;font-size:10px;letter-spacing:.08em}
+    .box-tab.is-active{color:#fff8e4;background:var(--green);box-shadow:0 7px 16px rgba(49,92,84,.18)}
+    .box-tab-panel[hidden]{display:none}
+    .pending-story-hint{width:100%;margin:0 0 12px;padding:10px 12px;color:#6e5421;background:rgba(216,175,80,.13);border:1px solid rgba(185,144,67,.22);font-size:11px}
+    .pending-story-hint[hidden]{display:none}
+    .jar-stage.box-activated{animation:boxAwaken .82s ease}
+    .jar-stage.has-pending{box-shadow:inset 0 0 0 1px rgba(216,175,80,.28),0 0 22px rgba(216,175,80,.13)}
+    @keyframes returnWindowIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+    @keyframes boxAwaken{0%,100%{transform:none}28%{transform:translateX(-2px)}44%{transform:translateX(2px);box-shadow:0 0 30px rgba(216,175,80,.34)}60%{transform:translateX(-1px)}}
+
+    .stories-empty{padding:30px 14px;text-align:center;color:var(--muted)}
+    .stories-empty .mini-octa{width:30px;height:30px;margin:0 auto 13px;background:#d8af50;clip-path:polygon(50% 0%,61% 29%,92% 8%,71% 39%,100% 50%,71% 61%,92% 92%,61% 71%,50% 100%,39% 71%,8% 92%,29% 61%,0% 50%,29% 39%,8% 8%,39% 29%);opacity:.72}
+    .stories-empty b{display:block;margin-bottom:6px;color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:19px}
+    .stories-empty p{margin:0;font-size:12px;line-height:1.5}
+    .stories-list{display:grid;gap:11px}
+    .story-list-card{display:grid;grid-template-columns:82px 1fr;gap:12px;width:100%;padding:10px;text-align:left;color:var(--ink);background:rgba(255,250,240,.82);border:1px solid rgba(185,144,67,.2)}
+    .story-list-card.no-photo{grid-template-columns:1fr}
+    .story-thumb{width:82px;height:86px;object-fit:cover;border-radius:11px;background:#203632}
+    .story-list-card small{display:block;margin-bottom:5px;color:var(--gold-deep);font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+    .story-list-card strong{display:block;font-family:Georgia,"Times New Roman",serif;font-size:17px;line-height:1.2}
+    .story-list-card span{display:block;margin-top:7px;color:var(--muted);font-size:10px;line-height:1.35}
+
+    body.story-flow-open{overflow:hidden}
+    body.prayer-sheet-open{overflow:hidden}
+    .prayer-status-layer{
+      position:fixed;
+      inset:0;
+      z-index:115;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding:18px max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+      background:rgba(5,15,14,.66);
+      backdrop-filter:blur(5px);
+    }
+    .prayer-status-layer[hidden]{display:none}
+    .prayer-status-sheet{
+      width:min(100%,430px);
+      padding:9px 18px 18px;
+      color:#f4ecd8;
+      background:linear-gradient(160deg,#17332f,#0c201e);
+      border:1px solid rgba(216,175,80,.38);
+      border-radius:25px 25px 20px 20px;
+      box-shadow:0 24px 70px rgba(0,0,0,.45);
+      animation:prayerSheetIn .24s ease both;
+    }
+    .prayer-sheet-handle{width:42px;height:4px;margin:0 auto 18px;border-radius:999px;background:rgba(216,175,80,.38)}
+    .prayer-sheet-name{color:#d9b657;font-size:10px;letter-spacing:.16em;font-weight:800;text-transform:uppercase}
+    .prayer-status-sheet h2{margin:8px 0 0;color:#fff3c9;font-family:Georgia,"Times New Roman",serif;font-size:24px;line-height:1.25;font-weight:500}
+    .prayer-sheet-view[hidden]{display:none}
+    .prayer-sheet-actions{display:grid;gap:9px;margin-top:22px}
+    .prayer-sheet-actions button{width:100%;min-height:48px}
+    .prayer-sheet-primary{color:#17302c;background:linear-gradient(180deg,#e5c36a,#c99b3d)}
+    .prayer-sheet-secondary{color:#eee7d6;background:rgba(255,255,255,.075);border:1px solid rgba(216,175,80,.18)}
+    .prayer-sheet-quiet{color:#bdb6a5;background:transparent;border:1px solid rgba(255,255,255,.1)}
+    @keyframes prayerSheetIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+    .story-flow,.story-detail{
+      position:fixed;
+      inset:0;
+      z-index:120;
+      min-height:100vh;
+      min-height:100dvh;
+      overflow-y:auto;
+      overscroll-behavior:none;
+      padding:max(20px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+      color:#f8f0dc;
+      background:linear-gradient(160deg,#0b1c1a,#142c29 60%,#1d3732);
+    }
+    .story-flow[hidden],.story-detail[hidden]{display:none}
+    .story-flow-shell,.story-detail-shell{width:min(100%,430px);margin:0 auto}
+    .flow-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+    .flow-mark{font-size:10px;letter-spacing:.16em;color:#d9b657;font-weight:800}
+    .flow-close{padding:8px 10px;color:#d5cebc;background:rgba(255,255,255,.07);font-size:12px}
+    .story-flow-step[hidden]{display:none}
+    .story-flow-step{animation:firstReturnStepIn .35s ease both}
+    .story-flow h2,.story-detail h2{margin:0;color:#fff3c9;font-family:Georgia,"Times New Roman",serif;font-size:clamp(27px,8vw,37px);line-height:1.15;font-weight:500}
+    .story-flow-copy{margin:13px 0 0;color:#d8d1bf;font-size:14px;line-height:1.6}
+    .flow-actions{display:grid;gap:9px;margin-top:24px}
+    .flow-primary{width:100%;color:#17302c;background:linear-gradient(180deg,#e5c36a,#c99b3d)}
+    .flow-secondary{width:100%;color:#eee7d6;background:rgba(255,255,255,.075);border:1px solid rgba(216,175,80,.16)}
+    .privacy-copy,.prototype-note{display:block;margin-top:13px;color:#999486;font-size:10px;text-align:center;line-height:1.45}
+    .photo-input{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+    .photo-error,.story-save-error{margin-top:12px;color:#efc4b9;font-size:12px;line-height:1.45}
+    .photo-error:empty,.story-save-error:empty{display:none}
+    .photo-preview-wrap{margin-top:20px}
+    .photo-preview-wrap[hidden]{display:none}
+    .photo-preview{display:block;width:100%;max-height:46vh;object-fit:cover;border-radius:20px;border:1px solid rgba(216,175,80,.28);background:#0d1e1c}
+    .photo-tools{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+    .moment-options{display:grid;gap:9px;margin-top:22px}
+    .moment-option,.story-action,.kindness-option{width:100%;min-height:49px;text-align:left;color:#f4ecd8;background:rgba(255,255,255,.06);border:1px solid rgba(216,175,80,.2)}
+    .moment-option.is-selected{color:#172b28;background:#d9b657}
+    .generating-state{display:grid;place-items:center;min-height:58vh;text-align:center}
+    .generating-octa{width:58px;height:58px;margin:0 auto 25px;background:#d8af50;clip-path:polygon(50% 0%,61% 29%,92% 8%,71% 39%,100% 50%,71% 61%,92% 92%,61% 71%,50% 100%,39% 71%,8% 92%,29% 61%,0% 50%,29% 39%,8% 8%,39% 29%);filter:drop-shadow(0 0 24px rgba(216,175,80,.5));animation:pwaStarBreathe 1.05s ease-in-out infinite}
+    .generating-copy{font-family:Georgia,"Times New Roman",serif;font-size:22px;color:#fff3c9}
+    .return-story-card{overflow:hidden;margin-top:8px;border:1px solid rgba(216,175,80,.42);border-radius:25px;background:linear-gradient(160deg,#17332f,#0d201e);box-shadow:0 22px 58px rgba(0,0,0,.25)}
+    .return-story-photo{display:block;width:100%;height:min(46vh,330px);object-fit:cover;background:#0d1e1c}
+    .return-story-photo[hidden]{display:none}
+    .return-story-content{padding:24px 20px 20px}
+    .story-octa{width:25px;height:25px;margin-bottom:17px;background:#d8af50;clip-path:polygon(50% 0%,61% 29%,92% 8%,71% 39%,100% 50%,71% 61%,92% 92%,61% 71%,50% 100%,39% 71%,8% 92%,29% 61%,0% 50%,29% 39%,8% 8%,39% 29%)}
+    .return-story-card h3{margin:0;color:#fff1c3;font-family:Georgia,"Times New Roman",serif;font-size:27px;line-height:1.12;letter-spacing:.025em;text-transform:uppercase}
+    .return-story-body{margin:17px 0 20px;color:#e4ddca;font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.65;white-space:pre-line}
+    .story-meta{padding-top:14px;border-top:1px solid rgba(216,175,80,.18);color:#c8b77f;font-size:10px;line-height:1.45}
+    .story-action-heading{margin:24px 0 11px;color:#eee6d3;font-size:14px;line-height:1.45}
+    .story-actions{display:grid;gap:9px}
+    .story-action{font-size:11px;letter-spacing:.035em;text-align:center}
+    .story-action:hover,.story-action:focus-visible,.kindness-option:hover,.kindness-option:focus-visible{border-color:#d8af50;outline:0;background:rgba(216,175,80,.12)}
+    .kindness-options{display:grid;gap:9px;margin-top:20px}
+    .story-detail .return-story-card{margin-bottom:13px}
+    .detail-actions{display:grid;grid-template-columns:1fr auto;gap:9px}
+    .delete-story{color:#f0c1b7;background:rgba(155,93,81,.14);border:1px solid rgba(155,93,81,.25)}
+    .ai-personalize-panel{margin-top:14px;padding:16px;border:1px solid rgba(216,175,80,.28);border-radius:20px;background:rgba(255,255,255,.045)}
+    .ai-personalize-panel h3{margin:4px 0 7px;color:#fff1c3;font-family:Georgia,"Times New Roman",serif;font-size:19px}
+    .ai-personalize-panel p{margin:0;color:#cfc8b7;font-size:12px;line-height:1.55}
+    .ai-kicker,.sandbox-badge{color:#d9b657;font-size:9px;letter-spacing:.13em;font-weight:800;text-transform:uppercase}
+    .ai-personalize-actions{display:grid;gap:8px;margin-top:14px}
+    .ai-personalize-actions button{width:100%}
+    .ai-account-bar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(216,175,80,.13)}
+    .ai-account-bar[hidden],.ai-result[hidden],.ai-progress[hidden]{display:none}
+    .ai-account-bar strong{margin-right:auto;color:#f4e7be;font-size:11px}
+    .ai-account-bar button{padding:7px 9px;color:#d9d2c1;background:rgba(255,255,255,.07);font-size:9px}
+    .ai-progress{margin-top:13px;color:#e5c777;font-family:Georgia,"Times New Roman",serif;font-size:14px}
+    .ai-result{margin-top:16px;padding:16px;border:1px solid rgba(216,175,80,.36);border-radius:18px;background:linear-gradient(145deg,rgba(24,62,56,.96),rgba(15,35,32,.98))}
+    .ai-result h3{font-size:23px;text-transform:uppercase}
+    .ai-result-body{margin:12px 0;color:#e6deca;font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.6}
+    .ai-boundary-note{display:block;margin-top:10px;color:#999486;font-size:9px;line-height:1.45}
+    .ai-error{margin-top:10px;color:#efc4b9;font-size:11px;line-height:1.45}
+    .ai-error:empty{display:none}
+    body.ai-layer-open{overflow:hidden}
+    .ai-layer{position:fixed;inset:0;z-index:140;display:flex;align-items:flex-end;justify-content:center;padding:18px max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));background:rgba(5,15,14,.72);backdrop-filter:blur(6px)}
+    .ai-layer[hidden]{display:none}
+    .ai-sheet{width:min(100%,430px);max-height:88dvh;overflow-y:auto;padding:22px 18px;color:#f4ecd8;background:linear-gradient(160deg,#17332f,#0c201e);border:1px solid rgba(216,175,80,.38);border-radius:25px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+    .ai-sheet h2{margin:6px 0 10px;color:#fff3c9;font-family:Georgia,"Times New Roman",serif;font-size:25px;font-weight:500}
+    .ai-sheet p{color:#d2cab8;font-size:13px;line-height:1.55}
+    .ai-sheet-actions{display:grid;gap:9px;margin-top:18px}
+    .ai-sheet-actions button{width:100%}
+    .ai-field{display:grid;gap:6px;margin-top:14px;color:#d6cdaf;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+    .ai-field input{width:100%;padding:13px;border:1px solid rgba(216,175,80,.28);border-radius:13px;color:#f7efdc;background:rgba(255,255,255,.07);font:inherit;font-size:15px;text-transform:none;letter-spacing:0}
+    .purchase-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+    .purchase-options button{padding:13px 8px;color:#17302c;background:#d9b657;font-size:10px}
+    #paypalButtonContainer{margin-top:16px;min-height:44px}
+    .debug-panel{position:fixed;z-index:150;right:10px;bottom:max(10px,env(safe-area-inset-bottom));width:min(250px,calc(100% - 20px));padding:11px;border:1px solid #d8af50;border-radius:15px;color:#fff3c9;background:rgba(11,28,26,.96);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+    .debug-panel[hidden]{display:none}
+    .debug-panel b{display:block;margin-bottom:8px;font-size:11px;letter-spacing:.08em}
+    .debug-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .debug-actions button{padding:8px;color:#eee4ce;background:rgba(255,255,255,.08);font-size:9px}
+
+    .calendar-head{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px;margin-bottom:12px}
+    .calendar-head button{padding:10px;background:#eee4d0;color:var(--ink);font-size:18px}
+    .month-title{text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:21px;font-weight:600}
+    .month-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}
+    .month-summary .stat{padding:9px 6px}
+    .weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .weekdays{margin-bottom:7px}
+    .weekdays div{text-align:center;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase}
+    .day{position:relative;min-height:58px;border-radius:13px;background:rgba(255,250,240,.72);border:1px solid rgba(185,144,67,.14);padding:7px 5px;overflow:hidden}
+    .day.empty{background:transparent;border-color:transparent}
+    .day.today{border:2px solid var(--gold-deep);padding:6px 4px}
+    .day-number{font-size:12px;font-weight:700}
+    .day-count{margin-top:7px;font-size:11px;color:var(--gold-deep);font-weight:750;line-height:1.15}
+    .day-count span{display:block;font-size:14px}
+    .day.zero .day-count{color:#9a9184;font-weight:600}
+    .calendar-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}
+    .today-btn{background:#eee4d0;color:var(--ink);padding:10px 13px;font-size:12px}
+    .calendar-note{font-size:11px;color:var(--muted);text-align:right;line-height:1.35}
+    @media (max-width:380px){h1{font-size:27px}.panel,.calendar-panel{padding:17px 13px 20px}.jar-stage{height:370px}.jar-wrap{transform:scale(.93);transform-origin:bottom center}.day{min-height:53px;padding:6px 3px}.day.today{padding:5px 2px}.action-choices{grid-template-columns:1fr}.action-choices.open{max-height:290px}}
+    @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <div class="system-start" id="systemStart" role="status" aria-label="Return System is opening">
+    <div class="system-start-inner">
+      <div class="system-mark" aria-hidden="true"></div>
+      <div class="system-message" id="splashMessage" aria-live="polite">RETURN SYSTEM</div>
+    </div>
+  </div>
+  <div class="first-return" id="firstReturnExperience" hidden aria-hidden="true">
+    <div class="first-return-inner">
+      <div class="first-return-star" aria-hidden="true"></div>
+
+      <section class="first-return-step is-active" data-return-step="1">
+        <h2>RETURN SYSTEM <span aria-hidden="true">✦</span></h2>
+        <p class="first-return-copy">A quiet space<br>to return.</p>
+        <div class="first-return-actions">
+          <button class="return-primary" type="button" data-return-next="2">Continue</button>
+          <button class="return-skip" type="button" data-return-skip>I've been here before</button>
+        </div>
+      </section>
+
+      <section class="first-return-step" data-return-step="2" hidden>
+        <h2>Did you miss salah today?</h2>
+        <p class="first-return-copy">You are not the only one.</p>
+        <div class="first-return-actions">
+          <button class="return-primary" type="button" data-return-next="3">Continue</button>
+        </div>
+      </section>
+
+      <section class="first-return-step" data-return-step="3" hidden>
+        <h2>What made returning difficult today?</h2>
+        <div class="return-options" aria-label="Choose what made returning difficult">
+          <button class="return-option" type="button" data-return-reason="busy">Busy life</button>
+          <button class="return-option" type="button" data-return-reason="tired">Tiredness</button>
+          <button class="return-option" type="button" data-return-reason="rhythm">Lost my rhythm</button>
+          <button class="return-option" type="button" data-return-reason="distant">Feeling distant</button>
+          <button class="return-option" type="button" data-return-reason="unknown">I don't know</button>
+        </div>
+      </section>
+
+      <section class="first-return-step" data-return-step="4" hidden>
+        <div class="return-response">
+          <p id="returnResponseLead"></p>
+          <p id="returnResponseFollow"></p>
+        </div>
+        <div class="first-return-actions">
+          <button class="return-primary" type="button" data-return-next="5">Continue</button>
+        </div>
+      </section>
+
+      <section class="first-return-step" data-return-step="5" hidden>
+        <h2>Your return path<br>begins now <span aria-hidden="true">✦</span></h2>
+        <div class="first-return-actions">
+          <button class="return-primary" id="enterReturnSpace" type="button">Enter my space</button>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div class="story-flow" id="returnStoryFlow" hidden aria-hidden="true">
+    <div class="story-flow-shell">
+      <div class="flow-top">
+        <div class="flow-mark">RETURN WINDOW ✦</div>
+        <button class="flow-close" id="closeStoryFlow" type="button">Close</button>
+      </div>
+
+      <section class="story-flow-step" data-story-step="photo">
+        <h2>THE BOX IS OPEN <span aria-hidden="true">✦</span></h2>
+        <p class="story-flow-copy">Give it one piece of today.<br><br>Choose any photo from your day.<br>It does not need to be religious or special.</p>
+        <input class="photo-input" id="storyPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" />
+        <div class="flow-actions" id="photoStartActions">
+          <button class="flow-primary" id="chooseStoryPhoto" type="button">CHOOSE A PHOTO</button>
+          <button class="flow-secondary" id="continueWithoutPhoto" type="button">CONTINUE WITHOUT A PHOTO</button>
+        </div>
+        <div class="photo-preview-wrap" id="photoPreviewWrap" hidden>
+          <img class="photo-preview" id="storyPhotoPreview" alt="Your selected photo preview" />
+          <div class="photo-tools">
+            <button class="flow-secondary" id="replaceStoryPhoto" type="button">Replace photo</button>
+            <button class="flow-secondary" id="removeStoryPhoto" type="button">Remove photo</button>
+          </div>
+          <div class="flow-actions">
+            <button class="flow-primary" id="continueWithPhoto" type="button">CONTINUE</button>
+          </div>
+        </div>
+        <div class="photo-error" id="photoError" role="alert"></div>
+        <small class="privacy-copy">This prototype keeps the photo on this device.</small>
+      </section>
+
+      <section class="story-flow-step" data-story-step="state" hidden>
+        <h2>What was happening around this moment?</h2>
+        <div class="moment-options">
+          <button class="moment-option" type="button" data-moment-state="busy">I was busy</button>
+          <button class="moment-option" type="button" data-moment-state="tired">I was tired</button>
+          <button class="moment-option" type="button" data-moment-state="rhythm">I lost my rhythm</button>
+          <button class="moment-option" type="button" data-moment-state="distant">I felt distant</button>
+          <button class="moment-option" type="button" data-moment-state="quiet">It was a quiet moment</button>
+          <button class="moment-option" type="button" data-moment-state="unknown">I don't know</button>
+        </div>
+        <div class="flow-actions">
+          <button class="flow-secondary" id="skipMomentState" type="button">Skip this question</button>
+        </div>
+      </section>
+
+      <section class="story-flow-step generating-state" data-story-step="generating" hidden>
+        <div>
+          <div class="generating-octa" aria-hidden="true"></div>
+          <div class="generating-copy" id="generatingCopy" aria-live="polite">Holding the moment...</div>
+        </div>
+      </section>
+
+      <section class="story-flow-step" data-story-step="story" hidden>
+        <article class="return-story-card">
+          <img class="return-story-photo" id="generatedStoryPhoto" alt="Photo saved with this Return Story" hidden />
+          <div class="return-story-content">
+            <div class="story-octa" aria-hidden="true"></div>
+            <h3 id="generatedStoryTitle"></h3>
+            <p class="return-story-body" id="generatedStoryBody"></p>
+            <div class="story-meta" id="generatedStoryMeta"></div>
+            <small class="prototype-note">Basic Reflection</small>
+          </div>
+        </article>
+        <section class="ai-personalize-panel" id="aiPersonalizePanel">
+          <div class="ai-kicker">OPTIONAL AI REFLECTION</div>
+          <h3>MAKE THIS STORY PERSONAL ✦</h3>
+          <p>Let AI reflect on the visible details inside your photo and today's context.</p>
+          <div class="ai-personalize-actions">
+            <button class="flow-primary" id="createAiStory" type="button">SIGN IN TO CONTINUE</button>
+          </div>
+          <div class="ai-account-bar" id="aiAccountBar" hidden>
+            <strong id="aiCreditBalance"></strong>
+            <button id="refreshAiCredits" type="button">Refresh balance</button>
+            <button id="openAiCredits" type="button">Buy credits</button>
+            <button id="signOutAi" type="button">Sign out</button>
+          </div>
+          <div class="ai-progress" id="aiGenerationStatus" hidden aria-live="polite"></div>
+          <div class="ai-result" id="aiGeneratedResult" hidden>
+            <div class="ai-kicker">AI-assisted personal reflection</div>
+            <h3 id="aiGeneratedTitle"></h3>
+            <p class="ai-result-body" id="aiGeneratedBody"></p>
+            <small class="ai-boundary-note">This reflection is generated from your photo and selected context. It does not interpret Allah's will or replace religious guidance.</small>
+          </div>
+          <div class="ai-error" id="aiStoryError" role="alert"></div>
+        </section>
+        <p class="story-action-heading">How would you like to continue this return?</p>
+        <div class="story-actions">
+          <button class="story-action" type="button" data-story-action="prepare">PREPARE FOR THE NEXT SALAH</button>
+          <button class="story-action" type="button" data-story-action="sadaqah">ADD TO MY SADAQAH BOX</button>
+          <button class="story-action" type="button" data-story-action="kindness">CHOOSE A SMALL ACT OF KINDNESS</button>
+          <button class="story-action" type="button" data-story-action="private">KEEP THIS STORY PRIVATELY</button>
+        </div>
+        <div class="story-save-error" id="storySaveError" role="alert"></div>
+      </section>
+
+      <section class="story-flow-step" data-story-step="kindness" hidden>
+        <h2>Choose one small kindness.</h2>
+        <p class="story-flow-copy">It can stay simple. You may also leave this open.</p>
+        <div class="kindness-options">
+          <button class="kindness-option" type="button" data-kindness="Check on someone">Check on someone</button>
+          <button class="kindness-option" type="button" data-kindness="Share food">Share food</button>
+          <button class="kindness-option" type="button" data-kindness="Help at home">Help at home</button>
+          <button class="kindness-option" type="button" data-kindness="Give someone your time">Give someone your time</button>
+        </div>
+        <div class="flow-actions">
+          <button class="flow-secondary" id="skipKindness" type="button">Skip for now</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="ai-layer" id="aiConsentLayer" hidden aria-hidden="true">
+    <section class="ai-sheet" role="dialog" aria-modal="true" aria-labelledby="aiConsentTitle">
+      <div class="ai-kicker">PHOTO PRIVACY</div>
+      <h2 id="aiConsentTitle">Continue with AI?</h2>
+      <p>Your photo will be sent securely to our AI provider to create this story.</p>
+      <p>The original photo is not stored on our server.</p>
+      <div class="ai-sheet-actions">
+        <button class="flow-primary" id="confirmAiStory" type="button">CONTINUE WITH AI</button>
+        <button class="flow-secondary" id="useBasicReflection" type="button">USE BASIC REFLECTION INSTEAD</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="ai-layer" id="aiAuthLayer" hidden aria-hidden="true">
+    <section class="ai-sheet" role="dialog" aria-modal="true" aria-labelledby="aiAuthTitle">
+      <div class="ai-kicker">PRIVATE SIGN IN</div>
+      <h2 id="aiAuthTitle">Sign in for AI stories</h2>
+      <p>Use an email code. Ordinary Return System features remain available without an account.</p>
+      <label class="ai-field">Email<input id="aiAuthEmail" type="email" autocomplete="email" inputmode="email" maxlength="254"></label>
+      <label class="ai-field" id="aiOtpField" hidden>6-digit code<input id="aiAuthOtp" type="text" autocomplete="one-time-code" inputmode="numeric" maxlength="6"></label>
+      <div class="ai-sheet-actions">
+        <button class="flow-primary" id="sendAiOtp" type="button">SEND EMAIL CODE</button>
+        <button class="flow-primary" id="verifyAiOtp" type="button" hidden>VERIFY CODE</button>
+        <button class="flow-secondary" id="closeAiAuth" type="button">NOT NOW</button>
+      </div>
+      <div class="ai-error" id="aiAuthError" role="alert"></div>
+    </section>
+  </div>
+
+  <div class="ai-layer" id="aiCreditsLayer" hidden aria-hidden="true">
+    <section class="ai-sheet" role="dialog" aria-modal="true" aria-labelledby="aiCreditsTitle">
+      <div class="sandbox-badge">SANDBOX TEST PAYMENT</div>
+      <h2 id="aiCreditsTitle">AI Story Credits</h2>
+      <p id="creditsLayerBalance">Refresh your balance to continue.</p>
+      <p>Payment for a digital storytelling service. Separate from sadaqah.</p>
+      <div class="purchase-options">
+        <button type="button" data-credit-product="story_credits_10">10 credits · US$2.99</button>
+        <button type="button" data-credit-product="story_credits_30">30 credits · US$6.99</button>
+      </div>
+      <div id="paypalButtonContainer"></div>
+      <div class="ai-error" id="paypalError" role="alert"></div>
+      <div class="ai-sheet-actions">
+        <button class="flow-secondary" id="closeAiCredits" type="button">Close</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="story-detail" id="storyDetail" hidden aria-hidden="true">
+    <div class="story-detail-shell">
+      <div class="flow-top">
+        <div class="flow-mark">PRIVATE RETURN STORY</div>
+        <button class="flow-close" id="closeStoryDetail" type="button">Close</button>
+      </div>
+      <div id="storyDetailContent"></div>
+      <div class="detail-actions">
+        <button class="flow-secondary" id="detailDone" type="button">Done</button>
+        <button class="delete-story" id="deleteStory" type="button">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prayer-status-layer" id="prayerStatusLayer" hidden aria-hidden="true">
+    <section class="prayer-status-sheet" id="prayerStatusSheet" role="dialog" aria-modal="true" aria-labelledby="prayerSheetHeading">
+      <div class="prayer-sheet-handle" aria-hidden="true"></div>
+
+      <div class="prayer-sheet-view" id="prayerChoiceView">
+        <div class="prayer-sheet-name" data-prayer-sheet-name></div>
+        <h2 id="prayerSheetHeading">How would you like to mark this moment?</h2>
+        <div class="prayer-sheet-actions">
+          <button class="prayer-sheet-primary" id="markPrayerPrayed" type="button">I PRAYED</button>
+          <button class="prayer-sheet-secondary" id="markPrayerMissed" type="button">I MISSED THIS ONE</button>
+          <button class="prayer-sheet-quiet" id="closePrayerChoice" type="button">NOT NOW</button>
+        </div>
+      </div>
+
+      <div class="prayer-sheet-view" id="prayerPrayedView" hidden>
+        <div class="prayer-sheet-name" data-prayer-sheet-name></div>
+        <h2 id="prayerPrayedHeading">This salah is marked as prayed.</h2>
+        <div class="prayer-sheet-actions">
+          <button class="prayer-sheet-primary" id="keepPrayerPrayed" type="button">KEEP AS PRAYED</button>
+          <button class="prayer-sheet-secondary" id="changePrayerStatus" type="button">CHANGE STATUS</button>
+        </div>
+      </div>
+
+      <div class="prayer-sheet-view" id="prayerChangeView" hidden>
+        <div class="prayer-sheet-name" data-prayer-sheet-name></div>
+        <h2 id="prayerChangeHeading">Choose the status you want to keep.</h2>
+        <div class="prayer-sheet-actions">
+          <button class="prayer-sheet-secondary" id="changePrayerToMissed" type="button">MARK AS MISSED</button>
+          <button class="prayer-sheet-quiet" id="clearPrayerRecord" type="button">CLEAR THIS RECORD</button>
+          <button class="prayer-sheet-quiet" id="cancelPrayerChange" type="button">CANCEL</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <main class="app">
+    <div class="eyebrow">A gentle way back</div>
+    <h1>RETURN SYSTEM</h1>
+    <p class="sub">A missed moment does not define you. Choose one small step and begin again.</p>
+    <div class="owner-line"><input class="owner-input" id="ownerName" type="text" maxlength="24" placeholder="Your name" aria-label="Your name"><span>'s Sadaqah Box</span></div>
+    <div class="today-date" id="todayDate"></div>
+
+    <section class="panel">
+      <div class="status-card">
+        <div class="status-label">Return status</div>
+        <div class="status-title">Today's journey:</div>
+        <div class="status-list" id="statusList" aria-label="Today's five salah status">
+          <button class="status-prayer" data-prayer="Fajr"><span class="status-symbol">○</span><span class="status-name">Fajr</span><small class="status-caption"></small></button>
+          <button class="status-prayer" data-prayer="Dhuhr"><span class="status-symbol">○</span><span class="status-name">Dhuhr</span><small class="status-caption"></small></button>
+          <button class="status-prayer" data-prayer="Asr"><span class="status-symbol">○</span><span class="status-name">Asr</span><small class="status-caption"></small></button>
+          <button class="status-prayer" data-prayer="Maghrib"><span class="status-symbol">○</span><span class="status-name">Maghrib</span><small class="status-caption"></small></button>
+          <button class="status-prayer" data-prayer="Isha"><span class="status-symbol">○</span><span class="status-name">Isha</span><small class="status-caption"></small></button>
+        </div>
+        <div class="status-message" id="statusMessage">One small step is available.</div>
+      </div>
+
+      <aside class="return-window" id="returnWindowNotice" hidden>
+        <div class="return-window-kicker">ONE LIGHT WENT QUIET.</div>
+        <p>A Return Window has opened.</p>
+        <div class="return-window-actions">
+          <button class="turn-moment" id="turnThisMoment" type="button">TURN THIS MOMENT</button>
+          <button class="not-now" id="dismissReturnWindow" type="button">NOT NOW</button>
+        </div>
+      </aside>
+
+      <div class="box-tabs" role="tablist" aria-label="Sadaqah Box sections">
+        <button class="box-tab" id="returnStoriesTab" type="button" role="tab" aria-selected="false" aria-controls="returnStoriesPanel">RETURN STORIES</button>
+        <button class="box-tab is-active" id="mySadaqahTab" type="button" role="tab" aria-selected="true" aria-controls="mySadaqahPanel">MY SADAQAH</button>
+      </div>
+
+      <section class="box-tab-panel" id="returnStoriesPanel" role="tabpanel" aria-labelledby="returnStoriesTab" hidden>
+        <button class="pending-story-hint" id="pendingStoryHint" type="button" hidden>A quiet Return Window is still waiting.</button>
+        <div class="stories-empty" id="storiesEmpty">
+          <div class="mini-octa" aria-hidden="true"></div>
+          <b>No Return Stories yet.</b>
+          <p>When you choose to turn a missed moment, it can stay here privately.</p>
+        </div>
+        <div class="stories-list" id="storiesList"></div>
+      </section>
+
+      <section class="box-tab-panel" id="mySadaqahPanel" role="tabpanel" aria-labelledby="mySadaqahTab">
+        <button class="pending-story-hint" id="pendingBoxHint" type="button" hidden>A quiet Return Window is still waiting.</button>
+
+      <div class="topstats">
+        <div class="stat"><b id="packsTop">0</b><span>return moments</span></div>
+        <div class="stat"><b id="weightTop">0 kg</b><span>symbolic wheat</span></div>
+        <div class="stat"><b id="valueTop">£0</b><span>kindness intention</span></div>
+      </div>
+
+      <div class="jar-stage" id="jarStage">
+        <div class="arch"></div>
+        <div class="jar-wrap">
+          <div class="mosque-crown"></div>
+          <div class="lid"><div class="slot"></div></div>
+          <div class="neck"></div>
+          <div class="jar">
+            <div class="jar-prayers" id="prayerLights">
+              <div class="prayer-light" data-prayer="Fajr"><div class="octa"></div><span>Fajr</span></div>
+              <div class="prayer-light" data-prayer="Dhuhr"><div class="octa"></div><span>Dhuhr</span></div>
+              <div class="prayer-light" data-prayer="Asr"><div class="octa"></div><span>Asr</span></div>
+              <div class="prayer-light" data-prayer="Maghrib"><div class="octa"></div><span>Maghrib</span></div>
+              <div class="prayer-light" data-prayer="Isha"><div class="octa"></div><span>Isha</span></div>
+            </div>
+            <div class="jar-title-ribbon">Five Salah Lights</div>
+            <div class="fill" id="fill"></div>
+            <div class="wheat-area" id="wheatArea"></div>
+            <div class="jar-label">
+              <small>This month</small>
+              <strong id="jarAmount">£0</strong>
+              <span id="jarMeta">0 moments · 0 kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hedge-card">
+        <div class="hedge-side left"><small>Salah today</small><strong id="lightsLeft">0 of 5 reflected</strong></div>
+        <div class="hedge-side right"><small>Return today</small><strong id="todayValue">No step yet</strong></div>
+      </div>
+      <div class="hedge-line" id="hedgeLine">The box holds return moments, kindness steps, and personal reflections.</div>
+
+      <div class="action-card">
+        <div class="action-title">Choose a small way back.</div>
+        <div class="action-copy" id="todayCopy">There is no score here. Choose one gentle action when you are ready.</div>
+        <div class="btn-row">
+          <button class="primary" id="addBtn" aria-expanded="false" aria-controls="actionChoices">I want to return</button>
+          <button class="secondary" id="undoBtn">Undo last step</button>
+        </div>
+        <div class="action-choices" id="actionChoices">
+          <button class="choice-btn" data-action="box">Add to Sadaqah Box</button>
+          <button class="choice-btn" data-action="dua">Make a short dua</button>
+          <button class="choice-btn" data-action="prepare">Prepare for next salah</button>
+          <button class="choice-btn" data-action="kindness">Do one act of kindness</button>
+        </div>
+        <div class="boundary-note">A private symbolic reflection only. Not fidya, not kaffarah, and never a replacement for salah.</div>
+
+        <div class="settings">
+          <div>
+            <label for="currency">Currency</label>
+            <select id="currency">
+              <optgroup label="Europe &amp; major Western markets">
+                <option value="EUR">€ EUR · Euro</option>
+                <option value="USD">US$ USD · United States</option>
+                <option value="GBP">£ GBP · United Kingdom</option>
+                <option value="CAD">C$ CAD · Canada</option>
+                <option value="AUD">A$ AUD · Australia</option>
+              </optgroup>
+              <optgroup label="Gulf countries">
+                <option value="SAR">SAR · Saudi Arabia</option>
+                <option value="AED">AED · United Arab Emirates</option>
+                <option value="QAR">QAR · Qatar</option>
+                <option value="KWD">KWD · Kuwait</option>
+                <option value="BHD">BHD · Bahrain</option>
+                <option value="OMR">OMR · Oman</option>
+              </optgroup>
+              <optgroup label="Other major Muslim markets">
+                <option value="TRY">₺ TRY · Türkiye</option>
+                <option value="MYR">RM MYR · Malaysia</option>
+                <option value="IDR">Rp IDR · Indonesia</option>
+                <option value="PKR">Rs PKR · Pakistan</option>
+                <option value="BDT">৳ BDT · Bangladesh</option>
+                <option value="EGP">E£ EGP · Egypt</option>
+                <option value="MAD">MAD · Morocco</option>
+                <option value="DZD">DZD · Algeria</option>
+                <option value="NGN">₦ NGN · Nigeria</option>
+              </optgroup>
+            </select>
+          </div>
+          <div>
+            <label for="unitValue">Optional symbolic value per moment</label>
+            <input id="unitValue" type="number" min="0" step="0.5" value="5" />
+          </div>
+        </div>
+        <button class="reset-link" id="resetBtn">Clear this month's reflections</button>
+      </div>
+
+      <p class="note">1 virtual wheat unit = 1.75 kg reference. The box is symbolic: it stores return moments, kindness steps, and reflections. No money is collected or stored.</p>
+      </section>
+    </section>
+
+    <section class="calendar-panel">
+      <div class="calendar-head">
+        <button id="prevMonth" aria-label="Previous month">‹</button>
+        <div class="month-title" id="monthTitle"></div>
+        <button id="nextMonth" aria-label="Next month">›</button>
+      </div>
+
+      <div class="monthly-impact">
+        <b id="monthImpactTitle">Every return can begin small.</b>
+        <span id="monthImpactCopy">This month’s box remembers the steps you chose.</span>
+      </div>
+
+      <div class="month-summary">
+        <div class="stat"><b id="monthPacks">0</b><span>moments</span></div>
+        <div class="stat"><b id="monthWeight">0 kg</b><span>symbolic wheat</span></div>
+        <div class="stat"><b id="monthValue">£0</b><span>kindness intention</span></div>
+      </div>
+
+      <div class="weekdays">
+        <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+
+      <div class="calendar-foot">
+        <button class="today-btn" id="goToday">Today</button>
+        <div class="calendar-note">Marked days remember return steps. Quiet days remain unjudged.</div>
+      </div>
+    </section>
+  </main>
+  <div class="system-toast" id="systemToast" role="status" aria-live="polite"></div>
+  <aside class="debug-panel" id="returnStoryDebug" hidden>
+    <b>RETURN STORY DEBUG</b>
+    <div class="debug-actions">
+      <button type="button" id="debugResetStories">Reset new Return Story data</button>
+      <button type="button" id="debugTriggerMissed">Trigger sample missed event</button>
+      <button type="button" id="debugOpenFlow">Open Sadaqah Box flow</button>
+      <button type="button" id="debugGenerateStory">Generate sample story</button>
+    </div>
+  </aside>
+
+  <script>
+    const STORAGE_KEY = 'sadaqahBoxStandaloneV2';
+    const OLD_KEY = 'sadaqahBoxStandaloneV1';
+    const FIRST_RETURN_KEY = 'firstReturnCompleted';
+    const PENDING_MOMENT_KEY = 'returnSystem_pendingMoment_v1';
+    const RETURN_STORIES_KEY = 'returnSystem_returnStories_v1';
+    const DISMISSED_MOMENTS_KEY = 'returnSystem_dismissedMoments_v1';
+    const MISSED_PRAYER_STATUS_KEY = 'returnSystem_missedPrayerStatus_v1';
+    const SUPABASE_BROWSER_SDK = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/+esm';
+    const today = new Date();
+    today.setHours(12,0,0,0);
+
+    function dateKey(date){
+      const y=date.getFullYear();
+      const m=String(date.getMonth()+1).padStart(2,'0');
+      const d=String(date.getDate()).padStart(2,'0');
+      return `${y}-${m}-${d}`;
+    }
+
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const state = Object.assign({ records:{}, actions:{}, prayerStatus:{}, currency:'GBP', unitValue:1, ownerName:'' }, stored);
+    if(!state.records || typeof state.records !== 'object') state.records={};
+    if(!state.actions || typeof state.actions !== 'object') state.actions={};
+    if(!state.prayerStatus || typeof state.prayerStatus !== 'object') state.prayerStatus={};
+
+    if(!localStorage.getItem(STORAGE_KEY)){
+      const old = JSON.parse(localStorage.getItem(OLD_KEY) || '{}');
+      if(Number(old.packs)>0) state.records[dateKey(today)] = Number(old.packs);
+      if(old.currency) state.currency=old.currency;
+      if(old.unitValue !== undefined) state.unitValue=Number(old.unitValue);
+    }
+
+
+    const LEGACY_CURRENCY_MAP = {'¥':'CNY','£':'GBP','$':'USD','€':'EUR','RM ':'MYR'};
+    if(LEGACY_CURRENCY_MAP[state.currency]) state.currency = LEGACY_CURRENCY_MAP[state.currency];
+    const MONEY_META = {
+      EUR:{prefix:'€',suffix:'',decimals:2}, USD:{prefix:'US$',suffix:'',decimals:2}, GBP:{prefix:'£',suffix:'',decimals:2},
+      CAD:{prefix:'C$',suffix:'',decimals:2}, AUD:{prefix:'A$',suffix:'',decimals:2}, SAR:{prefix:'SAR ',suffix:'',decimals:2},
+      AED:{prefix:'AED ',suffix:'',decimals:2}, QAR:{prefix:'QAR ',suffix:'',decimals:2}, KWD:{prefix:'KWD ',suffix:'',decimals:3},
+      BHD:{prefix:'BHD ',suffix:'',decimals:3}, OMR:{prefix:'OMR ',suffix:'',decimals:3}, TRY:{prefix:'₺',suffix:'',decimals:2},
+      MYR:{prefix:'RM ',suffix:'',decimals:2}, IDR:{prefix:'Rp ',suffix:'',decimals:0}, PKR:{prefix:'Rs ',suffix:'',decimals:0},
+      BDT:{prefix:'৳',suffix:'',decimals:0}, EGP:{prefix:'E£ ',suffix:'',decimals:2}, MAD:{prefix:'MAD ',suffix:'',decimals:2},
+      DZD:{prefix:'DZD ',suffix:'',decimals:2}, NGN:{prefix:'₦',suffix:'',decimals:0}, CNY:{prefix:'¥',suffix:'',decimals:2}
+    };
+
+    let viewYear=today.getFullYear();
+    let viewMonth=today.getMonth();
+    let toastTimer;
+    let activeReturnMoment=null;
+    let storyDraft=null;
+    let selectedStoryId=null;
+    let savedKindnessStoryId=null;
+    let storyGenerationTimers=[];
+    let activePrayerName=null;
+    let prayerSheetReturnFocus=null;
+    let aiPublicConfig=null;
+    let aiSupabaseClient=null;
+    let aiSession=null;
+    let aiCreditBalance=null;
+    let aiContinueAfterAuth=false;
+    let aiStatusTimers=[];
+    let paypalSdkPromise=null;
+
+    function readStoryStorage(key,fallback){
+      try{
+        const value=JSON.parse(localStorage.getItem(key)||'null');
+        return value===null ? fallback : value;
+      }catch(error){
+        return fallback;
+      }
+    }
+
+    let pendingMoments=readStoryStorage(PENDING_MOMENT_KEY,[]);
+    let returnStories=readStoryStorage(RETURN_STORIES_KEY,[]);
+    let dismissedMoments=readStoryStorage(DISMISSED_MOMENTS_KEY,[]);
+    let missedPrayerStatus=readStoryStorage(MISSED_PRAYER_STATUS_KEY,{});
+    if(!Array.isArray(pendingMoments)) pendingMoments=[];
+    if(!Array.isArray(returnStories)) returnStories=[];
+    if(!Array.isArray(dismissedMoments)) dismissedMoments=[];
+    if(!missedPrayerStatus || typeof missedPrayerStatus!=='object' || Array.isArray(missedPrayerStatus)) missedPrayerStatus={};
+    returnStories=returnStories.filter(story=>story&&typeof story.id==='string');
+    pendingMoments=pendingMoments.filter(moment=>moment&&typeof moment.id==='string'&&!returnStories.some(story=>story.momentId===moment.id));
+    dismissedMoments=dismissedMoments.filter(id=>typeof id==='string');
+
+    const PRAYERS=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+    const ACTION_LABELS={
+      box:'Added to the Sadaqah Box',
+      dua:'A short dua',
+      prepare:'Prepared for the next salah',
+      kindness:'One act of kindness'
+    };
+    const SYSTEM_MESSAGES=[
+      'Small steps still matter.',
+      'You are not defined by one missed moment.',
+      'A door back is still open.',
+      'Return begins with one step.'
+    ];
+    const FIRST_RETURN_RESPONSES={
+      busy:['Your life is carrying many things.','A small return is still a return.'],
+      tired:['Allah knows your effort.','Rest, then return gently.'],
+      rhythm:['A broken rhythm can begin again.',''],
+      distant:['Distance is not the end.','The door is still open.'],
+      unknown:['Sometimes we just need a small step back.','']
+    };
+    const RETURN_STORY_TEMPLATES=[
+      {state:'busy',title:'BETWEEN DEADLINES',body:'The day moved faster than I expected. {prayer} slipped between unfinished work and responsibilities that kept asking for more. I cannot recover the moment by pretending it did not happen. But I noticed the distance, and I can choose one honest step toward returning.'},
+      {state:'busy',title:'ROOM IN THE DAY',body:'My attention was divided across too many things when {prayer} passed quietly. The list kept growing, and I let the day decide my rhythm. I am pausing now because being busy does not erase what matters to me. A small opening is enough to begin again.'},
+      {state:'busy',title:'THE DAY RAN AHEAD',body:'I was moving from one demand to another, and {prayer} was left behind in the rush. This story is not an excuse and it is not a verdict. It is a record that I still noticed, still cared, and still have a next step available.'},
+      {state:'busy',title:'ONE PAUSE REMAINED',body:'Work and responsibility filled almost every edge of today. Somewhere inside that movement, {prayer} went quiet. I am not turning the moment into a score. I am making room to see it clearly, breathe, and prepare for the next faithful pause I can choose.'},
+      {state:'tired',title:'WHEN ENERGY RAN LOW',body:'I reached {prayer} with less strength than I wanted. Tiredness made the distance feel larger, and I did not move toward the moment. I can name that honestly without making exhaustion my whole story. Rest and return can both be gentle, deliberate choices.'},
+      {state:'tired',title:'A TIRED WAY BACK',body:'Today my body and attention felt heavy when {prayer} came. I did not meet the moment as I hoped. I am keeping this reflection because effort can begin quietly: with rest, with honesty, and with preparing myself to respond differently when the next prayer arrives.'},
+      {state:'tired',title:'STILL ENOUGH TO NOTICE',body:'Fatigue narrowed my world, and {prayer} passed while I was running on very little. I do not need to turn tiredness into shame. I can acknowledge what happened, care for what is depleted, and keep one small intention ready for the next opening.'},
+      {state:'tired',title:'AFTER A HEAVY DAY',body:'The day asked more from me than I seemed able to give. By {prayer}, I felt worn down and distant from my rhythm. This moment remains mine to face with honesty. I can rest without disappearing, then return without demanding perfection from the first step.'},
+      {state:'rhythm',title:'THE RHYTHM CAN RETURN',body:'My usual pattern broke before {prayer}, and once the rhythm slipped, returning felt harder than it should have. I am noticing that interruption now. One broken part of the day does not have to decide the next part. I can begin again from where I am.'},
+      {state:'rhythm',title:'ONE MOMENT REMAINED',body:'The rhythm broke today, but the whole journey did not disappear. {prayer} became a quiet gap in the day. I am holding that gap without turning it into an identity. The next rhythm can begin with one prepared place, one pause, and one willing return.'},
+      {state:'rhythm',title:'BEGINNING THE PATTERN AGAIN',body:'I lost the thread that usually carries me toward {prayer}. The longer I waited, the more unfamiliar returning felt. I can still pick up the thread without pretending the break was nothing. A rhythm is rebuilt through small moments that I choose again.'},
+      {state:'rhythm',title:'AFTER THE INTERRUPTION',body:'Something changed the shape of today, and {prayer} fell outside the pattern I meant to keep. I am not measuring how far I drifted. I am noticing the interruption and choosing not to let it write the rest of the day for me.'},
+      {state:'distant',title:'THE DOOR STAYS VISIBLE',body:'I felt distant when {prayer} came, and that distance made returning feel difficult. I cannot solve the feeling by hiding from it. I can name it, keep this moment private, and choose one real action that moves me closer without pretending everything already feels easy.'},
+      {state:'distant',title:'DISTANCE IS NOT THE END',body:'There was space between what I value and what I managed to do at {prayer}. I felt that space clearly. This reflection does not explain it away. It simply records that I am still looking toward return, and that looking can become a deliberate next step.'},
+      {state:'distant',title:'A QUIET WAY BACK',body:'I did not return through a perfect day. {prayer} passed while I felt far from the rhythm I wanted. I returned first by noticing that I still cared. I can carry that care into one small action, without forcing a feeling or making a promise I cannot know.'},
+      {state:'distant',title:'CLOSER BY ONE STEP',body:'When {prayer} arrived, I felt removed from the person I wanted to be in that moment. I am not using this story to judge the distance. I am using it to see that a next step remains possible, even before closeness feels natural again.'},
+      {state:'quiet',title:'THE QUIET MOMENT',body:'Nothing dramatic surrounded {prayer}. The day was quiet, and the moment still slipped past me. That simplicity makes it worth noticing. I do not need a large explanation. I can let this ordinary pause become a clear decision to return with attention next time.'},
+      {state:'quiet',title:'IN AN ORDINARY HOUR',body:'{prayer} passed inside an ordinary part of the day. There was no single crisis to point toward, only a moment I did not take. I am keeping it without decoration. An ordinary missed moment can still be followed by an ordinary, sincere step back.'},
+      {state:'quiet',title:'A SMALL SILENCE',body:'The world around me was quiet when {prayer} went by, yet I did not enter the pause. I can sit with that without inventing a bigger meaning. The silence gives me room to notice what happened and decide how I want to meet the next moment.'},
+      {state:'quiet',title:'NOTHING SPECIAL REQUIRED',body:'Today did not offer a dramatic reason for missing {prayer}. It was simply a human moment that passed. I do not need a special image or perfect explanation to return. I only need enough honesty to recognize the gap and choose what comes next.'},
+      {state:'unknown',title:'WITHOUT A CLEAR REASON',body:'I do not fully know why {prayer} became difficult today. The reason may be mixed, quiet, or not ready for words. I can leave the question open without leaving the return behind. One small action is enough for this moment to move in a new direction.'},
+      {state:'unknown',title:'WHEN WORDS DO NOT COME',body:'I cannot give {prayer} a neat explanation. I only know the moment passed and I noticed afterward. This story can stay unfinished. I do not need certainty about every feeling before I choose a practical step toward returning.'},
+      {state:'unknown',title:'A STEP BEFORE ANSWERS',body:'There is no clear label for what happened around {prayer}. I may understand it later, or I may not. For now, I can hold the moment without judgment and let one grounded action come before a complete explanation.'},
+      {state:'unknown',title:'THE REASON STAYS OPEN',body:'I looked for a simple reason that {prayer} slipped, but none felt complete. I am allowing the reason to remain open. What matters now is not forcing an answer; it is recognizing that I can still prepare, care, and choose a way back.'}
+    ];
+
+    const el=id=>document.getElementById(id);
+    const currency=el('currency');
+    const unitValue=el('unitValue');
+    const ownerName=el('ownerName');
+    currency.value=state.currency;
+    if(!currency.value){ state.currency='GBP'; currency.value='GBP'; }
+    unitValue.value=state.unitValue;
+    ownerName.value=state.ownerName || '';
+
+    function save(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); }
+    function fmt(n){ return Number.isInteger(n) ? String(n) : Number(n).toFixed(2).replace(/0+$/,'').replace(/\.$/,''); }
+    function money(n){ const meta=MONEY_META[state.currency] || {prefix:state.currency+' ',suffix:'',decimals:2}; return meta.prefix + Number(n||0).toLocaleString('en-GB',{minimumFractionDigits:0,maximumFractionDigits:meta.decimals}) + meta.suffix; }
+    function monthPrefix(y,m){ return `${y}-${String(m+1).padStart(2,'0')}-`; }
+    function monthPacksTotal(y,m){
+      const prefix=monthPrefix(y,m);
+      return Object.entries(state.records).reduce((sum,[k,v])=>sum+(k.startsWith(prefix)?Number(v||0):0),0);
+    }
+    function currentMonthTotal(){ return monthPacksTotal(today.getFullYear(),today.getMonth()); }
+
+    function renderBags(totalPacks){
+      const area=el('wheatArea');
+      area.innerHTML='';
+      const visible=Math.min(totalPacks,24);
+      for(let i=0;i<visible;i++){
+        const bag=document.createElement('div');
+        bag.className='bag';
+        const col=i%4;
+        const row=Math.floor(i/4);
+        bag.style.left=(18+col*50+(row%2?7:0))+'px';
+        bag.style.top=(216-row*34)+'px';
+        bag.style.setProperty('--rot',((i%5)-2)*3+'deg');
+        area.appendChild(bag);
+      }
+    }
+
+    function getTodayPrayerStatus(){
+      const key=dateKey(today);
+      if(!state.prayerStatus[key] || typeof state.prayerStatus[key] !== 'object') state.prayerStatus[key]={};
+      return state.prayerStatus[key];
+    }
+
+    function getMissedPrayerRecord(prayerName,date=dateKey(today)){
+      const day=missedPrayerStatus[date];
+      if(!day || typeof day!=='object' || Array.isArray(day)) return null;
+      const record=day[prayerName];
+      return record && record.missed===true ? record : null;
+    }
+
+    function clearMissedPrayerRecord(prayerName,date=dateKey(today)){
+      const day=missedPrayerStatus[date];
+      if(!day || typeof day!=='object' || !Object.prototype.hasOwnProperty.call(day,prayerName)) return true;
+      const next={...missedPrayerStatus,[date]:{...day}};
+      delete next[date][prayerName];
+      if(!Object.keys(next[date]).length) delete next[date];
+      if(!writeStoryStorage(MISSED_PRAYER_STATUS_KEY,next)) return false;
+      missedPrayerStatus=next;
+      return true;
+    }
+
+    function recordMissedPrayer(prayerName,date=dateKey(today)){
+      const existing=getMissedPrayerRecord(prayerName,date);
+      if(existing) return true;
+      const day=missedPrayerStatus[date] && typeof missedPrayerStatus[date]==='object' && !Array.isArray(missedPrayerStatus[date])
+        ? missedPrayerStatus[date]
+        : {};
+      const next={
+        ...missedPrayerStatus,
+        [date]:{
+          ...day,
+          [prayerName]:{missed:true,markedAt:new Date().toISOString()}
+        }
+      };
+      if(!writeStoryStorage(MISSED_PRAYER_STATUS_KEY,next)) return false;
+      missedPrayerStatus=next;
+      return true;
+    }
+
+    function renderPrayerLights(status){
+      const lights=[...document.querySelectorAll('#prayerLights .prayer-light')];
+      lights.forEach(light=>{
+        const prayerName=light.dataset.prayer;
+        const complete=Boolean(status[prayerName]);
+        const missed=!complete && Boolean(getMissedPrayerRecord(prayerName));
+        light.classList.toggle('off',!complete);
+        light.classList.toggle('missed',missed);
+      });
+    }
+
+    function renderMain(){
+      const packs=currentMonthTotal();
+      const weight=packs*1.75;
+      const value=packs*Number(state.unitValue||0);
+      el('packsTop').textContent=packs;
+      el('weightTop').textContent=fmt(weight)+' kg';
+      el('valueTop').textContent=money(value);
+      el('jarAmount').textContent=money(value);
+      el('jarMeta').textContent=`${packs} moment${packs===1?'':'s'} · ${fmt(weight)} kg`;
+      const todayCount=Number(state.records[dateKey(today)]||0);
+      const todayValue = todayCount*Number(state.unitValue||0);
+      const prayerStatus=getTodayPrayerStatus();
+      const reflectedCount=PRAYERS.filter(prayer=>prayerStatus[prayer]).length;
+      const todayActions=state.actions[dateKey(today)] || [];
+      const lastAction=todayActions.length ? ACTION_LABELS[todayActions[todayActions.length-1]] : '';
+      el('todayCopy').textContent = todayCount===0
+        ? 'There is no score here. Choose one gentle action when you are ready.'
+        : `${todayCount} return step${todayCount===1?'':'s'} remembered today.${lastAction ? ` Latest: ${lastAction}.` : ''}`;
+      el('lightsLeft').textContent = `${reflectedCount} of 5 reflected`;
+      el('todayValue').textContent = todayCount ? `${todayCount} step${todayCount===1?'':'s'} · ${money(todayValue)}` : 'No step yet';
+      el('hedgeLine').textContent = todayCount===0
+        ? 'The box is ready when you are. It does not judge quiet days.'
+        : 'A return moment is being held with kindness.';
+      renderPrayerLights(prayerStatus);
+      renderStatus(prayerStatus);
+      el('fill').style.height=(Math.min(packs,12)/12*100)+'%';
+      renderBags(packs);
+    }
+
+    function renderStatus(status){
+      document.querySelectorAll('#statusList .status-prayer').forEach(button=>{
+        const prayerName=button.dataset.prayer;
+        const complete=Boolean(status[prayerName]);
+        const missed=!complete && Boolean(getMissedPrayerRecord(prayerName));
+        button.classList.toggle('complete',complete);
+        button.classList.toggle('missed',missed);
+        button.setAttribute('aria-pressed',String(complete));
+        button.setAttribute('aria-label',`${prayerName}: ${complete?'Prayed':missed?'Missed':'Not recorded'}`);
+        button.querySelector('.status-symbol').textContent=complete ? '✦' : missed ? '◌' : '○';
+        button.querySelector('.status-caption').textContent=complete ? 'Prayed' : missed ? 'Missed' : '';
+      });
+      const count=PRAYERS.filter(prayer=>status[prayer]).length;
+      el('statusMessage').textContent=count===5
+        ? 'Five lights held with gratitude.'
+        : 'One small step is available.';
+    }
+
+    function renderCalendar(){
+      const monthDate=new Date(viewYear,viewMonth,1);
+      el('monthTitle').textContent=monthDate.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+      const packs=monthPacksTotal(viewYear,viewMonth);
+      const monthValue=packs*Number(state.unitValue||0);
+      el('monthPacks').textContent=packs;
+      el('monthWeight').textContent=fmt(packs*1.75)+' kg';
+      el('monthValue').textContent=money(monthValue);
+      el('monthImpactTitle').textContent = packs>0 ? `${packs} return moment${packs===1?'':'s'} held this month.` : 'Every return can begin small.';
+      el('monthImpactCopy').textContent = packs>0
+        ? `Your Sadaqah Box remembers the steps you chose, with a symbolic intention of ${money(monthValue)}.`
+        : 'The box can stay quiet without judgment. A way back remains available.';
+
+      const grid=el('calendarGrid');
+      grid.innerHTML='';
+      const firstDay=(monthDate.getDay()+6)%7;
+      const daysInMonth=new Date(viewYear,viewMonth+1,0).getDate();
+      for(let i=0;i<firstDay;i++){
+        const blank=document.createElement('div');
+        blank.className='day empty';
+        grid.appendChild(blank);
+      }
+      for(let day=1;day<=daysInMonth;day++){
+        const d=new Date(viewYear,viewMonth,day,12);
+        const key=dateKey(d);
+        const count=Number(state.records[key]||0);
+        const cell=document.createElement('div');
+        cell.className='day'+(key===dateKey(today)?' today':'')+(count===0?' zero':'');
+        const countText=count>0?`<span>✦ ${count}</span>${count} return step${count===1?'':'s'}`:'';
+        cell.innerHTML=`<div class="day-number">${day}</div>${countText?`<div class="day-count">${countText}</div>`:''}`;
+        grid.appendChild(cell);
+      }
+    }
+
+    function renderAll(){
+      el('todayDate').textContent='Today · '+today.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+      renderMain();
+      renderCalendar();
+      save();
+    }
+
+    function writeStoryStorage(key,value){
+      try{
+        localStorage.setItem(key,JSON.stringify(value));
+        return true;
+      }catch(error){
+        return false;
+      }
+    }
+
+    function openAiLayer(id){
+      const layer=el(id);
+      layer.hidden=false;
+      layer.setAttribute('aria-hidden','false');
+      document.body.classList.add('ai-layer-open');
+    }
+
+    function closeAiLayer(id){
+      const layer=el(id);
+      layer.hidden=true;
+      layer.setAttribute('aria-hidden','true');
+      if([...document.querySelectorAll('.ai-layer')].every(item=>item.hidden)) document.body.classList.remove('ai-layer-open');
+    }
+
+    async function loadAiPublicConfig(){
+      if(aiPublicConfig) return aiPublicConfig;
+      const response=await fetch('/api/public-config',{cache:'no-store'});
+      const payload=await response.json().catch(()=>({}));
+      if(!response.ok||!payload.success) throw new Error(payload.error?.message||'AI services are not configured yet.');
+      if(payload.paypalEnvironment!=='sandbox') throw new Error('This build only supports PayPal Sandbox.');
+      aiPublicConfig=payload;
+      return payload;
+    }
+
+    async function getAiSupabase(){
+      if(aiSupabaseClient) return aiSupabaseClient;
+      const config=await loadAiPublicConfig();
+      if(!config.supabaseUrl||!config.supabasePublishableKey) throw new Error('Sign in is not configured yet.');
+      const {createClient}=await import(SUPABASE_BROWSER_SDK);
+      aiSupabaseClient=createClient(config.supabaseUrl,config.supabasePublishableKey);
+      aiSupabaseClient.auth.onAuthStateChange((_event,session)=>{
+        aiSession=session;
+        if(!session) aiCreditBalance=null;
+        renderAiAccount();
+      });
+      const {data}=await aiSupabaseClient.auth.getSession();
+      aiSession=data.session||null;
+      renderAiAccount();
+      return aiSupabaseClient;
+    }
+
+    function renderAiAccount(){
+      const signedIn=Boolean(aiSession);
+      el('aiAccountBar').hidden=!signedIn;
+      if(signedIn){
+        el('aiCreditBalance').textContent=aiCreditBalance===null?'AI Story Credits: —':`AI Story Credits: ${aiCreditBalance}`;
+        el('creditsLayerBalance').textContent=aiCreditBalance===null?'Refresh your balance to continue.':`AI Story Credits: ${aiCreditBalance}`;
+      }
+      updateAiStoryButton();
+    }
+
+    function updateAiStoryButton(){
+      const button=el('createAiStory');
+      if(!button||!storyDraft) return;
+      button.disabled=!storyDraft.hasPhoto;
+      if(!storyDraft.hasPhoto) button.textContent='ADD A PHOTO FOR AI';
+      else if(!navigator.onLine) button.textContent='AI STORIES REQUIRE INTERNET';
+      else if(!aiSession) button.textContent='SIGN IN TO CONTINUE';
+      else if(aiCreditBalance===0) button.textContent='GET AI STORY CREDITS';
+      else button.textContent='CREATE WITH AI · 1 CREDIT';
+    }
+
+    async function authorizedApi(path,options={}){
+      if(!aiSession?.access_token) throw Object.assign(new Error('Sign in is required.'),{code:'AUTH_REQUIRED'});
+      const response=await fetch(path,{
+        ...options,
+        cache:'no-store',
+        headers:{'Content-Type':'application/json',Authorization:`Bearer ${aiSession.access_token}`,...(options.headers||{})}
+      });
+      const payload=await response.json().catch(()=>({success:false,error:{message:'The server returned an unreadable response.'}}));
+      if(!response.ok||!payload.success){
+        const error=new Error(payload.error?.message||'The request could not be completed.');
+        error.code=payload.error?.code;
+        error.creditReturned=payload.creditReturned;
+        throw error;
+      }
+      return payload;
+    }
+
+    async function refreshAiCredits(){
+      if(!navigator.onLine) throw new Error('AI stories require an internet connection.');
+      const payload=await authorizedApi('/api/credits');
+      aiCreditBalance=payload.balance;
+      renderAiAccount();
+      return payload;
+    }
+
+    async function beginAiEntry(){
+      el('aiStoryError').textContent='';
+      if(!storyDraft?.hasPhoto) return;
+      if(!navigator.onLine){
+        el('aiStoryError').textContent='AI stories require an internet connection. Your Basic Reflection is still available.';
+        return;
+      }
+      try{
+        await getAiSupabase();
+        if(!aiSession){
+          aiContinueAfterAuth=true;
+          openAiLayer('aiAuthLayer');
+          return;
+        }
+        if(aiCreditBalance===null) await refreshAiCredits();
+        if(aiCreditBalance===0){
+          openAiLayer('aiCreditsLayer');
+          return;
+        }
+        openAiLayer('aiConsentLayer');
+      }catch(error){
+        el('aiStoryError').textContent=error.message;
+      }
+    }
+
+    async function sendAiOtp(){
+      el('aiAuthError').textContent='';
+      const email=el('aiAuthEmail').value.trim();
+      if(!/^\S+@\S+\.\S+$/.test(email)){
+        el('aiAuthError').textContent='Enter a valid email address.';
+        return;
+      }
+      try{
+        const client=await getAiSupabase();
+        const {error}=await client.auth.signInWithOtp({email,options:{shouldCreateUser:true}});
+        if(error) throw error;
+        el('aiOtpField').hidden=false;
+        el('verifyAiOtp').hidden=false;
+        el('sendAiOtp').textContent='SEND CODE AGAIN';
+        el('aiAuthOtp').focus();
+      }catch(error){
+        el('aiAuthError').textContent=error.message||'The email code could not be sent.';
+      }
+    }
+
+    async function verifyAiOtp(){
+      el('aiAuthError').textContent='';
+      const email=el('aiAuthEmail').value.trim();
+      const token=el('aiAuthOtp').value.trim();
+      if(!/^\d{6}$/.test(token)){
+        el('aiAuthError').textContent='Enter the 6-digit code from your email.';
+        return;
+      }
+      try{
+        const client=await getAiSupabase();
+        const {data,error}=await client.auth.verifyOtp({email,token,type:'email'});
+        if(error||!data.session) throw error||new Error('The code could not be verified.');
+        aiSession=data.session;
+        await refreshAiCredits();
+        closeAiLayer('aiAuthLayer');
+        if(aiContinueAfterAuth&&storyDraft?.hasPhoto) openAiLayer('aiConsentLayer');
+        aiContinueAfterAuth=false;
+      }catch(error){
+        el('aiAuthError').textContent=error.message||'The code could not be verified.';
+      }
+    }
+
+    async function createPersonalAiStory(){
+      closeAiLayer('aiConsentLayer');
+      el('aiStoryError').textContent='';
+      el('aiGenerationStatus').hidden=false;
+      el('aiGenerationStatus').textContent='Looking at the details...';
+      el('createAiStory').disabled=true;
+      aiStatusTimers.forEach(clearTimeout);
+      aiStatusTimers=[
+        setTimeout(()=>{el('aiGenerationStatus').textContent='Holding the moment...';},800),
+        setTimeout(()=>{el('aiGenerationStatus').textContent='Building your personal story...';},1700)
+      ];
+      try{
+        const payload=await authorizedApi('/api/return-story',{
+          method:'POST',
+          body:JSON.stringify({
+            requestId:crypto.randomUUID(),
+            photoDataUrl:storyDraft.photoDataUrl,
+            prayerName:storyDraft.prayerName,
+            selectedState:storyDraft.selectedState,
+            language:'en'
+          })
+        });
+        storyDraft.aiStory=payload.story;
+        aiCreditBalance=payload.balance;
+        el('aiGeneratedTitle').textContent=payload.story.title;
+        el('aiGeneratedBody').textContent=payload.story.body;
+        el('aiGeneratedResult').hidden=false;
+        el('aiGenerationStatus').hidden=true;
+        renderAiAccount();
+      }catch(error){
+        const returned=error.creditReturned===true?' Your credit was returned.':error.creditReturned===false?' Credit return could not be confirmed; refresh your balance.':'';
+        el('aiStoryError').textContent=`${error.message}${returned} Your Basic Reflection and photo remain on this device.`;
+        el('aiGenerationStatus').hidden=true;
+        if(error.code==='AUTH_REQUIRED'||error.code==='INVALID_SESSION'||error.code==='SESSION_EXPIRED'){
+          aiSession=null;
+          renderAiAccount();
+        }
+      }finally{
+        aiStatusTimers.forEach(clearTimeout);
+        aiStatusTimers=[];
+        updateAiStoryButton();
+      }
+    }
+
+    async function loadPayPalSdk(){
+      if(window.paypal) return window.paypal;
+      if(paypalSdkPromise) return paypalSdkPromise;
+      paypalSdkPromise=(async()=>{
+        const config=await loadAiPublicConfig();
+        if(!config.paypalClientId||config.paypalEnvironment!=='sandbox') throw new Error('PayPal Sandbox is not configured.');
+        await new Promise((resolve,reject)=>{
+          const script=document.createElement('script');
+          script.src=`https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(config.paypalClientId)}&currency=USD&intent=capture`;
+          script.async=true;
+          script.onload=resolve;
+          script.onerror=()=>reject(new Error('PayPal Sandbox could not be loaded.'));
+          document.head.appendChild(script);
+        });
+        return window.paypal;
+      })();
+      return paypalSdkPromise;
+    }
+
+    async function renderPayPalPurchase(productId){
+      el('paypalError').textContent='';
+      el('paypalButtonContainer').innerHTML='';
+      try{
+        if(!aiSession) throw new Error('Sign in before purchasing AI Story Credits.');
+        const paypal=await loadPayPalSdk();
+        await paypal.Buttons({
+          style:{layout:'vertical',shape:'pill',label:'paypal'},
+          createOrder:async()=>{
+            const payload=await authorizedApi('/api/paypal/create-order',{
+              method:'POST',body:JSON.stringify({productId,requestId:crypto.randomUUID()})
+            });
+            return payload.orderId;
+          },
+          onApprove:async data=>{
+            const payload=await authorizedApi('/api/paypal/capture-order',{
+              method:'POST',body:JSON.stringify({orderId:data.orderID})
+            });
+            aiCreditBalance=payload.balance;
+            renderAiAccount();
+            el('paypalError').textContent=`Sandbox payment completed. ${payload.creditsAdded} credits added.`;
+          },
+          onError:()=>{el('paypalError').textContent='The Sandbox payment could not be completed.';}
+        }).render('#paypalButtonContainer');
+      }catch(error){
+        el('paypalError').textContent=error.message;
+      }
+    }
+
+    async function initializeAiFeatures(){
+      if(!navigator.onLine){renderAiAccount();return;}
+      try{
+        await getAiSupabase();
+        if(aiSession) await refreshAiCredits();
+      }catch{
+        renderAiAccount();
+      }
+    }
+
+    function showPrayerSheetView(viewName){
+      const views={choice:'prayerChoiceView',prayed:'prayerPrayedView',change:'prayerChangeView'};
+      const headings={choice:'prayerSheetHeading',prayed:'prayerPrayedHeading',change:'prayerChangeHeading'};
+      Object.entries(views).forEach(([name,id])=>{el(id).hidden=name!==viewName;});
+      el('prayerStatusSheet').setAttribute('aria-labelledby',headings[viewName]);
+    }
+
+    function openPrayerStatusSheet(prayerName,sourceButton){
+      activePrayerName=prayerName;
+      prayerSheetReturnFocus=sourceButton||document.activeElement;
+      document.querySelectorAll('[data-prayer-sheet-name]').forEach(label=>{label.textContent=prayerName;});
+      showPrayerSheetView(Boolean(getTodayPrayerStatus()[prayerName])?'prayed':'choice');
+      el('prayerStatusLayer').hidden=false;
+      el('prayerStatusLayer').setAttribute('aria-hidden','false');
+      document.body.classList.add('prayer-sheet-open');
+      setTimeout(()=>{
+        const visibleView=document.querySelector('.prayer-sheet-view:not([hidden])');
+        visibleView?.querySelector('button')?.focus();
+      },0);
+    }
+
+    function closePrayerStatusSheet(){
+      el('prayerStatusLayer').hidden=true;
+      el('prayerStatusLayer').setAttribute('aria-hidden','true');
+      document.body.classList.remove('prayer-sheet-open');
+      activePrayerName=null;
+      const focusTarget=prayerSheetReturnFocus;
+      prayerSheetReturnFocus=null;
+      focusTarget?.focus?.();
+    }
+
+    function markActivePrayerAsPrayed(){
+      if(!activePrayerName) return;
+      const prayerName=activePrayerName;
+      if(!clearMissedPrayerRecord(prayerName)){
+        showSystemMessage('This status could not be saved on this device.');
+        return;
+      }
+      getTodayPrayerStatus()[prayerName]=true;
+      closePrayerStatusSheet();
+      renderAll();
+    }
+
+    function markActivePrayerAsMissed(){
+      if(!activePrayerName) return;
+      const prayerName=activePrayerName;
+      const date=dateKey(today);
+      if(!recordMissedPrayer(prayerName,date)){
+        showSystemMessage('This status could not be saved on this device.');
+        return;
+      }
+      delete getTodayPrayerStatus()[prayerName];
+      closePrayerStatusSheet();
+      renderAll();
+      registerMissedMoment(prayerName,{date});
+    }
+
+    function clearActivePrayerRecord(){
+      if(!activePrayerName) return;
+      const prayerName=activePrayerName;
+      if(!clearMissedPrayerRecord(prayerName)){
+        showSystemMessage('This status could not be cleared on this device.');
+        return;
+      }
+      delete getTodayPrayerStatus()[prayerName];
+      closePrayerStatusSheet();
+      renderAll();
+    }
+
+    function momentId(date,prayerName){ return `${date}|${prayerName}`; }
+    function latestPendingMoment(){
+      return pendingMoments.slice().sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt))).pop()||null;
+    }
+    function isMomentKnown(id){
+      return pendingMoments.some(moment=>moment.id===id)
+        || dismissedMoments.includes(id)
+        || returnStories.some(story=>story.momentId===id);
+    }
+    function escapeHtml(value){
+      return String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+    }
+    function storyDateLabel(date){
+      const parts=String(date).split('-').map(Number);
+      const value=parts.length===3 ? new Date(parts[0],parts[1]-1,parts[2],12) : new Date(date);
+      return Number.isNaN(value.getTime()) ? String(date) : value.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    }
+    function storyActionLabel(action){
+      if(!action) return 'Kept privately';
+      if(action.startsWith('kindness:')) return action.replace('kindness:','Kindness ·');
+      return ({prepare:'Prepared for the next salah',sadaqah:'Added to My Sadaqah',kindness:'Chose a small kindness',private:'Kept privately'})[action]||action;
+    }
+
+    function renderReturnStoryUI(){
+      const pending=latestPendingMoment();
+      const isDismissed=pending ? dismissedMoments.includes(pending.id) : false;
+      el('returnWindowNotice').hidden=!pending||isDismissed;
+      el('pendingStoryHint').hidden=!pending;
+      el('pendingBoxHint').hidden=!pending;
+      el('jarStage').classList.toggle('has-pending',Boolean(pending));
+      renderReturnStories();
+    }
+
+    function registerMissedMoment(prayerName,options={}){
+      const date=options.date||dateKey(today);
+      const id=options.id||momentId(date,prayerName);
+      if(isMomentKnown(id)) return false;
+      const moment={id,date,prayerName,createdAt:new Date().toISOString()};
+      pendingMoments.push(moment);
+      if(!writeStoryStorage(PENDING_MOMENT_KEY,pendingMoments)){
+        pendingMoments=pendingMoments.filter(item=>item.id!==id);
+        showSystemMessage('This device could not keep the new Return Window.');
+        return false;
+      }
+      el('jarStage').classList.remove('box-activated');
+      void el('jarStage').offsetWidth;
+      el('jarStage').classList.add('box-activated');
+      renderReturnStoryUI();
+      return true;
+    }
+
+    function dismissMoment(moment){
+      if(!moment) return;
+      if(!dismissedMoments.includes(moment.id)) dismissedMoments.push(moment.id);
+      if(!writeStoryStorage(DISMISSED_MOMENTS_KEY,dismissedMoments)){
+        showSystemMessage('This choice could not be saved on this device.');
+      }
+      renderReturnStoryUI();
+    }
+
+    function switchBoxTab(tab){
+      const stories=tab==='stories';
+      el('returnStoriesPanel').hidden=!stories;
+      el('mySadaqahPanel').hidden=stories;
+      el('returnStoriesTab').classList.toggle('is-active',stories);
+      el('mySadaqahTab').classList.toggle('is-active',!stories);
+      el('returnStoriesTab').setAttribute('aria-selected',String(stories));
+      el('mySadaqahTab').setAttribute('aria-selected',String(!stories));
+      if(stories) renderReturnStories();
+    }
+
+    function renderReturnStories(){
+      const list=el('storiesList');
+      const stories=returnStories.slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+      el('storiesEmpty').hidden=stories.length>0;
+      list.innerHTML='';
+      stories.forEach(story=>{
+        const button=document.createElement('button');
+        button.type='button';
+        button.className='story-list-card'+(story.photoDataUrl?'':' no-photo');
+        if(story.photoDataUrl){
+          const image=document.createElement('img');
+          image.className='story-thumb';
+          image.src=story.photoDataUrl;
+          image.alt='';
+          image.loading='lazy';
+          button.appendChild(image);
+        }
+        const copy=document.createElement('div');
+        const meta=document.createElement('small');
+        meta.textContent=`${story.prayerName} · ${storyDateLabel(story.date)}`;
+        const title=document.createElement('strong');
+        title.textContent=story.title;
+        const action=document.createElement('span');
+        action.textContent=storyActionLabel(story.selectedAction);
+        copy.append(meta,title,action);
+        button.appendChild(copy);
+        button.addEventListener('click',()=>openStoryDetail(story.id));
+        list.appendChild(button);
+      });
+    }
+
+    function showStoryStep(name){
+      document.querySelectorAll('[data-story-step]').forEach(step=>{ step.hidden=step.dataset.storyStep!==name; });
+      el('returnStoryFlow').scrollTop=0;
+    }
+
+    function resetStoryDraft(moment){
+      storyGenerationTimers.forEach(clearTimeout);
+      storyGenerationTimers=[];
+      activeReturnMoment=moment;
+      storyDraft={
+        date:moment.date,
+        prayerName:moment.prayerName,
+        selectedState:'unknown',
+        hasPhoto:false,
+        photoDataUrl:'',
+        currentLanguage:document.documentElement.lang||'en'
+      };
+      el('storyPhotoInput').value='';
+      el('photoPreviewWrap').hidden=true;
+      el('photoStartActions').hidden=false;
+      el('storyPhotoPreview').removeAttribute('src');
+      el('photoError').textContent='';
+      el('storySaveError').textContent='';
+      document.querySelectorAll('[data-story-action]').forEach(button=>button.disabled=false);
+      document.querySelectorAll('[data-moment-state]').forEach(button=>button.classList.remove('is-selected'));
+    }
+
+    function openReturnStoryFlow(moment=latestPendingMoment()){
+      if(!moment){
+        showSystemMessage('No Return Window is waiting right now.');
+        return;
+      }
+      resetStoryDraft(moment);
+      const flow=el('returnStoryFlow');
+      flow.hidden=false;
+      flow.setAttribute('aria-hidden','false');
+      document.body.classList.add('story-flow-open');
+      showStoryStep('photo');
+    }
+
+    function closeReturnStoryFlow({dismiss=true}={}){
+      storyGenerationTimers.forEach(clearTimeout);
+      storyGenerationTimers=[];
+      if(dismiss && activeReturnMoment && pendingMoments.some(item=>item.id===activeReturnMoment.id)) dismissMoment(activeReturnMoment);
+      const flow=el('returnStoryFlow');
+      flow.hidden=true;
+      flow.setAttribute('aria-hidden','true');
+      document.body.classList.remove('story-flow-open');
+      activeReturnMoment=null;
+      storyDraft=null;
+    }
+
+    function readFileAsDataUrl(file){
+      return new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=()=>reject(new Error('read'));
+        reader.readAsDataURL(file);
+      });
+    }
+    function loadPhoto(dataUrl){
+      return new Promise((resolve,reject)=>{
+        const image=new Image();
+        image.onload=()=>resolve(image);
+        image.onerror=()=>reject(new Error('decode'));
+        image.src=dataUrl;
+      });
+    }
+    async function compressStoryPhoto(file){
+      const supported=['image/jpeg','image/png','image/webp'];
+      if(!supported.includes(file.type)) throw new Error('unsupported');
+      if(file.size>30*1024*1024) throw new Error('too-large');
+      const source=await readFileAsDataUrl(file);
+      const image=await loadPhoto(source);
+      const scale=Math.min(1,720/Math.max(image.naturalWidth,image.naturalHeight));
+      const width=Math.max(1,Math.round(image.naturalWidth*scale));
+      const height=Math.max(1,Math.round(image.naturalHeight*scale));
+      const canvas=document.createElement('canvas');
+      canvas.width=width;
+      canvas.height=height;
+      const context=canvas.getContext('2d');
+      if(!context) throw new Error('canvas');
+      context.fillStyle='#172b28';
+      context.fillRect(0,0,width,height);
+      context.drawImage(image,0,0,width,height);
+      return canvas.toDataURL('image/jpeg',.68);
+    }
+
+    async function handleStoryPhoto(file){
+      el('photoError').textContent='';
+      if(!file) return;
+      try{
+        const compressed=await compressStoryPhoto(file);
+        storyDraft.photoDataUrl=compressed;
+        storyDraft.hasPhoto=true;
+        el('storyPhotoPreview').src=compressed;
+        el('photoPreviewWrap').hidden=false;
+        el('photoStartActions').hidden=true;
+        updateAiStoryButton();
+      }catch(error){
+        const messages={unsupported:'Choose a JPG, JPEG, PNG, or WEBP image.', 'too-large':'This image is too large to prepare safely. Please choose a smaller photo.',read:'The photo could not be read. Please try another one.',decode:'The photo could not be opened. Please try another one.',canvas:'This browser could not prepare the photo.'};
+        el('photoError').textContent=messages[error.message]||'The photo could not be prepared. Please try again.';
+      }
+    }
+
+    function storyHash(value){
+      return Array.from(String(value)).reduce((hash,char)=>((hash<<5)-hash)+char.charCodeAt(0),0)>>>0;
+    }
+    function generateLocalReturnStory(context){
+      const state=context.selectedState||'unknown';
+      const choices=RETURN_STORY_TEMPLATES.filter(template=>template.state===state);
+      const template=choices[storyHash(`${context.date}|${context.prayerName}|${state}|${context.hasPhoto}`)%choices.length];
+      return {title:template.title,body:template.body.replaceAll('{prayer}',context.prayerName)};
+    }
+    async function generateReturnStory(context){
+      // Future integration boundary: replace this local call with POST /api/return-story.
+      return generateLocalReturnStory(context);
+    }
+
+    function renderGeneratedStory(){
+      el('generatedStoryTitle').textContent=storyDraft.title;
+      el('generatedStoryBody').textContent=storyDraft.body;
+      el('generatedStoryMeta').textContent=`A Return Story · ${storyDraft.prayerName} · ${storyDateLabel(storyDraft.date)}`;
+      el('generatedStoryPhoto').hidden=!storyDraft.hasPhoto;
+      if(storyDraft.hasPhoto) el('generatedStoryPhoto').src=storyDraft.photoDataUrl;
+      else el('generatedStoryPhoto').removeAttribute('src');
+      storyDraft.aiStory=null;
+      el('aiGeneratedResult').hidden=true;
+      el('aiGenerationStatus').hidden=true;
+      el('aiStoryError').textContent='';
+      updateAiStoryButton();
+      showStoryStep('story');
+    }
+
+    async function beginStoryGeneration(){
+      showStoryStep('generating');
+      el('generatingCopy').textContent='Holding the moment...';
+      storyGenerationTimers.forEach(clearTimeout);
+      storyGenerationTimers=[
+        setTimeout(()=>{el('generatingCopy').textContent='Finding a way back...';},560),
+        setTimeout(()=>{el('generatingCopy').textContent='Building your Return Story...';},1120)
+      ];
+      const result=await generateReturnStory({...storyDraft});
+      storyDraft.title=result.title;
+      storyDraft.body=result.body;
+      storyGenerationTimers.push(setTimeout(renderGeneratedStory,1700));
+    }
+
+    function saveStory(selectedAction){
+      if(!storyDraft||!activeReturnMoment) return null;
+      if(storyDraft.savedStoryId) return returnStories.find(story=>story.id===storyDraft.savedStoryId)||null;
+      const photoCount=returnStories.filter(story=>Boolean(story.photoDataUrl)).length;
+      if(storyDraft.hasPhoto&&photoCount>=12){
+        el('storySaveError').textContent='This device already holds 12 photo stories. Delete an older photo story, or remove this photo before saving.';
+        return null;
+      }
+      const aiStory=storyDraft.aiStory;
+      const story={
+        id:`return-story-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+        momentId:activeReturnMoment.id,
+        date:storyDraft.date,
+        prayerName:storyDraft.prayerName,
+        selectedState:storyDraft.selectedState,
+        title:aiStory?.title||storyDraft.title,
+        body:aiStory?.body||storyDraft.body,
+        basicTitle:storyDraft.title,
+        basicBody:storyDraft.body,
+        reflectionType:aiStory?'ai':'basic',
+        aiMetadata:aiStory?{
+          visualFacts:aiStory.visualFacts,
+          atmosphere:aiStory.atmosphere,
+          photoRelevance:aiStory.photoRelevance,
+          modelName:aiStory.modelName
+        }:null,
+        photoDataUrl:storyDraft.photoDataUrl||'',
+        selectedAction,
+        createdAt:new Date().toISOString(),
+        prototype:!aiStory
+      };
+      const nextStories=[...returnStories,story];
+      if(!writeStoryStorage(RETURN_STORIES_KEY,nextStories)){
+        el('storySaveError').textContent='This device does not have enough storage for this story. Remove the photo or delete an older story, then try again.';
+        return null;
+      }
+      returnStories=nextStories;
+      storyDraft.savedStoryId=story.id;
+      document.querySelectorAll('[data-story-action]').forEach(button=>button.disabled=true);
+      pendingMoments=pendingMoments.filter(moment=>moment.id!==activeReturnMoment.id);
+      writeStoryStorage(PENDING_MOMENT_KEY,pendingMoments);
+      if(!dismissedMoments.includes(activeReturnMoment.id)) dismissedMoments.push(activeReturnMoment.id);
+      writeStoryStorage(DISMISSED_MOMENTS_KEY,dismissedMoments);
+      renderReturnStoryUI();
+      return story;
+    }
+
+    function finishStoryToToday(story){
+      if(!story) return;
+      closeReturnStoryFlow({dismiss:false});
+      switchBoxTab('my');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function openStoryDetail(id){
+      const story=returnStories.find(item=>item.id===id);
+      if(!story) return;
+      selectedStoryId=id;
+      const photo=story.photoDataUrl?`<img class="return-story-photo" src="${escapeHtml(story.photoDataUrl)}" alt="Photo saved with this Return Story">`:'';
+      const reflectionLabel=story.reflectionType==='ai'?'AI-assisted personal reflection':'Basic Reflection';
+      const boundary=story.reflectionType==='ai'?`<small class="ai-boundary-note">This reflection is generated from your photo and selected context. It does not interpret Allah's will or replace religious guidance.</small>`:'';
+      el('storyDetailContent').innerHTML=`<article class="return-story-card">${photo}<div class="return-story-content"><div class="story-octa" aria-hidden="true"></div><h3>${escapeHtml(story.title)}</h3><p class="return-story-body">${escapeHtml(story.body)}</p><div class="story-meta">A Return Story · ${escapeHtml(story.prayerName)} · ${escapeHtml(storyDateLabel(story.date))}<br>${escapeHtml(storyActionLabel(story.selectedAction))}</div><small class="prototype-note">${reflectionLabel}</small>${boundary}</div></article>`;
+      el('storyDetail').hidden=false;
+      el('storyDetail').setAttribute('aria-hidden','false');
+      document.body.classList.add('story-flow-open');
+    }
+
+    function closeStoryDetail(){
+      el('storyDetail').hidden=true;
+      el('storyDetail').setAttribute('aria-hidden','true');
+      document.body.classList.remove('story-flow-open');
+      selectedStoryId=null;
+    }
+
+    function deleteSelectedStory(){
+      const story=returnStories.find(item=>item.id===selectedStoryId);
+      if(!story||!confirm(`Delete “${story.title}”? This cannot be undone.`)) return;
+      const nextStories=returnStories.filter(item=>item.id!==selectedStoryId);
+      if(!writeStoryStorage(RETURN_STORIES_KEY,nextStories)){
+        showSystemMessage('This story could not be deleted on this device.');
+        return;
+      }
+      returnStories=nextStories;
+      closeStoryDetail();
+      renderReturnStories();
+    }
+
+    function dropAnimation(){
+      const falling=document.createElement('div');
+      falling.className='falling';
+      el('jarStage').appendChild(falling);
+      falling.addEventListener('animationend',()=>falling.remove());
+    }
+
+    el('addBtn').addEventListener('click',()=>{
+      const choices=el('actionChoices');
+      const willOpen=!choices.classList.contains('open');
+      choices.classList.toggle('open',willOpen);
+      el('addBtn').setAttribute('aria-expanded',String(willOpen));
+      if(willOpen) choices.querySelector('button').focus();
+    });
+
+    document.querySelectorAll('#actionChoices [data-action]').forEach(button=>button.addEventListener('click',()=>{
+      const key=dateKey(today);
+      const action=button.dataset.action;
+      dropAnimation();
+      setTimeout(()=>{
+        state.records[key]=Number(state.records[key]||0)+1;
+        if(!Array.isArray(state.actions[key])) state.actions[key]=[];
+        state.actions[key].push(action);
+        renderAll();
+        const message=SYSTEM_MESSAGES[Math.floor(Math.random()*SYSTEM_MESSAGES.length)];
+        showSystemMessage(message);
+      },520);
+      el('actionChoices').classList.remove('open');
+      el('addBtn').setAttribute('aria-expanded','false');
+    }));
+
+    el('undoBtn').addEventListener('click',()=>{
+      const key=dateKey(today);
+      const count=Number(state.records[key]||0);
+      if(count>1) state.records[key]=count-1;
+      else if(count===1) delete state.records[key];
+      if(Array.isArray(state.actions[key]) && state.actions[key].length){
+        state.actions[key].pop();
+        if(!state.actions[key].length) delete state.actions[key];
+      }
+      renderAll();
+    });
+
+    el('resetBtn').addEventListener('click',()=>{
+      if(!confirm("Clear this month's return reflections? This cannot be undone.")) return;
+      const prefix=monthPrefix(today.getFullYear(),today.getMonth());
+      Object.keys(state.records).forEach(k=>{if(k.startsWith(prefix)) delete state.records[k];});
+      Object.keys(state.actions).forEach(k=>{if(k.startsWith(prefix)) delete state.actions[k];});
+      renderAll();
+    });
+
+    document.querySelectorAll('#statusList .status-prayer').forEach(button=>button.addEventListener('click',()=>{
+      openPrayerStatusSheet(button.dataset.prayer,button);
+    }));
+    el('markPrayerPrayed').addEventListener('click',markActivePrayerAsPrayed);
+    el('markPrayerMissed').addEventListener('click',markActivePrayerAsMissed);
+    el('closePrayerChoice').addEventListener('click',closePrayerStatusSheet);
+    el('keepPrayerPrayed').addEventListener('click',closePrayerStatusSheet);
+    el('changePrayerStatus').addEventListener('click',()=>showPrayerSheetView('change'));
+    el('changePrayerToMissed').addEventListener('click',markActivePrayerAsMissed);
+    el('clearPrayerRecord').addEventListener('click',clearActivePrayerRecord);
+    el('cancelPrayerChange').addEventListener('click',()=>showPrayerSheetView('prayed'));
+    el('prayerStatusLayer').addEventListener('click',event=>{
+      if(event.target===el('prayerStatusLayer')) closePrayerStatusSheet();
+    });
+    document.addEventListener('keydown',event=>{
+      if(event.key==='Escape'&&!el('prayerStatusLayer').hidden) closePrayerStatusSheet();
+    });
+
+    el('returnStoriesTab').addEventListener('click',()=>switchBoxTab('stories'));
+    el('mySadaqahTab').addEventListener('click',()=>switchBoxTab('my'));
+    el('turnThisMoment').addEventListener('click',()=>openReturnStoryFlow());
+    el('dismissReturnWindow').addEventListener('click',()=>dismissMoment(latestPendingMoment()));
+    el('pendingStoryHint').addEventListener('click',()=>openReturnStoryFlow());
+    el('pendingBoxHint').addEventListener('click',()=>openReturnStoryFlow());
+    el('closeStoryFlow').addEventListener('click',()=>closeReturnStoryFlow());
+    el('chooseStoryPhoto').addEventListener('click',()=>{el('storyPhotoInput').value='';el('storyPhotoInput').click();});
+    el('replaceStoryPhoto').addEventListener('click',()=>{el('storyPhotoInput').value='';el('storyPhotoInput').click();});
+    el('storyPhotoInput').addEventListener('change',event=>handleStoryPhoto(event.target.files&&event.target.files[0]));
+    el('removeStoryPhoto').addEventListener('click',()=>{
+      storyDraft.photoDataUrl='';
+      storyDraft.hasPhoto=false;
+      el('storyPhotoInput').value='';
+      el('storyPhotoPreview').removeAttribute('src');
+      el('photoPreviewWrap').hidden=true;
+      el('photoStartActions').hidden=false;
+      el('photoError').textContent='';
+      updateAiStoryButton();
+    });
+    el('continueWithoutPhoto').addEventListener('click',()=>{
+      storyDraft.photoDataUrl='';
+      storyDraft.hasPhoto=false;
+      updateAiStoryButton();
+      showStoryStep('state');
+    });
+    el('continueWithPhoto').addEventListener('click',()=>{
+      const photoCount=returnStories.filter(story=>Boolean(story.photoDataUrl)).length;
+      if(photoCount>=12){
+        el('photoError').textContent='This device already holds 12 photo stories. Delete an older one, or remove this photo to continue.';
+        return;
+      }
+      showStoryStep('state');
+    });
+    document.querySelectorAll('[data-moment-state]').forEach(button=>button.addEventListener('click',()=>{
+      storyDraft.selectedState=button.dataset.momentState;
+      document.querySelectorAll('[data-moment-state]').forEach(option=>option.classList.toggle('is-selected',option===button));
+      beginStoryGeneration();
+    }));
+    el('skipMomentState').addEventListener('click',()=>{
+      storyDraft.selectedState='unknown';
+      beginStoryGeneration();
+    });
+    document.querySelectorAll('[data-story-action]').forEach(button=>button.addEventListener('click',()=>{
+      const action=button.dataset.storyAction;
+      const story=saveStory(action);
+      if(!story) return;
+      if(action==='prepare'){
+        finishStoryToToday(story);
+      }else if(action==='sadaqah'){
+        closeReturnStoryFlow({dismiss:false});
+        switchBoxTab('my');
+        el('actionChoices').classList.add('open');
+        el('addBtn').setAttribute('aria-expanded','true');
+        setTimeout(()=>{
+          document.querySelector('.action-card').scrollIntoView({behavior:'smooth',block:'center'});
+          document.querySelector('#actionChoices [data-action="box"]').focus();
+        },80);
+      }else if(action==='kindness'){
+        savedKindnessStoryId=story.id;
+        showStoryStep('kindness');
+      }else{
+        closeReturnStoryFlow({dismiss:false});
+        switchBoxTab('stories');
+        setTimeout(()=>el('returnStoriesPanel').scrollIntoView({behavior:'smooth',block:'start'}),80);
+      }
+    }));
+    document.querySelectorAll('[data-kindness]').forEach(button=>button.addEventListener('click',()=>{
+      const nextStories=returnStories.map(story=>story.id===savedKindnessStoryId?{...story,selectedAction:`kindness:${button.dataset.kindness}`} : story);
+      if(writeStoryStorage(RETURN_STORIES_KEY,nextStories)) returnStories=nextStories;
+      else showSystemMessage('The kindness choice could not be saved, but your story is still private.');
+      closeReturnStoryFlow({dismiss:false});
+      switchBoxTab('stories');
+      renderReturnStories();
+    }));
+    el('skipKindness').addEventListener('click',()=>{
+      closeReturnStoryFlow({dismiss:false});
+      switchBoxTab('stories');
+    });
+    el('closeStoryDetail').addEventListener('click',closeStoryDetail);
+    el('detailDone').addEventListener('click',closeStoryDetail);
+    el('deleteStory').addEventListener('click',deleteSelectedStory);
+    el('createAiStory').addEventListener('click',beginAiEntry);
+    el('confirmAiStory').addEventListener('click',createPersonalAiStory);
+    el('useBasicReflection').addEventListener('click',()=>closeAiLayer('aiConsentLayer'));
+    el('sendAiOtp').addEventListener('click',sendAiOtp);
+    el('verifyAiOtp').addEventListener('click',verifyAiOtp);
+    el('closeAiAuth').addEventListener('click',()=>{
+      aiContinueAfterAuth=false;
+      closeAiLayer('aiAuthLayer');
+    });
+    el('refreshAiCredits').addEventListener('click',()=>refreshAiCredits().catch(error=>{el('aiStoryError').textContent=error.message;}));
+    el('openAiCredits').addEventListener('click',()=>{
+      openAiLayer('aiCreditsLayer');
+      refreshAiCredits().catch(error=>{el('paypalError').textContent=error.message;});
+    });
+    el('closeAiCredits').addEventListener('click',()=>closeAiLayer('aiCreditsLayer'));
+    el('signOutAi').addEventListener('click',async()=>{
+      try{await aiSupabaseClient?.auth.signOut();}catch{}
+      aiSession=null;
+      aiCreditBalance=null;
+      renderAiAccount();
+    });
+    document.querySelectorAll('[data-credit-product]').forEach(button=>button.addEventListener('click',()=>renderPayPalPurchase(button.dataset.creditProduct)));
+    document.querySelectorAll('.ai-layer').forEach(layer=>layer.addEventListener('click',event=>{
+      if(event.target===layer) closeAiLayer(layer.id);
+    }));
+    window.addEventListener('online',()=>{updateAiStoryButton();initializeAiFeatures();});
+    window.addEventListener('offline',updateAiStoryButton);
+
+    function showSystemMessage(message){
+      const toast=el('systemToast');
+      toast.textContent=message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer=setTimeout(()=>toast.classList.remove('show'),3200);
+    }
+
+    el('prevMonth').addEventListener('click',()=>{
+      viewMonth--;
+      if(viewMonth<0){viewMonth=11;viewYear--;}
+      renderCalendar();
+    });
+    el('nextMonth').addEventListener('click',()=>{
+      viewMonth++;
+      if(viewMonth>11){viewMonth=0;viewYear++;}
+      renderCalendar();
+    });
+    el('goToday').addEventListener('click',()=>{
+      viewYear=today.getFullYear();
+      viewMonth=today.getMonth();
+      renderCalendar();
+    });
+
+    currency.addEventListener('change',()=>{state.currency=currency.value;renderAll();});
+    unitValue.addEventListener('input',()=>{state.unitValue=Number(unitValue.value||0);renderAll();});
+    ownerName.addEventListener('input',()=>{state.ownerName=ownerName.value.trimStart();save();});
+
+    renderAll();
+    renderReturnStoryUI();
+    initializeAiFeatures();
+
+    function initializeReturnStoryDebug(){
+      if(new URLSearchParams(location.search).get('debug')!=='1') return;
+      el('returnStoryDebug').hidden=false;
+      const createSampleMoment=()=>{
+        const id=`debug-${Date.now()}|Asr`;
+        registerMissedMoment('Asr',{id,date:dateKey(today)});
+        return latestPendingMoment();
+      };
+      el('debugResetStories').addEventListener('click',()=>{
+        localStorage.removeItem(PENDING_MOMENT_KEY);
+        localStorage.removeItem(RETURN_STORIES_KEY);
+        localStorage.removeItem(DISMISSED_MOMENTS_KEY);
+        pendingMoments=[];
+        returnStories=[];
+        dismissedMoments=[];
+        closeReturnStoryFlow({dismiss:false});
+        if(!el('storyDetail').hidden) closeStoryDetail();
+        renderReturnStoryUI();
+        showSystemMessage('New Return Story data was reset.');
+      });
+      el('debugTriggerMissed').addEventListener('click',()=>createSampleMoment());
+      el('debugOpenFlow').addEventListener('click',()=>openReturnStoryFlow(latestPendingMoment()||createSampleMoment()));
+      el('debugGenerateStory').addEventListener('click',()=>{
+        const moment=latestPendingMoment()||createSampleMoment();
+        openReturnStoryFlow(moment);
+        storyDraft.selectedState='busy';
+        beginStoryGeneration();
+      });
+    }
+
+    initializeReturnStoryDebug();
+
+    function showFirstReturnStep(stepNumber){
+      document.querySelectorAll('[data-return-step]').forEach(step=>{
+        const active=step.dataset.returnStep===String(stepNumber);
+        step.hidden=!active;
+        step.classList.toggle('is-active',active);
+      });
+    }
+
+    function completeFirstReturn(){
+      localStorage.setItem(FIRST_RETURN_KEY,'true');
+      const experience=el('firstReturnExperience');
+      experience.classList.add('is-leaving');
+      document.body.classList.remove('first-return-open');
+      setTimeout(()=>{
+        experience.hidden=true;
+        experience.setAttribute('aria-hidden','true');
+      },320);
+    }
+
+    function initializeFirstReturnExperience(){
+      if(localStorage.getItem(FIRST_RETURN_KEY)!==null) return;
+
+      const experience=el('firstReturnExperience');
+      experience.hidden=false;
+      experience.setAttribute('aria-hidden','false');
+      document.body.classList.add('first-return-open');
+      showFirstReturnStep(1);
+
+      document.querySelectorAll('[data-return-next]').forEach(button=>{
+        button.addEventListener('click',()=>showFirstReturnStep(button.dataset.returnNext));
+      });
+
+      document.querySelectorAll('[data-return-reason]').forEach(button=>{
+        button.addEventListener('click',()=>{
+          const response=FIRST_RETURN_RESPONSES[button.dataset.returnReason];
+          el('returnResponseLead').textContent=response[0];
+          el('returnResponseFollow').textContent=response[1];
+          showFirstReturnStep(4);
+        });
+      });
+
+      document.querySelector('[data-return-skip]').addEventListener('click',completeFirstReturn);
+      el('enterReturnSpace').addEventListener('click',completeFirstReturn);
+    }
+
+    initializeFirstReturnExperience();
+
+    function startSplashSequence(){
+      const splash=el('systemStart');
+      const message=el('splashMessage');
+      if(!splash || !message) return;
+
+      const showMessage=text=>{
+        message.classList.add('is-switching');
+        setTimeout(()=>{
+          message.textContent=text;
+          message.classList.remove('is-switching');
+        },80);
+      };
+
+      setTimeout(()=>showMessage('Checking your journey...'),500);
+      setTimeout(()=>showMessage('A door is still open.'),1500);
+      setTimeout(()=>showMessage('Ready to return ✦'),1850);
+      setTimeout(()=>splash.classList.add('is-leaving'),2200);
+      setTimeout(()=>{
+        splash.hidden=true;
+        splash.setAttribute('aria-hidden','true');
+      },2450);
+    }
+
+    startSplashSequence();
+
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'}).catch(()=>{});
+    }
+  </script>
+</body>
+</html>
