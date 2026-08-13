@@ -1303,7 +1303,7 @@
 
     async function loadAiPublicConfig(){
       if(aiPublicConfig) return aiPublicConfig;
-      const response=await fetch('/api/public-config',{cache:'no-store'});
+      const response=await fetch('/api/public-config/',{cache:'no-store'});
       const payload=await response.json().catch(()=>({}));
       if(!response.ok||!payload.success) throw new Error(payload.error?.message||'AI services are not configured yet.');
       if(payload.paypalEnvironment!=='sandbox') throw new Error('This build only supports PayPal Sandbox.');
@@ -1453,7 +1453,7 @@
         setTimeout(()=>{el('aiGenerationStatus').textContent='Building your personal story...';},1700)
       ];
       try{
-        const payload=await authorizedApi('/api/return-story',{
+        const payload=await authorizedApi('/api/return-story/',{
           method:'POST',
           body:JSON.stringify({
             requestId:crypto.randomUUID(),
