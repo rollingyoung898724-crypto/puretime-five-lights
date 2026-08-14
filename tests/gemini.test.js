@@ -22,6 +22,24 @@ test('Gemini adapter retries invalid JSON once then rejects',async()=>{
   assert.equal(attempts,2);
 });
 
+test('Gemini adapter retries a non-first-person reflection with stronger instructions',async()=>{
+  let attempts=0;
+  const prompts=[];
+  const {modelName,...modelStory}=VALID_STORY;
+  const invalidStory={...modelStory,body:modelStory.body.replace(/^I notice/,'The scene shows')};
+  const client={interactions:{create:async value=>{
+    attempts+=1;
+    prompts.push(value.input[1].text);
+    return{output_text:JSON.stringify(attempts===1?invalidStory:modelStory)};
+  }}};
+  const result=await generateGeminiStory(input,{client});
+  assert.equal(attempts,2);
+  assert.equal(result.body,modelStory.body);
+  assert.match(prompts[0],/first word must be "I" or "My"/);
+  assert.match(prompts[0],/Do not use "you", "your", "people", "Muslims"/);
+  assert.match(prompts[1],/previous response failed the required format or first-person safety check/i);
+});
+
 test('Gemini timeout is not shown as model content and is not retried',async()=>{
   let attempts=0;
   const client={interactions:{create:async()=>{attempts+=1;throw new Error('Request timed out');}}};
