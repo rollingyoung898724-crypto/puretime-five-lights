@@ -1033,6 +1033,7 @@
     let aiContinueAfterAuth=false;
     let aiStatusTimers=[];
     let paypalSdkPromise=null;
+    window.getAiSession=()=>aiSession;
 
     function readStoryStorage(key,fallback){
       try{
@@ -1322,7 +1323,8 @@
         if(!session) aiCreditBalance=null;
         renderAiAccount();
       });
-      const {data}=await aiSupabaseClient.auth.getSession();
+      const {data,error}=await aiSupabaseClient.auth.getSession();
+      if(error) console.error('[Return System Auth] getSession failed.',{message:error.message,code:error.code||'SESSION_READ_FAILED'});
       aiSession=data.session||null;
       renderAiAccount();
       return aiSupabaseClient;
@@ -1368,7 +1370,7 @@
 
     async function refreshAiCredits(){
       if(!navigator.onLine) throw new Error('AI stories require an internet connection.');
-      const payload=await authorizedApi('/api/credits');
+      const payload=await authorizedApi('/api/credits/');
       aiCreditBalance=payload.balance;
       renderAiAccount();
       return payload;
